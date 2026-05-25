@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="OceanRenderEngine.vcxproj" Id="379586c0-5637-41f8-810b-5c1c84bae526" />
+</Solution>

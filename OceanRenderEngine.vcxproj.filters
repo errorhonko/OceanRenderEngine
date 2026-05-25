@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\core/math">
+      <UniqueIdentifier>{97c7af21-2467-4f16-b265-1c0993c33d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\core/Rasterizer">
+      <UniqueIdentifier>{d87f5a72-592b-4d2e-b81c-6296dcc69b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\core/Raytracing">
+      <UniqueIdentifier>{3a36a571-d5aa-467b-a71c-454109817d03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\core/Raytracing\objects">
+      <UniqueIdentifier>{314a55bb-3958-4a89-933e-7974db92188b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Vector3f.h">
+      <Filter>头文件\core/math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4f.h">
+      <Filter>头文件\core/math</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4f.h">
+      <Filter>头文件\core/math</Filter>
+    </ClInclude>
+    <ClInclude Include="load_obj.h">
+      <Filter>头文件\core/math</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterizer.h">
+      <Filter>头文件\core/Rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>头文件\core/Raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="HitRocord.h">
+      <Filter>头文件\core/Raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="Hittable.h">
+      <Filter>头文件\core/Raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>头文件\core/Raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="HittableList.h">
+      <Filter>头文件\core/Raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>头文件\core/Raytracing\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>头文件\core/Raytracing\objects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Vector3f.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4f.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4f.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rasterizer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="load_obj.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HitRocord.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HittableList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OceanRenderEngine.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
