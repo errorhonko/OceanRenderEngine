@@ -25,6 +25,9 @@
     <Filter Include="头文件\core/Raytracing\objects">
       <UniqueIdentifier>{314a55bb-3958-4a89-933e-7974db92188b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\material">
+      <UniqueIdentifier>{6d97937f-26e1-441c-bdb6-0533ea029556}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector3f.h">
@@ -69,6 +72,18 @@
     <ClInclude Include="Triangle.h">
       <Filter>头文件\core/Raytracing\objects</Filter>
     </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>头文件\material</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>头文件\material</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageTexture.h">
+      <Filter>头文件\material</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>头文件\material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vector3f.cpp">
@@ -108,6 +123,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Triangle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="material.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
