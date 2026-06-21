@@ -28,6 +28,15 @@
     <Filter Include="头文件\material">
       <UniqueIdentifier>{6d97937f-26e1-441c-bdb6-0533ea029556}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\material\materials">
+      <UniqueIdentifier>{20e7910c-517d-44b9-9cd8-ce832dce677b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\spectrum">
+      <UniqueIdentifier>{6c8a0343-30f4-423b-a892-a5cd8d6ce7e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\ReflectionModel">
+      <UniqueIdentifier>{d3f001e6-0e86-4c09-a26c-c84bcf9dccc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector3f.h">
@@ -84,6 +93,21 @@
     <ClInclude Include="stb_image.h">
       <Filter>头文件\material</Filter>
     </ClInclude>
+    <ClInclude Include="Lambertian.h">
+      <Filter>头文件\material\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="CoefficientSpectrum.h">
+      <Filter>头文件\spectrum</Filter>
+    </ClInclude>
+    <ClInclude Include="SampledSpectrum.h">
+      <Filter>头文件\spectrum</Filter>
+    </ClInclude>
+    <ClInclude Include="RGBSpectrum.h">
+      <Filter>头文件\spectrum</Filter>
+    </ClInclude>
+    <ClInclude Include="BRDFUtils.h">
+      <Filter>头文件\ReflectionModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vector3f.cpp">
@@ -132,6 +156,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ImageTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Lambertian.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CoefficientSpectrum.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SampledSpectrum.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RGBSpectrum.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BRDFUtils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

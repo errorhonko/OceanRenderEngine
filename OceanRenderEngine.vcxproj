@@ -139,10 +139,13 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BRDFUtils.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="CoefficientSpectrum.h" />
     <ClInclude Include="HitRocord.h" />
     <ClInclude Include="HittableList.h" />
     <ClInclude Include="ImageTexture.h" />
+    <ClInclude Include="Lambertian.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="Matrix4f.h" />
@@ -150,6 +153,8 @@
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="RGBSpectrum.h" />
+    <ClInclude Include="SampledSpectrum.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
@@ -159,16 +164,21 @@
     <ClInclude Include="VertexShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BRDFUtils.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="CoefficientSpectrum.cpp" />
     <ClCompile Include="HitRocord.cpp" />
     <ClCompile Include="HittableList.cpp" />
     <ClCompile Include="ImageTexture.cpp" />
+    <ClCompile Include="Lambertian.cpp" />
     <ClCompile Include="load_obj.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="Matrix4f.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="RGBSpectrum.cpp" />
+    <ClCompile Include="SampledSpectrum.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Triangle.cpp" />

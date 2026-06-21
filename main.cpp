@@ -4,6 +4,12 @@
 #include "camera.h"
 #include "HitRocord.h"
 #include "Hittable.h"
+#include "Texture.h"
+#include "ImageTexture.h"
+#include "Lambertian.h"
+#include "Sphere.h"
+#include "Triangle.h"
+#include "HittableList.h"
 int width = 800;
 int height = 600;
 float c0 = 200.0f;

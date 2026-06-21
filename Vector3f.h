@@ -1,5 +1,17 @@
 #pragma once
 #include <cmath>
+#include <random>
+
+inline float random_float() {
+	static std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+	static std::mt19937 generator;
+	return distribution(generator);
+}
+
+inline float random_float(float min, float max) {
+	return min + (max - min) * random_float();
+}
+
 class Vector3f
 {
 public:
@@ -42,7 +54,30 @@ public:
         return *this;
     }
 
+	bool near_zero() const {
+		const float s = 1e-8f;
+		return (std::fabs(x) < s) && (std::fabs(y) < s) && (std::fabs(z) < s);
+	}
 
+	static Vector3f random() {
+		return Vector3f(random_float(), random_float(), random_float());
+	}
+
+	static Vector3f random(float min, float max) {
+		return Vector3f(random_float(min, max), random_float(min, max), random_float(min, max));
+	}
+
+	static Vector3f random_in_unit_sphere() {
+		while (true) {
+			Vector3f p = Vector3f::random(-1.0f, 1.0f);
+			if (p.dot(p) >= 1.0f) continue;
+			return p;
+		}
+	}
+
+	static Vector3f random_unit_vector() {
+		return random_in_unit_sphere().normalize();
+	}
 
 };
 
