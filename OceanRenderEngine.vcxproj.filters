@@ -108,6 +108,15 @@
     <ClInclude Include="BRDFUtils.h">
       <Filter>头文件\ReflectionModel</Filter>
     </ClInclude>
+    <ClInclude Include="BxDF.h">
+      <Filter>头文件\ReflectionModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2f.h">
+      <Filter>头文件\core/math</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaledBxDF.h">
+      <Filter>头文件\ReflectionModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vector3f.cpp">
@@ -171,6 +180,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="BRDFUtils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BxDF.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2f.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
