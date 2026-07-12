@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <cmath>
+#include <algorithm>
 using namespace std;
 template <size_t N>
 class CoefficientSpectrum
@@ -51,7 +52,7 @@ public:
 		return true;
 	}
 
-	friend CoefficientSpectrum <N> Sqrt(CoefficientSpectrum<N> &s) const {
+	friend CoefficientSpectrum <N> Sqrt(const CoefficientSpectrum<N> &s) {
 		CoefficientSpectrum<N> result;
 		for (size_t i = 0; i < N; ++i) {
 			result.c[i] = std::sqrt(s.c[i]);
