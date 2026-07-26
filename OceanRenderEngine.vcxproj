@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BRDFUtils.h" />
+    <ClInclude Include="BxDF.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="CoefficientSpectrum.h" />
     <ClInclude Include="HitRocord.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="material.h" />
     <ClInclude Include="Matrix4f.h" />
     <ClInclude Include="Hittable.h" />
+    <ClInclude Include="Point2f.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="resource.h" />
@@ -162,9 +164,11 @@
     <ClInclude Include="Vector3f.h" />
     <ClInclude Include="Vector4f.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="ScaledBxDF.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BRDFUtils.cpp" />
+    <ClCompile Include="BxDF.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="CoefficientSpectrum.cpp" />
     <ClCompile Include="HitRocord.cpp" />
@@ -175,6 +179,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="Matrix4f.cpp" />
+    <ClCompile Include="Point2f.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="RGBSpectrum.cpp" />

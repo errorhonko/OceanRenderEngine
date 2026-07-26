@@ -52,7 +52,7 @@ public:
 		return true;
 	}
 
-	friend CoefficientSpectrum <N> Sqrt(const CoefficientSpectrum<N> &s) {
+	friend CoefficientSpectrum <N> Sqrt(CoefficientSpectrum<N> &s) const {
 		CoefficientSpectrum<N> result;
 		for (size_t i = 0; i < N; ++i) {
 			result.c[i] = std::sqrt(s.c[i]);
