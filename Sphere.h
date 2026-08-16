@@ -6,7 +6,8 @@ class Sphere :
 public :
 	Vector3f center; // 球心坐标
 	float radius; // 球的半径
-	Sphere(const Vector3f& cen, float r) : center(cen), radius(r) {}
+	std::shared_ptr<Material> material; // 球的材质
+	Sphere(const Vector3f& cen, float r, std::shared_ptr<Material> mat) : center(cen), radius(r), material(mat) {}
 	bool hit(const Ray& ray, float t_min, float t_max, HitRecord& rec) const override
 	{
 		Vector3f v = ray.orig - center;
@@ -25,6 +26,9 @@ public :
 		rec.t = root;
 		rec.point = ray.at(rec.t);
 		rec.normal = (rec.point - center) *(1/ radius);
+		float phi = std::atan2(rec.normal.y, rec.normal.x);
+		rec.dpdu = Vector3f(-std::sin(phi), std::cos(phi), 0.0f);
+		rec.material = material;
 		return true;
 	}
 };

@@ -37,6 +37,30 @@
     <Filter Include="头文件\ReflectionModel">
       <UniqueIdentifier>{d3f001e6-0e86-4c09-a26c-c84bcf9dccc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\ReflectionModel\Fresnel">
+      <UniqueIdentifier>{dc0c9b6c-1e4f-441f-b41b-9b0a8fc8e42e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\ReflectionModel\Specular">
+      <UniqueIdentifier>{0704eec5-6ffb-420a-9734-fa621f81ec1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\ReflectionModel\Diffuse">
+      <UniqueIdentifier>{694d1b9c-feaf-4278-b0fd-4dca5d255e16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\ReflectionModel\Conductor">
+      <UniqueIdentifier>{b9e8f999-6079-496b-973d-9e66f955c470}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\ReflectionModel\Dielectric">
+      <UniqueIdentifier>{d38db91d-1b24-424e-81f6-25d056f63b41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Path Tracing">
+      <UniqueIdentifier>{c64db0e2-f1af-477c-9e23-9dd8d88b6a9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Sampler">
+      <UniqueIdentifier>{0becd960-21f7-4c29-8f29-b38fbe5a2ae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Light">
+      <UniqueIdentifier>{7d837ce1-f0dc-4cdf-a9dc-4414a0d61a04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector3f.h">
@@ -52,9 +76,6 @@
       <Filter>头文件\core/math</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rasterizer.h">
@@ -116,6 +137,63 @@
     </ClInclude>
     <ClInclude Include="ScaledBxDF.h">
       <Filter>头文件\ReflectionModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Fresnel.h">
+      <Filter>头文件\ReflectionModel\Fresnel</Filter>
+    </ClInclude>
+    <ClInclude Include="FresnelDielectric.h">
+      <Filter>头文件\ReflectionModel\Fresnel</Filter>
+    </ClInclude>
+    <ClInclude Include="FresnelNoOp.h">
+      <Filter>头文件\ReflectionModel\Fresnel</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecularReflection.h">
+      <Filter>头文件\ReflectionModel\Specular</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecularTransmission.h">
+      <Filter>头文件\ReflectionModel\Specular</Filter>
+    </ClInclude>
+    <ClInclude Include="BSDF.h">
+      <Filter>头文件\ReflectionModel</Filter>
+    </ClInclude>
+    <ClInclude Include="DiffuseBxDF.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ConductorBxDF.h">
+      <Filter>头文件\ReflectionModel\Conductor</Filter>
+    </ClInclude>
+    <ClInclude Include="TrowbridgeReitzDistribution.h">
+      <Filter>头文件\ReflectionModel</Filter>
+    </ClInclude>
+    <ClInclude Include="DielectricBxDF.h">
+      <Filter>头文件\ReflectionModel\Dielectric</Filter>
+    </ClInclude>
+    <ClInclude Include="DiffuseMaterial.h">
+      <Filter>头文件\material\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="DielectricMaterial.h">
+      <Filter>头文件\material\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="MixMaterial.h">
+      <Filter>头文件\material\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="HashUtils.h">
+      <Filter>头文件\core/math</Filter>
+    </ClInclude>
+    <ClInclude Include="ThinDielectricBxDF.h">
+      <Filter>头文件\ReflectionModel</Filter>
+    </ClInclude>
+    <ClInclude Include="SimplePathIntegrator.h">
+      <Filter>头文件\Path Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>头文件\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrator.h">
+      <Filter>头文件\Path Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="UniformLightSampler.h">
+      <Filter>头文件\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -182,10 +260,37 @@
     <ClCompile Include="BRDFUtils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="BxDF.cpp">
+    <ClCompile Include="Point2f.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Point2f.cpp">
+    <ClCompile Include="Fresnel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FresnelDielectric.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FresnelNoOp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SpecularTransmission.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BxDF.cpp">
+      <Filter>头文件\ReflectionModel</Filter>
+    </ClCompile>
+    <ClCompile Include="BSDF.cpp">
+      <Filter>头文件\ReflectionModel</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffuseBxDF.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ConductorBxDF.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DielectricBxDF.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThinDielectricBxDF.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,8 @@
 #pragma once
 #include "CoefficientSpectrum.h"
-class RGBSpectrum :CoefficientSpectrum<3>
+class RGBSpectrum : public CoefficientSpectrum<3>
 {
+public:
 	RGBSpectrum(float v = 0.0f) : CoefficientSpectrum<3>(v) {}
 	RGBSpectrum(const CoefficientSpectrum<3>& v) : CoefficientSpectrum<3>(v) {}
     RGBSpectrum(float r, float g, float b) {

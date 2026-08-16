@@ -19,3 +19,24 @@ public:
 	}
 
 };
+class FloatTexture
+{
+public:
+	
+	virtual	~FloatTexture() = default;
+	virtual float value(float u, float v)const = 0;
+private:
+
+};
+
+class ConstantFloatTexture : public FloatTexture
+{
+public:
+	ConstantFloatTexture(float c) : value_(c) {};
+	float value(float u, float v) const override
+	{
+		return value_;
+	}
+private:
+	float value_;
+};

@@ -2,7 +2,6 @@
 #include <array>
 #include <cmath>
 #include <algorithm>
-using namespace std;
 template <size_t N>
 class CoefficientSpectrum
 {
@@ -42,7 +41,23 @@ public:
 		}
 		return result;
 	}
-
+	friend CoefficientSpectrum<N> operator*(float f, const CoefficientSpectrum<N>& s) {
+		return s * f;
+	}
+	CoefficientSpectrum <N> operator/(float f) const {
+		CoefficientSpectrum<N> result;
+		for (size_t i = 0; i < N; ++i) {
+			result.c[i] = c[i] / f;
+		}
+		return result;
+	}
+	CoefficientSpectrum <N> operator/(const CoefficientSpectrum<N>& s) const {
+		CoefficientSpectrum<N> result;
+		for (size_t i = 0; i < N; ++i) {
+			result.c[i] = c[i] / s.c[i];
+		}
+		return result;
+	}
 	bool IsBlack() const {
 		for (size_t i = 0; i < N; ++i) {
 			if (c[i] >1e-5f) {
@@ -51,8 +66,9 @@ public:
 		}
 		return true;
 	}
+	bool operator!() const { return IsBlack(); }
 
-	friend CoefficientSpectrum <N> Sqrt(CoefficientSpectrum<N> &s) const {
+	friend CoefficientSpectrum <N> Sqrt(const CoefficientSpectrum<N> &s) {
 		CoefficientSpectrum<N> result;
 		for (size_t i = 0; i < N; ++i) {
 			result.c[i] = std::sqrt(s.c[i]);
