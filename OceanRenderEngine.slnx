@@ -4,4 +4,5 @@
     <Platform Name="x86" />
   </Configurations>
   <Project Path="OceanRenderEngine.vcxproj" Id="379586c0-5637-41f8-810b-5c1c84bae526" />
+  <Project Path="tests/OceanRenderEngine.Tests/OceanRenderEngine.Tests.vcxproj" Id="36c58a2f-c5e4-461b-9702-b0b252188fb5" />
 </Solution>

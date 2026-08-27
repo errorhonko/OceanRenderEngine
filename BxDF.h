@@ -78,7 +78,7 @@ public:
 	virtual Spectrum rho(const Vector3f& wo, int nSamples, const Point2f* samples) const=0;
 	virtual float Pdf(const Vector3f& wo, const Vector3f& wi , 
 		TransportMode mode,
-		BxDFReflectionType sampleFlags = BxDFReflectionType::All) const;
+		BxDFReflectionType sampleFlags = BxDFReflectionType::All) const=0;
 public:
 	const BxDFType type;
 

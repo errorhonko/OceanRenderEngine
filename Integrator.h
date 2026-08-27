@@ -4,6 +4,8 @@
 #include "Hittable.h"
 #include "Sampler.h"
 #include "camera.h"
+#include <limits>
+inline static constexpr float RayEpsilon = 1e-4f;
 class Integrator
 {
 public:
@@ -19,9 +21,32 @@ protected:
 	bool Intersect(
 		const Ray& ray,
 		HitRecord& rec
-		) const;
-	bool Unoccluded(const Vector3f&p0,
-		const Vector3f& p1) const;
+	) const
+	{
+		return	 world.hit(ray, RayEpsilon,
+			std::numeric_limits<float> ::infinity(),
+			rec);
+	}
+	bool Unoccluded(const Vector3f& p,
+		const Vector3f& wi,
+		float distance
+	) const {
+		if (std::isfinite(distance) &&
+			distance <= 2.0f * RayEpsilon)
+		{
+			return true;
+		}
+		Ray shadowRay(
+			p + wi * RayEpsilon,
+			wi);
+		float tMax = std::isfinite(distance)
+			? distance - 2.0f* RayEpsilon
+			: std::numeric_limits<float>::infinity();
+
+		HitRecord shadowRec;
+
+		return !world.hit(shadowRay, .0f, tMax, shadowRec);
+	}
 	const Hittable& world;
 
 };
@@ -40,7 +65,9 @@ public:
 	}
 	virtual Spectrum Li(Ray ray, Sampler& sampler) const = 0;
 
-	void Render()override;
+	void Render()override
+	{
+	};
 protected:
 
 	Camera camera;

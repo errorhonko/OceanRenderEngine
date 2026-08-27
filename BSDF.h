@@ -30,16 +30,16 @@ public:
 
         return bxdf->f(woLocal, wiLocal,mode);
     };
-    BSDFSample  Sample_f(const Vector3f& woRender,
+    std::optional<BSDFSample>  Sample_f(const Vector3f& woRender,
         const Point2f& sample,TransportMode mode = TransportMode::Radiance 
     ,BxDFReflectionType sampledType = BxDFReflectionType::All) const
     {
 		Vector3f woLocal = RenderToLocal(woRender);
         if(woLocal.z==0)
-            return {};
+            return std::nullopt;
 		auto bs = bxdf->Sample_f(woLocal,sample,mode, sampledType);
-		if (!bs || !bs->f||bs->pdf==0||bs->wi.z==0)
-			return {};
+        if (!bs || !bs->f || bs->pdf <= .0f || bs->wi.z == 0)
+            return std::nullopt;
 		bs->wi = LocalToRender(bs->wi);
 		return *bs;
     };

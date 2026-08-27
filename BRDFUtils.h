@@ -115,6 +115,23 @@ namespace BRDFUtils
 		float z = Safesqrt(1 - d.x * d.x - d.y * d.y);
 		return Vector3f(d.x, d.y, z);
 	}
+	inline Vector3f SampleUniformSphere(const Point2f& u)
+	{
+		float z = 1.0f - 2.0f * u.x;
+		float r = Safesqrt(1.0f - z * z);
+		float phi = 2.0f * Pi * u.y;
+
+		return Vector3f(
+			r * std::cos(phi),
+			r * std::sin(phi),
+			z);
+	}
+
+	inline float UniformSpherePdf()
+	{
+		return Inv4Pi;
+	}
+
 	inline Vector3f FaceForward(Vector3f n, Vector3f v)
 	{
 		return (n.dot(v) < 0.0f) ? -n : n;

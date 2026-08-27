@@ -7,18 +7,15 @@
 #include <optional>
 #include <string>
 #include <vector>
-class Light;
+#include "Light.h"
+
 struct  SampledLight
 {
 	std::shared_ptr<Light> light;
 	float p = .0f;
 };
 
-struct  LightSampleContext
-{
-	Vector3f p;
-	Vector3f ns;
-};
+
 
 class UniformLightSampler
 {
@@ -75,6 +72,11 @@ public:
 	{
 		return "UniformLightSampler";
 	}
+	const std::vector<std::shared_ptr<Light>>& Lights() const
+	{
+		return lights;
+	}
+
 private:
 	std::vector<std::shared_ptr<Light>> lights;
 };

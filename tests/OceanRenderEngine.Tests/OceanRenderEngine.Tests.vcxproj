@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{379586c0-5637-41f8-810b-5c1c84bae526}</ProjectGuid>
-    <RootNamespace>OceanRenderEngine</RootNamespace>
+    <ProjectGuid>{36c58a2f-c5e4-461b-9702-b0b252188fb5}</ProjectGuid>
+    <RootNamespace>OceanRenderEngineTests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -111,6 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,92 +140,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BRDFUtils.h" />
-    <ClInclude Include="BSDF.h" />
-    <ClInclude Include="BxDF.h" />
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="CoefficientSpectrum.h" />
-    <ClInclude Include="ConductorBxDF.h" />
-    <ClInclude Include="DielectricBxDF.h" />
-    <ClInclude Include="DielectricMaterial.h" />
-    <ClInclude Include="DiffuseBxDF.h" />
-    <ClInclude Include="DiffuseMaterial.h" />
-    <ClInclude Include="DistantLight.h" />
-    <ClInclude Include="Fresnel.h" />
-    <ClInclude Include="FresnelDielectric.h" />
-    <ClInclude Include="FresnelNoOp.h" />
-    <ClInclude Include="HashUtils.h" />
-    <ClInclude Include="HitRocord.h" />
-    <ClInclude Include="HittableList.h" />
-    <ClInclude Include="ImageTexture.h" />
-    <ClInclude Include="IndependentSampler.h" />
-    <ClInclude Include="Integrator.h" />
-    <ClInclude Include="Lambertian.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="load_obj.h" />
-    <ClInclude Include="material.h" />
-    <ClInclude Include="Matrix4f.h" />
-    <ClInclude Include="Hittable.h" />
-    <ClInclude Include="MixMaterial.h" />
-    <ClInclude Include="Point2f.h" />
-    <ClInclude Include="PointLight.h" />
-    <ClInclude Include="Rasterizer.h" />
-    <ClInclude Include="Ray.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="RGBSpectrum.h" />
-    <ClInclude Include="SampledSpectrum.h" />
-    <ClInclude Include="Sampler.h" />
-    <ClInclude Include="SimplePathIntegrator.h" />
-    <ClInclude Include="SpecularReflection.h" />
-    <ClInclude Include="SpecularTransmission.h" />
-    <ClInclude Include="Sphere.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="ThinDielectricBxDF.h" />
-    <ClInclude Include="Triangle.h" />
-    <ClInclude Include="TrowbridgeReitzDistribution.h" />
-    <ClInclude Include="UniformInfiniteLight.h" />
-    <ClInclude Include="UniformLightSampler.h" />
-    <ClInclude Include="Vector3f.h" />
-    <ClInclude Include="Vector4f.h" />
-    <ClInclude Include="ScaledBxDF.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="BRDFUtils.cpp" />
-    <ClCompile Include="BSDF.cpp" />
-    <ClCompile Include="BxDF.cpp" />
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="CoefficientSpectrum.cpp" />
-    <ClCompile Include="ConductorBxDF.cpp" />
-    <ClCompile Include="DielectricBxDF.cpp" />
-    <ClCompile Include="DiffuseBxDF.cpp" />
-    <ClCompile Include="Fresnel.cpp" />
-    <ClCompile Include="FresnelDielectric.cpp" />
-    <ClCompile Include="FresnelNoOp.cpp" />
-    <ClCompile Include="HitRocord.cpp" />
-    <ClCompile Include="HittableList.cpp" />
-    <ClCompile Include="ImageTexture.cpp" />
-    <ClCompile Include="Lambertian.cpp" />
-    <ClCompile Include="load_obj.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="material.cpp" />
-    <ClCompile Include="Matrix4f.cpp" />
-    <ClCompile Include="Point2f.cpp" />
-    <ClCompile Include="Rasterizer.cpp" />
-    <ClCompile Include="Ray.cpp" />
-    <ClCompile Include="RGBSpectrum.cpp" />
-    <ClCompile Include="SampledSpectrum.cpp" />
-    <ClCompile Include="SpecularTransmission.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="ThinDielectricBxDF.cpp" />
-    <ClCompile Include="Triangle.cpp" />
-    <ClCompile Include="Vector3f.cpp" />
-    <ClCompile Include="Vector4f.cpp" />
-    <ClCompile Include="VertexShader.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="OceanRenderEngine.rc" />
+    <ClCompile Include="SimplePathIntegratorAcceptance.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

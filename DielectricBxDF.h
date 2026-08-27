@@ -63,7 +63,7 @@ public:
 				Vector3f wm = mfDistrib.Sample_Wm(wo, uForWm);
 				float R = FrDielectric(wo.dot(wm), 1.0f, eta);
 				float T = 1 - R;
-				float pr = R, pt = T;
+				 pr = R, pt = T;
 				if(!(sampleFlags&BxDFReflectionType::Reflection))
 				{
 					pr = 0;

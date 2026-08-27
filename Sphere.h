@@ -1,5 +1,6 @@
 #pragma once
 #include "Hittable.h"
+#include "BRDFUtils.h"
 class Sphere :
     public Hittable
 {
@@ -30,6 +31,21 @@ public :
 		rec.dpdu = Vector3f(-std::sin(phi), std::cos(phi), 0.0f);
 		rec.material = material;
 		return true;
+	}
+
+	float SurfaceArea() const override
+	{
+		return 4.0f * Pi * radius * radius;
+	}
+
+	std::optional<ShapeSample> Sample(const Point2f& u) const override
+	{
+		if (radius <= 0.0f)
+			return std::nullopt;
+
+		Vector3f n = SampleUniformSphere(u);
+		Vector3f p = center + n * radius;
+		return ShapeSample{ p, n, 1.0f / SurfaceArea() };
 	}
 };
 
