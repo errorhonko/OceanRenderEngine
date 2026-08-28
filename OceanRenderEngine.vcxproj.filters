@@ -210,6 +210,9 @@
     <ClInclude Include="UniformInfiniteLight.h">
       <Filter>头文件\Light</Filter>
     </ClInclude>
+    <ClInclude Include="DiffuseAreaLight.h">
+      <Filter>头文件\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vector3f.cpp">

@@ -26,10 +26,14 @@ public :
 		}
 		rec.t = root;
 		rec.point = ray.at(rec.t);
-		rec.normal = (rec.point - center) *(1/ radius);
+		rec.geometricNormal =
+			(rec.point - center) * (1.0f / radius);
+
+		rec.normal = rec.geometricNormal;
 		float phi = std::atan2(rec.normal.y, rec.normal.x);
 		rec.dpdu = Vector3f(-std::sin(phi), std::cos(phi), 0.0f);
 		rec.material = material;
+		SetHitAreaLight(rec);
 		return true;
 	}
 

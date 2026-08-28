@@ -47,11 +47,17 @@ public:
                 }
 				break;
             }
+
+            Vector3f wo = -ray.dir;
+			if ((!sampleLights || specularBounce) && rec.areaLight)
+			{
+				L = L + beta * rec.areaLight->L(
+					rec.point, rec.geometricNormal, wo);
+			}
             if (depth++ == maxDepth)
                 break;
             if (!rec.material)
                 break;
-            Vector3f wo = -ray.dir;
             MaterialEvalContext ctx{
                 rec.point,
                 wo,
@@ -65,7 +71,7 @@ public:
             {
 				LightSampleContext lightCtx{
 					rec.point,
-					rec.normal,
+					rec.geometricNormal,
 					rec.normal
 				};
 
@@ -90,10 +96,8 @@ public:
             specularBounce =
                 (bs->flags & BSDF_SPECULAR) != 0;
 
-			Vector3f offsetNormal = rec.normal.dot(bs->wi) > .0f
-                ? rec.normal : -rec.normal;
-			ray = Ray(rec.point + offsetNormal * RayEpsilon
-                , bs->wi);
+			ray = Ray(OffsetRayOrigin(rec.point, rec.geometricNormal, bs->wi)  ,
+                 bs->wi);
         }
 		return L;
     };
@@ -129,7 +133,7 @@ private:
 
 		if (f.IsBlack())
 			return Spectrum(0.0f);
-        if (!Unoccluded(ctx.p, lightSample->wi,
+        if (!Unoccluded(ctx.p, ctx.n, lightSample->wi,
             lightSample->distance))
             return Spectrum(0.0f);
         return f * lightSample->L /

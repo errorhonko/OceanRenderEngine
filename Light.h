@@ -22,7 +22,7 @@ struct  LightLiSample
 class Light
 {
 public:
-	Light()= default;
+	Light() = default;
 	virtual ~Light() = default;
 	virtual std::optional<LightLiSample> SampleLi(
 		const LightSampleContext& ctx,
@@ -30,6 +30,17 @@ public:
 	virtual Spectrum Le(const Ray& ray) const
 	{
 		(void)ray;
+		return Spectrum(0.0f);
+	}
+	virtual Spectrum L(
+		const Vector3f& p,
+		const Vector3f& n,
+		const Vector3f& w
+	)const
+	{
+		(void)p;
+		(void)n;
+		(void)w;
 		return Spectrum(0.0f);
 	}
 private:

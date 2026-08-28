@@ -3,7 +3,8 @@
 #include	"HitRocord.h"
 #include "Point2f.h"
 #include <optional>
-
+#include <memory>
+class Light;
 struct ShapeSample
 {
 	Vector3f p;       // 采样到的表面位置
@@ -32,6 +33,17 @@ public:
 	{
 		return 0.0f;
 	}
+	void SetAreaLight(const std::shared_ptr<Light> &light)
+	{
+		areaLight = light;
+	}
+protected :
+	void SetHitAreaLight(HitRecord& rec) const
+	{
+		rec.areaLight = areaLight.lock();
+	}
 
+private:
+	std::weak_ptr<Light> areaLight;
 };
 

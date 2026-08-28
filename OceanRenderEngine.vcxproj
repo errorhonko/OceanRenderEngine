@@ -147,6 +147,7 @@
     <ClInclude Include="ConductorBxDF.h" />
     <ClInclude Include="DielectricBxDF.h" />
     <ClInclude Include="DielectricMaterial.h" />
+    <ClInclude Include="DiffuseAreaLight.h" />
     <ClInclude Include="DiffuseBxDF.h" />
     <ClInclude Include="DiffuseMaterial.h" />
     <ClInclude Include="DistantLight.h" />

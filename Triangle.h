@@ -43,12 +43,88 @@ public:
 		rec.material = this->mat; // 赋值材质
 		float alpha = 1.0f - u - v;
 
-		rec.normal = ( n0 * alpha +  n1 * u + n2 * v).normalize();
+		Vector3f ng = E1.cross(E2).normalize();
+		rec.geometricNormal = ng;
+
+		Vector3f ns = n0 * alpha + n1 * u + n2 * v;
+
+		if (ns.near_zero())
+		{
+			ns = ng;
+		}
+		else
+		{
+			ns = ns.normalize();
+
+			if (ns.dot(ng) < .0f)
+			{
+				ns = -ns;
+			}
+		}
+
+		rec.normal = ns;
 		//rec.normal = E1.cross(E2).normalize();
+
+		float du1 = uv1.x - uv0.x;
+		float dv1 = uv1.y - uv0.y;
+
+		float  du2 = uv2.x - uv0.x;
+		float dv2 = uv2.y - uv0.y;
+
+		float uvDet = du1 * dv2 - dv1 * du2;
+
+		if (std::fabs(uvDet) > 1e-8f)
+		{
+			float invUvDet = 1.0f / uvDet;
+			rec.dpdu = (E1 * dv2 - E2 * dv1) * invUvDet;
+		}
+		else
+		{
+			Vector3f tangent = E1 - rec.normal * E1.dot(rec.normal);
+
+			if (tangent.near_zero())
+			{
+				tangent = E2- rec.normal * E2.dot(rec.normal);
+			}
+			rec.dpdu = tangent.normalize();
+		}
+
 		rec.u = alpha * (uv0.x) + u * (uv1.x) + v * (uv2.x);
 		rec.v = alpha * (uv0.y) + u * (uv1.y) + v * (uv2.y);
-
+		SetHitAreaLight(rec);
 		return true;
+	}
+	float SurfaceArea() const override
+	{
+		Vector3f E1 = v1 - v0;
+		Vector3f E2 = v2 - v0;
+		return 0.5f * E1.cross(E2).norm();
+	}
+	std::optional<ShapeSample> Sample(const Point2f& u) const override
+	{
+		float area = SurfaceArea();
+		if(area<=.0f)
+			return std::nullopt;
+
+		float b0;
+		float b1;
+
+		if (u.x < u.y)
+		{
+			b0 = u.x * 0.5f;
+			b1 = u.y - b0;
+		}
+		else
+		{
+			b1 = u.y * 0.5f;
+			b0 = u.x - b1;
+		}
+		float b2 = 1.0f - b0 - b1;
+
+		Vector3f p = v0 * b0 + v1 * b1 + v2 * b2;
+		Vector3f n = (v1-v0).cross(v2-v0).normalize();
+
+		return ShapeSample{ p, n, 1.0f / area };
 	}
 };
 

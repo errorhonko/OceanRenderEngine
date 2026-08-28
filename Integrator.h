@@ -27,7 +27,20 @@ protected:
 			std::numeric_limits<float> ::infinity(),
 			rec);
 	}
+	Vector3f OffsetRayOrigin(
+		const Vector3f& p,
+		const Vector3f& geometricNormal,
+		const Vector3f& direction
+	) const
+	{
+		Vector3f offsetNormal = geometricNormal.dot(direction) >= 0.0f
+			? geometricNormal
+			: -geometricNormal;
+
+		return p + offsetNormal * RayEpsilon;
+	}
 	bool Unoccluded(const Vector3f& p,
+		const Vector3f& geometricNormal,
 		const Vector3f& wi,
 		float distance
 	) const {
@@ -37,7 +50,7 @@ protected:
 			return true;
 		}
 		Ray shadowRay(
-			p + wi * RayEpsilon,
+			OffsetRayOrigin(p, geometricNormal, wi),
 			wi);
 		float tMax = std::isfinite(distance)
 			? distance - 2.0f* RayEpsilon

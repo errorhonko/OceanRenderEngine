@@ -34,5 +34,7 @@
 
 ## Current development checkpoint
 
-- The BSDF-only `SimplePathIntegrator::Li()` vertical slice passes deterministic acceptance tests for environment radiance, diffuse throughput, and zero maximum depth.
-- The next milestone is a PBRT-inspired light interface: `LightSampleContext`, `LightLiSample`, abstract `Light::SampleLi()`, then a point light and direct-light visibility test.
+- `SimplePathIntegrator::Li()` now supports environment emission, point and distant lights, sphere and triangle diffuse area lights, next-event estimation, BSDF continuation sampling, emissive-surface hits, and the no-double-counting rule for sampled direct lighting.
+- Surface interactions distinguish geometric and shading normals. Secondary and shadow rays use the geometric normal for robust origin offsets, while BSDF evaluation uses the shading normal.
+- The deterministic acceptance suite currently contains 38 passing checks, including direct-light visibility, inverse-square falloff, environment sampling, area-light emission/sampling, triangle differential geometry, normal separation, and ray-offset behavior.
+- The next milestone is a separate PBRT-inspired full `PathIntegrator`: add light-direction PDFs and multiple importance sampling first, then add Russian roulette and the remaining production-path controls. Keep `SimplePathIntegrator` unchanged as the pedagogical reference implementation.
