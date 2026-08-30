@@ -28,6 +28,12 @@ enum BxDFType
 	BSDF_ALL_TYPES = BSDF_DIFFUSE | BSDF_GLOSSY |
 	BSDF_SPECULAR | BSDF_REFLECTION | BSDF_TRANSMISSION,
 };
+
+inline bool IsNonSpecular(BxDFType type)
+{
+	int value = static_cast<int>(type);
+	return (value & (BSDF_DIFFUSE | BSDF_GLOSSY)) != 0;
+}
 enum class BxDFReflectionType
 {
 	Unset = 0,
@@ -125,7 +131,7 @@ inline Vector3f Reflect(const Vector3f& wo, const Vector3f& n)
 {
 	return -wo + 2.0f * wo.dot(n) * n;
 }
-inline bool Refract(const Vector3f& wi,  Vector3f& n
+inline bool Refract(const Vector3f& wi,  Vector3f n
 	, float eta, float* etap, Vector3f* wt)
 {
 	float cosTheta_i = n.dot(wi);
@@ -137,10 +143,15 @@ inline bool Refract(const Vector3f& wi,  Vector3f& n
 	}
 	float sin2Theta_i = std::max(0.0f, 1.0f - cosTheta_i * cosTheta_i);
 	float sin2Theta_t = sin2Theta_i / (eta * eta);
+
+	if (sin2Theta_t >= 1.0f)
+		return false;
 	float cosTheta_t = Safesqrt(1 - sin2Theta_t);
 	*wt = -wi / eta + (cosTheta_i / eta - cosTheta_t) * n;
 	if (etap)
 		*etap = eta;
+
+
 	return true;
 
 }

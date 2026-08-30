@@ -23,6 +23,19 @@ public:
 		Spectrum L = intensity / distanceSquared;
 		return LightLiSample{ L, wi, pdf, distance };
 	}
+	float PDF_Li(
+		const LightSampleContext& ctx,
+		const Vector3f& wi) const override
+	{
+		(void)ctx;
+		(void)wi;
+		return 0.0f;
+	}
+	// PointLight
+	LightType Type() const override
+	{
+		return LightType::DeltaPosition;
+	}
 private:
 	Vector3f position;
 	Spectrum intensity;

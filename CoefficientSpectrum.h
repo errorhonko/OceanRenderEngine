@@ -83,4 +83,14 @@ public:
 		return result;
 	}
 
+	float MaxComponentValue() const {
+		float maxVal = c[0];
+		for (size_t i = 1; i < N; ++i) {
+			if (c[i] > maxVal) {
+				maxVal = c[i];
+			}
+		}
+		return maxVal;
+	}
+
 };

@@ -15,6 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\ElfouhailySpectrum.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OceanFFT.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OceanFrequencyField.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ElfouhailySpectrumAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanFFTAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanFrequencyFieldAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="SimplePathIntegratorAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

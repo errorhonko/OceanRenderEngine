@@ -1,6 +1,8 @@
 #include "SimplePathIntegrator.h"
+#include "PathIntegrator.h"
 #include "IndependentSampler.h"
 #include "DiffuseMaterial.h"
+#include "DielectricMaterial.h"
 #include "HittableList.h"
 #include "Sphere.h"
 #include "Triangle.h"
@@ -17,6 +19,11 @@
 #include <vector>
 #include "UniformInfiniteLight.h"
 #include <utility>
+
+void RunElfouhailySpectrumAcceptanceTests();
+void RunOceanFrequencyFieldAcceptanceTests();
+void RunOceanFFTAcceptanceTests();
+
 Spectrum Trace(
     const Hittable& world,
     int maxDepth,
@@ -40,6 +47,29 @@ Spectrum Trace(
 
     return integrator.Li(ray, *sampler);
 }
+
+Spectrum TracePath(
+    const Hittable& world,
+    int maxDepth,
+    const Ray& ray,
+    std::vector<std::shared_ptr<Light>> lights = {},
+    std::uint32_t seed = 42)
+{
+    Camera camera(800, 600);
+
+    auto sampler =
+        std::make_shared<IndependentSampler>(seed);
+
+    PathIntegrator integrator(
+        maxDepth,
+        world,
+        camera,
+        sampler,
+        std::move(lights));
+
+    return integrator.Li(ray, *sampler);
+}
+
 Spectrum TraceDirect(
     const Hittable& world,
     const Ray& ray,
@@ -107,6 +137,315 @@ public:
             geometricNormal,
             direction);
     }
+};
+
+class SpecularPathSampler final : public Sampler
+{
+public:
+    float Get1D() override
+    {
+        throw std::runtime_error(
+            "pure specular vertex unexpectedly sampled a light");
+    }
+
+    Point2f Get2D() override
+    {
+        if (twoDCount++ != 0)
+        {
+            throw std::runtime_error(
+                "pure specular path requested an extra 2D sample");
+        }
+
+        // Select the smooth dielectric reflection branch.
+        return Point2f(0.0f, 0.0f);
+    }
+
+    int TwoDCount() const
+    {
+        return twoDCount;
+    }
+
+private:
+    int twoDCount = 0;
+};
+
+class TestSpecularBxDF final : public BxDF
+{
+public:
+    TestSpecularBxDF()
+        : BxDF(static_cast<BxDFType>(
+            BSDF_REFLECTION | BSDF_SPECULAR))
+    {
+    }
+
+    Spectrum f(
+        const Vector3f& wo,
+        const Vector3f& wi,
+        TransportMode mode) const override
+    {
+        (void)wo;
+        (void)wi;
+        (void)mode;
+        return Spectrum(0.0f);
+    }
+
+    std::optional<BSDFSample> Sample_f(
+        const Vector3f& wo,
+        const Point2f& sample,
+        TransportMode mode,
+        BxDFReflectionType sampledType) const override
+    {
+        (void)sample;
+        (void)mode;
+        (void)sampledType;
+
+        Vector3f wi(-wo.x, -wo.y, wo.z);
+        float absCosTheta = BRDFUtils::AbsCosTheta(wi);
+
+        if (absCosTheta == 0.0f)
+            return std::nullopt;
+
+        return BSDFSample(
+            Spectrum(1.0f / absCosTheta),
+            wi,
+            1.0f,
+            static_cast<BxDFType>(
+                BSDF_REFLECTION | BSDF_SPECULAR));
+    }
+
+    Spectrum rho(
+        const Vector3f& wo,
+        int nSamples,
+        const Point2f* samples) const override
+    {
+        (void)wo;
+        (void)nSamples;
+        (void)samples;
+        return Spectrum(0.0f);
+    }
+
+    float Pdf(
+        const Vector3f& wo,
+        const Vector3f& wi,
+        TransportMode mode,
+        BxDFReflectionType sampleFlags) const override
+    {
+        (void)wo;
+        (void)wi;
+        (void)mode;
+        (void)sampleFlags;
+        return 0.0f;
+    }
+};
+
+class TestSpecularMaterial final : public Material
+{
+public:
+    BSDF GetBSDF(
+        const MaterialEvalContext& ctx) const override
+    {
+        return BSDF(
+            ctx.ns,
+            ctx.dpdu,
+            std::make_shared<TestSpecularBxDF>());
+    }
+};
+
+class RouletteBxDF final : public BxDF
+{
+public:
+    RouletteBxDF(
+        float throughput,
+        BxDFType sampleFlags,
+        float eta = 1.0f)
+        : BxDF(sampleFlags),
+        throughput(throughput),
+        sampleFlags(sampleFlags),
+        eta(eta)
+    {
+    }
+
+    Spectrum f(
+        const Vector3f& wo,
+        const Vector3f& wi,
+        TransportMode mode) const override
+    {
+        (void)wo;
+        (void)wi;
+        (void)mode;
+        return Spectrum(0.0f);
+    }
+
+    std::optional<BSDFSample> Sample_f(
+        const Vector3f& wo,
+        const Point2f& sample,
+        TransportMode mode,
+        BxDFReflectionType sampledType) const override
+    {
+        (void)sample;
+        (void)mode;
+        (void)sampledType;
+
+        bool transmission =
+            (sampleFlags & BSDF_TRANSMISSION) != 0;
+        Vector3f wi = transmission
+            ? -wo
+            : Vector3f(-wo.x, -wo.y, wo.z);
+        float absCosTheta = BRDFUtils::AbsCosTheta(wi);
+
+        if (absCosTheta == 0.0f)
+            return std::nullopt;
+
+        return BSDFSample(
+            Spectrum(throughput / absCosTheta),
+            wi,
+            1.0f,
+            sampleFlags,
+            eta);
+    }
+
+    Spectrum rho(
+        const Vector3f& wo,
+        int nSamples,
+        const Point2f* samples) const override
+    {
+        (void)wo;
+        (void)nSamples;
+        (void)samples;
+        return Spectrum(0.0f);
+    }
+
+    float Pdf(
+        const Vector3f& wo,
+        const Vector3f& wi,
+        TransportMode mode,
+        BxDFReflectionType sampleFlags) const override
+    {
+        (void)wo;
+        (void)wi;
+        (void)mode;
+        (void)sampleFlags;
+        return 0.0f;
+    }
+
+private:
+    float throughput;
+    BxDFType sampleFlags;
+    float eta;
+};
+
+class RouletteMaterial final : public Material
+{
+public:
+    RouletteMaterial(
+        float throughput,
+        BxDFType sampleFlags,
+        float eta = 1.0f)
+        : throughput(throughput),
+        sampleFlags(sampleFlags),
+        eta(eta)
+    {
+    }
+
+    BSDF GetBSDF(
+        const MaterialEvalContext& ctx) const override
+    {
+        return BSDF(
+            ctx.ns,
+            ctx.dpdu,
+            std::make_shared<RouletteBxDF>(
+                throughput,
+                sampleFlags,
+                eta));
+    }
+
+private:
+    float throughput;
+    BxDFType sampleFlags;
+    float eta;
+};
+
+class TwoHitPathWorld final : public Hittable
+{
+public:
+    explicit TwoHitPathWorld(
+        std::vector<std::shared_ptr<Material>> materials)
+        : materials(std::move(materials))
+    {
+    }
+
+    bool hit(
+        const Ray& ray,
+        float tMin,
+        float tMax,
+        HitRecord& rec) const override
+    {
+        (void)tMin;
+        (void)tMax;
+
+        if (hitCount >= materials.size())
+            return false;
+
+        rec.t = 1.0f;
+        rec.point = ray.at(rec.t);
+        rec.u = 0.0f;
+        rec.v = 0.0f;
+        rec.material = materials[hitCount++];
+        rec.dpdu = Vector3f(1.0f, 0.0f, 0.0f);
+        rec.geometricNormal = Vector3f(0.0f, 0.0f, 1.0f);
+        rec.normal = rec.geometricNormal;
+        rec.areaLight.reset();
+        return true;
+    }
+
+private:
+    std::vector<std::shared_ptr<Material>> materials;
+    mutable size_t hitCount = 0;
+};
+
+class RouletteSequenceSampler final : public Sampler
+{
+public:
+    explicit RouletteSequenceSampler(
+        float rouletteSample,
+        bool forbidRouletteSample = false)
+        : rouletteSample(rouletteSample),
+        forbidRouletteSample(forbidRouletteSample)
+    {
+    }
+
+    float Get1D() override
+    {
+        if (forbidRouletteSample)
+            throw std::runtime_error(
+                "etaScale path unexpectedly sampled Russian roulette");
+
+        if (oneDCount++ != 0)
+            throw std::runtime_error(
+                "path requested an extra Russian roulette sample");
+
+        return rouletteSample;
+    }
+
+    Point2f Get2D() override
+    {
+        if (twoDCount++ >= 2)
+            throw std::runtime_error(
+                "path requested an extra BSDF sample");
+
+        return Point2f(0.5f, 0.5f);
+    }
+
+    int OneDCount() const
+    {
+        return oneDCount;
+    }
+
+private:
+    float rouletteSample;
+    bool forbidRouletteSample;
+    int oneDCount = 0;
+    int twoDCount = 0;
 };
 
 class AreaLightSequenceSampler final : public Sampler
@@ -181,6 +520,25 @@ Spectrum TraceAreaLightWithBSDFSampling(
         1,
         true,
         true,
+        world,
+        camera,
+        sampler,
+        std::move(lights));
+
+    return integrator.Li(ray, *sampler);
+}
+
+Spectrum TracePathAreaLight(
+    const Hittable& world,
+    const Ray& ray,
+    std::vector<std::shared_ptr<Light>> lights)
+{
+    Camera camera(800, 600);
+    auto sampler =
+        std::make_shared<AreaLightSequenceSampler>();
+
+    PathIntegrator integrator(
+        1,
         world,
         camera,
         sampler,
@@ -299,6 +657,26 @@ Spectrum TraceWithLightAndBSDFSampling(
     return integrator.Li(ray, *sampler);
 }
 
+Spectrum TracePathEnvironment(
+    const Hittable& world,
+    const Ray& ray,
+    std::vector<std::shared_ptr<Light>> lights)
+{
+    Camera camera(800, 600);
+
+    auto sampler =
+        std::make_shared<EnvironmentSequenceSampler>();
+
+    PathIntegrator integrator(
+        1,
+        world,
+        camera,
+        sampler,
+        std::move(lights));
+
+    return integrator.Li(ray, *sampler);
+}
+
 void ExpectRGBNear(
     const std::string& testName,
     const Spectrum& actual,
@@ -321,6 +699,358 @@ void ExpectRGBNear(
     }
 
     std::cout << "[PASS] " << testName << '\n';
+}
+
+void ExpectFloatNear(
+    const std::string& testName,
+    float actual,
+    float expected,
+    float epsilon = 1e-6f)
+{
+    if (!std::isfinite(actual) ||
+        std::fabs(actual - expected) > epsilon)
+    {
+        throw std::runtime_error(
+            testName + " failed, actual = " +
+            std::to_string(actual) +
+            ", expected = " +
+            std::to_string(expected));
+    }
+
+    std::cout << "[PASS] " << testName << '\n';
+}
+
+void ExpectPowerHeuristic()
+{
+    ExpectFloatNear(
+        "power heuristic equal PDFs",
+        BRDFUtils::PowerHeuristic(1, 0.5f, 1, 0.5f),
+        0.5f);
+
+    ExpectFloatNear(
+        "power heuristic favors larger PDF",
+        BRDFUtils::PowerHeuristic(1, 0.25f, 1, 0.75f),
+        0.1f);
+
+    ExpectFloatNear(
+        "power heuristic first technique only",
+        BRDFUtils::PowerHeuristic(1, 0.5f, 1, 0.0f),
+        1.0f);
+
+    ExpectFloatNear(
+        "power heuristic second technique only",
+        BRDFUtils::PowerHeuristic(1, 0.0f, 1, 0.5f),
+        0.0f);
+
+    ExpectFloatNear(
+        "power heuristic zero denominator",
+        BRDFUtils::PowerHeuristic(1, 0.0f, 1, 0.0f),
+        0.0f);
+
+    float forward =
+        BRDFUtils::PowerHeuristic(1, 0.25f, 1, 0.75f);
+    float reverse =
+        BRDFUtils::PowerHeuristic(1, 0.75f, 1, 0.25f);
+
+    ExpectFloatNear(
+        "power heuristic complementary weights",
+        forward + reverse,
+        1.0f);
+
+    ExpectFloatNear(
+        "power heuristic sample counts",
+        BRDFUtils::PowerHeuristic(2, 0.25f, 1, 0.5f),
+        0.5f);
+}
+
+void ExpectSpecularPathSkipsDirectLightSampling()
+{
+    BxDFType pureSpecular = static_cast<BxDFType>(
+        BSDF_SPECULAR | BSDF_REFLECTION);
+
+    if (IsNonSpecular(pureSpecular) ||
+        !IsNonSpecular(DiffuseReflection) ||
+        !IsNonSpecular(GlossyReflection))
+    {
+        throw std::runtime_error(
+            "non-specular BSDF classification failed");
+    }
+
+    auto material =
+        std::make_shared<TestSpecularMaterial>();
+
+    HittableList world;
+    world.add(
+        std::make_shared<Sphere>(
+            Vector3f(0.0f, 0.0f, -1.0f),
+            0.5f,
+            material));
+
+    std::vector<std::shared_ptr<Light>> lights{
+        std::make_shared<UniformInfiniteLight>(
+            Spectrum(1.0f))
+    };
+
+    Camera camera(800, 600);
+    auto sampler =
+        std::make_shared<SpecularPathSampler>();
+
+    PathIntegrator integrator(
+        1,
+        world,
+        camera,
+        sampler,
+        std::move(lights));
+
+    Spectrum result = integrator.Li(
+        Ray(
+            Vector3f(0.0f, 0.0f, 0.0f),
+            Vector3f(0.0f, 0.0f, -1.0f)),
+        *sampler);
+
+    if (sampler->TwoDCount() != 1)
+    {
+        throw std::runtime_error(
+            "pure specular path did not use exactly one BSDF sample");
+    }
+
+    ExpectRGBNear(
+        "path specular skips direct light sampling",
+        result,
+        1.0f);
+}
+
+Spectrum TraceRoulettePath(
+    const Hittable& world,
+    const std::shared_ptr<RouletteSequenceSampler>& sampler)
+{
+    Camera camera(800, 600);
+    std::vector<std::shared_ptr<Light>> lights{
+        std::make_shared<UniformInfiniteLight>(
+            Spectrum(1.0f))
+    };
+    PathIntegrator integrator(
+        4,
+        world,
+        camera,
+        sampler,
+        std::move(lights));
+
+    return integrator.Li(
+        Ray(
+            Vector3f(0.0f, 0.0f, 0.0f),
+            Vector3f(0.0f, 0.0f, -1.0f)),
+        *sampler);
+}
+
+void ExpectRussianRoulette()
+{
+    ExpectFloatNear(
+        "spectrum maximum component",
+        Spectrum(0.25f, 0.75f, 0.5f).MaxComponentValue(),
+        0.75f);
+
+    BxDFType reflectionFlags = static_cast<BxDFType>(
+        BSDF_REFLECTION | BSDF_SPECULAR);
+    auto halfThroughput =
+        std::make_shared<RouletteMaterial>(
+            0.5f,
+            reflectionFlags);
+
+    TwoHitPathWorld terminatedWorld({
+        halfThroughput,
+        halfThroughput
+    });
+    auto terminateSampler =
+        std::make_shared<RouletteSequenceSampler>(0.5f);
+
+    // After two bounces beta is 0.25, so q is 0.75. A sample of 0.5
+    // terminates the path before it reaches the environment.
+    ExpectRGBNear(
+        "path Russian roulette terminates",
+        TraceRoulettePath(
+            terminatedWorld,
+            terminateSampler),
+        0.0f);
+
+    if (terminateSampler->OneDCount() != 1)
+        throw std::runtime_error(
+            "termination branch did not draw exactly one roulette sample");
+
+    TwoHitPathWorld survivingWorld({
+        halfThroughput,
+        halfThroughput
+    });
+    auto surviveSampler =
+        std::make_shared<RouletteSequenceSampler>(0.8f);
+
+    // A sample of 0.8 survives. Dividing beta by 1-q changes it from
+    // 0.25 to 1, which is observed when the ray reaches the environment.
+    ExpectRGBNear(
+        "path Russian roulette survival compensation",
+        TraceRoulettePath(
+            survivingWorld,
+            surviveSampler),
+        1.0f);
+
+    if (surviveSampler->OneDCount() != 1)
+        throw std::runtime_error(
+            "survival branch did not draw exactly one roulette sample");
+
+    auto unitReflection =
+        std::make_shared<RouletteMaterial>(
+            1.0f,
+            reflectionFlags);
+    BxDFType transmissionFlags = static_cast<BxDFType>(
+        BSDF_TRANSMISSION | BSDF_SPECULAR);
+    auto quarterTransmission =
+        std::make_shared<RouletteMaterial>(
+            0.25f,
+            transmissionFlags,
+            2.0f);
+    TwoHitPathWorld etaScaleWorld({
+        unitReflection,
+        quarterTransmission
+    });
+    auto etaScaleSampler =
+        std::make_shared<RouletteSequenceSampler>(
+            0.0f,
+            true);
+
+    // beta is 0.25 after transmission, while etaScale is 4. Their
+    // product is 1, so Russian roulette must not be sampled.
+    ExpectRGBNear(
+        "path transmission etaScale avoids early roulette",
+        TraceRoulettePath(
+            etaScaleWorld,
+            etaScaleSampler),
+        0.25f);
+}
+
+void ExpectRefractionAndTotalInternalReflection()
+{
+    const Vector3f normal(0.0f, 0.0f, 1.0f);
+    Vector3f refractNormal = normal;
+    Vector3f transmittedDirection(9.0f, 8.0f, 7.0f);
+    float relativeEta = -1.0f;
+
+    bool refracted = Refract(
+        Vector3f(0.0f, 0.0f, 1.0f),
+        refractNormal,
+        1.5f,
+        &relativeEta,
+        &transmittedDirection);
+
+    bool normalIncidenceCorrect =
+        refracted &&
+        (transmittedDirection -
+            Vector3f(0.0f, 0.0f, -1.0f)).norm() <= 1e-6f &&
+        std::fabs(relativeEta - 1.5f) <= 1e-6f &&
+        (refractNormal - normal).norm() <= 1e-6f;
+
+    if (!normalIncidenceCorrect)
+        throw std::runtime_error(
+            "normal-incidence refraction failed");
+
+    std::cout <<
+        "[PASS] normal-incidence refraction\n";
+
+    Vector3f tirNormal = normal;
+    const Vector3f unchangedDirection(9.0f, 8.0f, 7.0f);
+    Vector3f tirDirection = unchangedDirection;
+    constexpr float unchangedEta = -1.0f;
+    float tirEta = unchangedEta;
+
+    // The ray is inside eta=1.5 glass and has sin(theta)=0.8.
+    // This is above the glass-to-air critical angle, so no real
+    // transmitted direction exists.
+    bool tirRefracted = Refract(
+        Vector3f(0.8f, 0.0f, -0.6f),
+        tirNormal,
+        1.5f,
+        &tirEta,
+        &tirDirection);
+
+    bool totalInternalReflectionCorrect =
+        !tirRefracted &&
+        (tirNormal - normal).norm() <= 1e-6f &&
+        (tirDirection - unchangedDirection).norm() <= 1e-6f &&
+        tirEta == unchangedEta;
+
+    if (!totalInternalReflectionCorrect)
+        throw std::runtime_error(
+            "total internal reflection handling failed");
+
+    std::cout <<
+        "[PASS] total internal reflection\n";
+}
+
+void ExpectDielectricRho()
+{
+    constexpr float eta = 1.5f;
+    TrowbridgeReitzDistribution smoothDistribution(
+        0.0f,
+        0.0f);
+    DielectricBxDF dielectric(
+        eta,
+        smoothDistribution);
+
+    Vector3f wo(0.0f, 0.0f, 1.0f);
+    Point2f reflectionSample[] = {
+        Point2f(0.0f, 0.0f)
+    };
+    Point2f transmissionSample[] = {
+        Point2f(0.5f, 0.0f)
+    };
+
+    ExpectRGBNear(
+        "dielectric rho reflection sample",
+        dielectric.rho(
+            wo,
+            1,
+            reflectionSample),
+        1.0f);
+
+    ExpectRGBNear(
+        "dielectric rho transmission sample",
+        dielectric.rho(
+            wo,
+            1,
+            transmissionSample),
+        1.0f / (eta * eta));
+
+    ExpectRGBNear(
+        "dielectric rho zero samples",
+        dielectric.rho(
+            wo,
+            0,
+            nullptr),
+        0.0f);
+
+    MaterialEvalContext context{
+        Vector3f(0.0f, 0.0f, 0.0f),
+        wo,
+        Vector3f(0.0f, 0.0f, 1.0f),
+        Vector3f(1.0f, 0.0f, 0.0f),
+        0.0f,
+        0.0f
+    };
+    DielectricMaterial material(
+        eta,
+        0.0f,
+        0.0f,
+        false);
+    BSDF bsdf = material.GetBSDF(context);
+
+    if (IsNonSpecular(bsdf.Flags()) ||
+        !(static_cast<int>(bsdf.Flags()) & BSDF_SPECULAR))
+    {
+        throw std::runtime_error(
+            "smooth dielectric material flags failed");
+    }
+
+    std::cout <<
+        "[PASS] dielectric material instantiation\n";
 }
 
 void ExpectUniformInfiniteLightSample()
@@ -369,6 +1099,88 @@ void ExpectUniformInfiniteLightSample()
 
     std::cout <<
         "[PASS] environment sample geometry\n";
+}
+
+void ExpectLightTypesAndDirectionPdfs(
+    const std::shared_ptr<Material>& material)
+{
+    LightSampleContext context{
+        Vector3f(0.0f, 0.0f, 0.0f),
+        Vector3f(0.0f, 0.0f, 1.0f),
+        Vector3f(0.0f, 0.0f, 1.0f)
+    };
+
+    PointLight point(
+        Vector3f(0.0f, 0.0f, 1.0f),
+        Spectrum(1.0f));
+    DistantLight distant(
+        Vector3f(0.0f, 0.0f, 1.0f),
+        Spectrum(1.0f));
+    UniformInfiniteLight environment(Spectrum(1.0f));
+
+    auto triangle = std::make_shared<Triangle>(
+        Vector3f(-1.0f, -1.0f, -2.0f),
+        Vector3f(1.0f, -1.0f, -2.0f),
+        Vector3f(0.0f, 1.0f, -2.0f),
+        Vector3f(0.0f, 0.0f, 1.0f),
+        Vector3f(0.0f, 0.0f, 1.0f),
+        Vector3f(0.0f, 0.0f, 1.0f),
+        Vector3f(0.0f, 0.0f, 0.0f),
+        Vector3f(1.0f, 0.0f, 0.0f),
+        Vector3f(0.5f, 1.0f, 0.0f),
+        material);
+    DiffuseAreaLight area(
+        triangle,
+        Spectrum(1.0f));
+
+    if (point.Type() != LightType::DeltaPosition ||
+        distant.Type() != LightType::DeltaDirection ||
+        environment.Type() != LightType::Infinite ||
+        area.Type() != LightType::Area ||
+        !IsDeltaLight(point.Type()) ||
+        !IsDeltaLight(distant.Type()) ||
+        IsDeltaLight(environment.Type()) ||
+        IsDeltaLight(area.Type()))
+    {
+        throw std::runtime_error(
+            "light type classification failed");
+    }
+
+    std::cout << "[PASS] light type classification\n";
+
+    Vector3f direction(0.0f, 0.0f, -1.0f);
+    constexpr float epsilon = 1e-4f;
+
+    if (point.PDF_Li(context, direction) != 0.0f ||
+        distant.PDF_Li(context, direction) != 0.0f ||
+        std::fabs(
+            environment.PDF_Li(context, direction) - Inv4Pi) > epsilon ||
+        environment.PDF_Li(
+            context, Vector3f(0.0f, 0.0f, 0.0f)) != 0.0f)
+    {
+        throw std::runtime_error(
+            "delta or infinite light PDF failed");
+    }
+
+    std::cout << "[PASS] delta and infinite light PDFs\n";
+
+    // The triangle has area 2, is four squared-distance units away,
+    // and faces the receiver: p_omega = 4 / (1 * 2) = 2 sr^-1.
+    float expectedAreaPdf = 2.0f;
+    float shapePdf = triangle->PDF(context.p, direction);
+    float lightPdf = area.PDF_Li(context, direction);
+
+    if (std::fabs(shapePdf - expectedAreaPdf) > epsilon ||
+        std::fabs(lightPdf - expectedAreaPdf) > epsilon ||
+        triangle->PDF(
+            context.p, Vector3f(0.0f, 0.0f, 1.0f)) != 0.0f)
+    {
+        throw std::runtime_error(
+            "triangle area light directional PDF failed");
+    }
+
+    std::cout <<
+        "[PASS] triangle area light directional PDF\n";
 }
 
 void ExpectSphereSurfaceSample(
@@ -1053,6 +1865,10 @@ void ExpectAreaLightSurfaceEmission()
 
 int main()
 {
+    RunElfouhailySpectrumAcceptanceTests();
+    RunOceanFrequencyFieldAcceptanceTests();
+    RunOceanFFTAcceptanceTests();
+
     Ray centerRay(
         Vector3f(0.0f, 0.0f, 0.0f),
         Vector3f(0.0f, 0.0f, -1.0f));
@@ -1062,6 +1878,11 @@ int main()
             Spectrum(1.0f))
     };
 
+    ExpectPowerHeuristic();
+    ExpectRefractionAndTotalInternalReflection();
+    ExpectDielectricRho();
+    ExpectSpecularPathSkipsDirectLightSampling();
+    ExpectRussianRoulette();
     ExpectUniformInfiniteLightSample();
 
     // 1. 光线直接进入单位白色环境
@@ -1070,6 +1891,15 @@ int main()
     ExpectRGBNear(
         "environment",
         Trace(
+            emptyWorld,
+            1,
+            centerRay,
+            whiteEnvironment),
+        1.0f);
+
+    ExpectRGBNear(
+        "path baseline environment",
+        TracePath(
             emptyWorld,
             1,
             centerRay,
@@ -1088,6 +1918,7 @@ int main()
         std::make_shared<DiffuseMaterial>(
             Spectrum(0.5f));
 
+    ExpectLightTypesAndDirectionPdfs(material);
     ExpectSphereSurfaceSample(material);
     ExpectTriangleSurfaceSample(material);
     ExpectTriangleDpdu(material);
@@ -1158,6 +1989,14 @@ int main()
             centerRay,
             areaLights),
         0.5f);
+
+    ExpectRGBNear(
+        "path MIS area light",
+        TracePathAreaLight(
+            areaLightWorld,
+            centerRay,
+            areaLights),
+        2.5f / 17.0f);
 
     HittableList triangleLightWorld;
 
@@ -1235,6 +2074,26 @@ int main()
     ExpectRGBNear(
         "point light direct",
         TraceDirect(diffuseWorld, centerRay, nearLights),
+        0.5f);
+
+    // For both deterministic north-pole samples, p_light = 1/(4*pi)
+    // and p_bsdf = 1/pi. The light and BSDF MIS weights are 1/17
+    // and 16/17, respectively.
+    ExpectRGBNear(
+        "path MIS environment",
+        TracePathEnvironment(
+            diffuseWorld,
+            centerRay,
+            quarterEnvironment),
+        2.5f / 17.0f);
+
+    ExpectRGBNear(
+        "path delta point light",
+        TracePath(
+            diffuseWorld,
+            1,
+            centerRay,
+            nearLights),
         0.5f);
 
     std::vector<std::shared_ptr<Light>> farLights{

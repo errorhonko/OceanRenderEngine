@@ -144,7 +144,17 @@ namespace BRDFUtils
 		else
 			return (u - threshold) / (1.0f - threshold);
 	}
-	
+	inline float PowerHeuristic(int nf, float fPdf, int ng, float gPdf)
+	{
+		float f = nf * fPdf;
+		float g = ng * gPdf;
+		float fSquared = Sqr(f);
+		float gSquared = Sqr(g);
+		float denominator = fSquared + gSquared;
+		if(denominator ==.0f)
+			return 0.0f;
+		return fSquared /denominator;
+	}
 	
 }
 	

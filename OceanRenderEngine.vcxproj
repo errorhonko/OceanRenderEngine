@@ -151,6 +151,7 @@
     <ClInclude Include="DiffuseBxDF.h" />
     <ClInclude Include="DiffuseMaterial.h" />
     <ClInclude Include="DistantLight.h" />
+    <ClInclude Include="ElfouhailySpectrum.h" />
     <ClInclude Include="Fresnel.h" />
     <ClInclude Include="FresnelDielectric.h" />
     <ClInclude Include="FresnelNoOp.h" />
@@ -167,6 +168,9 @@
     <ClInclude Include="Matrix4f.h" />
     <ClInclude Include="Hittable.h" />
     <ClInclude Include="MixMaterial.h" />
+    <ClInclude Include="OceanFFT.h" />
+    <ClInclude Include="OceanFrequencyField.h" />
+    <ClInclude Include="PathIntegrator.h" />
     <ClInclude Include="Point2f.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Rasterizer.h" />
@@ -191,38 +195,10 @@
     <ClInclude Include="ScaledBxDF.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BRDFUtils.cpp" />
-    <ClCompile Include="BSDF.cpp" />
-    <ClCompile Include="BxDF.cpp" />
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="CoefficientSpectrum.cpp" />
-    <ClCompile Include="ConductorBxDF.cpp" />
-    <ClCompile Include="DielectricBxDF.cpp" />
-    <ClCompile Include="DiffuseBxDF.cpp" />
-    <ClCompile Include="Fresnel.cpp" />
-    <ClCompile Include="FresnelDielectric.cpp" />
-    <ClCompile Include="FresnelNoOp.cpp" />
-    <ClCompile Include="HitRocord.cpp" />
-    <ClCompile Include="HittableList.cpp" />
-    <ClCompile Include="ImageTexture.cpp" />
-    <ClCompile Include="Lambertian.cpp" />
-    <ClCompile Include="load_obj.cpp" />
+    <ClCompile Include="ElfouhailySpectrum.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="material.cpp" />
-    <ClCompile Include="Matrix4f.cpp" />
-    <ClCompile Include="Point2f.cpp" />
-    <ClCompile Include="Rasterizer.cpp" />
-    <ClCompile Include="Ray.cpp" />
-    <ClCompile Include="RGBSpectrum.cpp" />
-    <ClCompile Include="SampledSpectrum.cpp" />
-    <ClCompile Include="SpecularTransmission.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="ThinDielectricBxDF.cpp" />
-    <ClCompile Include="Triangle.cpp" />
-    <ClCompile Include="Vector3f.cpp" />
-    <ClCompile Include="Vector4f.cpp" />
-    <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="OceanFFT.cpp" />
+    <ClCompile Include="OceanFrequencyField.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OceanRenderEngine.rc" />

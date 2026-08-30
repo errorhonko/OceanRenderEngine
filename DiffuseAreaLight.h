@@ -1,5 +1,5 @@
 #pragma once
-#include "light.h"
+#include "Light.h"
 #include "Hittable.h"
 
 #include <cmath>
@@ -76,6 +76,19 @@ public:
 		if (!twoSided && n.dot(w) <= .0f)
 			return Spectrum(0.0f);
 		return radiance;
+	}
+	float PDF_Li(
+		const LightSampleContext& ctx,
+		const Vector3f& wi) const override
+	{
+		if (!shape)
+			return .0f;
+		return shape->PDF(ctx.p, wi);
+	}
+	// DiffuseAreaLight
+	LightType Type() const override
+	{
+		return LightType::Area;
 	}
 private:
 	std::shared_ptr<Hittable> shape;

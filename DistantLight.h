@@ -23,7 +23,19 @@ public:
 
 		return LightLiSample{ radiance, directionToLight, 1.0f,   std::numeric_limits<float>::infinity() };
 	}
-
+	// DistantLight
+	LightType Type() const override
+	{
+		return LightType::DeltaDirection;
+	}
+	float PDF_Li(
+		const LightSampleContext& ctx,
+		const Vector3f& wi) const override
+	{
+		(void)ctx;
+		(void)wi;
+		return 0.0f;
+	}
 private:
 	Vector3f directionToLight;
 	Spectrum radiance;

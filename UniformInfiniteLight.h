@@ -33,6 +33,20 @@ public:
 			std::numeric_limits<float>::infinity()
 		};
 	}
+	float PDF_Li(
+		const LightSampleContext& ctx,
+		const Vector3f& wi) const override
+	{
+		(void)ctx;
+		if (wi.near_zero())
+			return .0f;
+		return UniformSpherePdf();
+	}
+	// UniformInfiniteLight
+	LightType Type() const override
+	{
+		return LightType::Infinite;
+	}
 private:
     Spectrum radiance;
 

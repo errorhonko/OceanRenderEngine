@@ -200,6 +200,36 @@ public:
 		}
 		return pdf;
 	}
+	Spectrum rho(const Vector3f& wo, int nSamples, const Point2f* samples)const override
+	{
+		if (nSamples <= 0 || !samples)
+		{
+			return Spectrum(0.0f);
+		}
+		Spectrum result(0.0f);
+
+		for (int i = 0;i < nSamples;i++)
+		{
+			auto bs = Sample_f(
+				wo,
+				samples[i],
+				TransportMode::Radiance,
+				BxDFReflectionType::All
+			);
+
+			if (!bs ||
+				bs->pdf <= .0f ||
+				!std::isfinite(bs->pdf))
+			{
+				continue;
+			}
+			float absCosTheta = BRDFUtils::AbsCosTheta(bs->wi);
+
+			result = result + bs->f * (absCosTheta / bs->pdf);
+		}
+
+		return result / static_cast<float>(nSamples);
+	}
 	void Regularize() { mfDistrib.Regularize(); }
 
 private:

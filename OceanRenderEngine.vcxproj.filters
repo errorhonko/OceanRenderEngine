@@ -61,6 +61,18 @@
     <Filter Include="头文件\Path Tracing\ReflectionModel\Dielectric">
       <UniqueIdentifier>{d38db91d-1b24-424e-81f6-25d056f63b41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\OceanRender">
+      <UniqueIdentifier>{9c205631-8974-48b3-bcc0-cc7c86992663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\OceanRender\SeaSpectrum">
+      <UniqueIdentifier>{881073ac-a702-4f5e-8e45-5408abdedc0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\OceanRender\FrequencyField">
+      <UniqueIdentifier>{1642e4f3-0903-4392-9c4a-bb0fa1f5b3fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\OceanRender\Heightfield">
+      <UniqueIdentifier>{ebb47772-4777-45b7-94d4-501d93fd573a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector3f.h">
@@ -213,103 +225,31 @@
     <ClInclude Include="DiffuseAreaLight.h">
       <Filter>头文件\Light</Filter>
     </ClInclude>
+    <ClInclude Include="PathIntegrator.h">
+      <Filter>头文件\Path Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="ElfouhailySpectrum.h">
+      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
+    </ClInclude>
+    <ClInclude Include="OceanFrequencyField.h">
+      <Filter>头文件\OceanRender\FrequencyField</Filter>
+    </ClInclude>
+    <ClInclude Include="OceanFFT.h">
+      <Filter>头文件\OceanRender\Heightfield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Vector3f.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector4f.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrix4f.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rasterizer.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="ElfouhailySpectrum.cpp">
+      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="load_obj.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="OceanFrequencyField.cpp">
+      <Filter>头文件\OceanRender\FrequencyField</Filter>
     </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Ray.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="HitRocord.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="HittableList.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Sphere.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="material.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageTexture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Lambertian.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CoefficientSpectrum.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SampledSpectrum.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RGBSpectrum.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="BRDFUtils.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Point2f.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Fresnel.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FresnelDielectric.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FresnelNoOp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SpecularTransmission.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="BxDF.cpp">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClCompile>
-    <ClCompile Include="BSDF.cpp">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClCompile>
-    <ClCompile Include="DiffuseBxDF.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ConductorBxDF.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DielectricBxDF.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ThinDielectricBxDF.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="OceanFFT.cpp">
+      <Filter>头文件\OceanRender\Heightfield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
