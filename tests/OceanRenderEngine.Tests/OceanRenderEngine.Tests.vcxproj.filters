@@ -21,7 +21,13 @@
     <ClCompile Include="..\..\OceanFFT.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\OceanHeightField.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\OceanFrequencyField.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OceanSurfaceMesh.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ElfouhailySpectrumAcceptance.cpp">
@@ -30,7 +36,16 @@
     <ClCompile Include="OceanFFTAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="OceanHeightFieldAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanMeshTriangleAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="OceanFrequencyFieldAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanSurfaceMeshAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SimplePathIntegratorAcceptance.cpp">

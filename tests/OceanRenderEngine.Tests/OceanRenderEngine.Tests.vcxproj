@@ -146,9 +146,14 @@
     <ClCompile Include="..\..\ElfouhailySpectrum.cpp" />
     <ClCompile Include="..\..\OceanFFT.cpp" />
     <ClCompile Include="..\..\OceanFrequencyField.cpp" />
+    <ClCompile Include="..\..\OceanHeightField.cpp" />
+    <ClCompile Include="..\..\OceanSurfaceMesh.cpp" />
     <ClCompile Include="ElfouhailySpectrumAcceptance.cpp" />
     <ClCompile Include="OceanFFTAcceptance.cpp" />
     <ClCompile Include="OceanFrequencyFieldAcceptance.cpp" />
+    <ClCompile Include="OceanHeightFieldAcceptance.cpp" />
+    <ClCompile Include="OceanMeshTriangleAcceptance.cpp" />
+    <ClCompile Include="OceanSurfaceMeshAcceptance.cpp" />
     <ClCompile Include="SimplePathIntegratorAcceptance.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

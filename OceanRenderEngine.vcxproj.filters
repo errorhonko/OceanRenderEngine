@@ -237,6 +237,18 @@
     <ClInclude Include="OceanFFT.h">
       <Filter>头文件\OceanRender\Heightfield</Filter>
     </ClInclude>
+    <ClInclude Include="OceanHeightField.h">
+      <Filter>头文件\OceanRender\Heightfield</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshTriangle.h">
+      <Filter>头文件\OceanRender\Heightfield</Filter>
+    </ClInclude>
+    <ClInclude Include="OceanSurfaceMesh.h">
+      <Filter>头文件\OceanRender\Heightfield</Filter>
+    </ClInclude>
+    <ClInclude Include="TriangleMesh.h">
+      <Filter>头文件\OceanRender\Heightfield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ElfouhailySpectrum.cpp">
@@ -250,6 +262,12 @@
     </ClCompile>
     <ClCompile Include="OceanFFT.cpp">
       <Filter>头文件\OceanRender\Heightfield</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanHeightField.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanSurfaceMesh.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

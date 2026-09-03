@@ -23,6 +23,9 @@
 void RunElfouhailySpectrumAcceptanceTests();
 void RunOceanFrequencyFieldAcceptanceTests();
 void RunOceanFFTAcceptanceTests();
+void RunOceanHeightFieldAcceptanceTests();
+void RunMeshTriangleAcceptanceTests();
+void RunOceanSurfaceMeshAcceptanceTests();
 
 Spectrum Trace(
     const Hittable& world,
@@ -1868,6 +1871,9 @@ int main()
     RunElfouhailySpectrumAcceptanceTests();
     RunOceanFrequencyFieldAcceptanceTests();
     RunOceanFFTAcceptanceTests();
+    RunOceanHeightFieldAcceptanceTests();
+    RunMeshTriangleAcceptanceTests();
+    RunOceanSurfaceMeshAcceptanceTests();
 
     Ray centerRay(
         Vector3f(0.0f, 0.0f, 0.0f),

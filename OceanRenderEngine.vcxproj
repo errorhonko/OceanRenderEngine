@@ -170,6 +170,10 @@
     <ClInclude Include="MixMaterial.h" />
     <ClInclude Include="OceanFFT.h" />
     <ClInclude Include="OceanFrequencyField.h" />
+    <ClInclude Include="OceanHeightField.h" />
+    <ClInclude Include="MeshTriangle.h" />
+    <ClInclude Include="OceanSurfaceMesh.h" />
+    <ClInclude Include="TriangleMesh.h" />
     <ClInclude Include="PathIntegrator.h" />
     <ClInclude Include="Point2f.h" />
     <ClInclude Include="PointLight.h" />
@@ -199,6 +203,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OceanFFT.cpp" />
     <ClCompile Include="OceanFrequencyField.cpp" />
+    <ClCompile Include="OceanHeightField.cpp" />
+    <ClCompile Include="OceanSurfaceMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OceanRenderEngine.rc" />
