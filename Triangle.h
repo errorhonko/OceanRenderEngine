@@ -17,7 +17,15 @@ public:
           n0(n0), n1(n1), n2(n2), 
           uv0(t0), uv1(t1), uv2(t2), 
           mat(m) {}
+	Bounds3f Bounds() const override
+	{
+		Bounds3f bounds(v0);
 
+		bounds = Union(bounds, v1);
+		bounds = Union(bounds, v2);
+
+		return bounds;
+	}
 	bool hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const override
 	{
 		Vector3f E1 = v1 - v0;

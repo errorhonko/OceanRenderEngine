@@ -249,6 +249,9 @@
     <ClInclude Include="TriangleMesh.h">
       <Filter>头文件\OceanRender\Heightfield</Filter>
     </ClInclude>
+    <ClInclude Include="Bounds3f.h">
+      <Filter>头文件\BVH</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ElfouhailySpectrum.cpp">
@@ -274,5 +277,10 @@
     <ResourceCompile Include="OceanRenderEngine.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="头文件\BVH">
+      <UniqueIdentifier>{d4c00f7d-b230-4b1b-b07b-f9e04c6882b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

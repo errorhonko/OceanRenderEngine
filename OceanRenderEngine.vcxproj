@@ -139,6 +139,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Bounds3f.h" />
     <ClInclude Include="BRDFUtils.h" />
     <ClInclude Include="BSDF.h" />
     <ClInclude Include="BxDF.h" />

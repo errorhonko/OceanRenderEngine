@@ -95,6 +95,9 @@ void RunMeshTriangleAcceptanceTests()
         0,
         material);
 
+    const Bounds3f initialBounds =
+        triangle.Bounds();
+
     ExpectTrue(
         "ocean mesh triangle index",
         triangle.TriangleIndex() == 0);
@@ -111,6 +114,22 @@ void RunMeshTriangleAcceptanceTests()
         mesh->Vertices()[indices[1]];
     const MeshVertex& vertex2 =
         mesh->Vertices()[indices[2]];
+
+    const Bounds3f expectedInitialBounds =
+        Union(
+            Union(
+                Bounds3f(vertex0.position),
+                vertex1.position),
+            vertex2.position);
+
+    ExpectTrue(
+        "ocean mesh triangle initial bounds",
+        VectorNear(
+            initialBounds.pMin,
+            expectedInitialBounds.pMin) &&
+        VectorNear(
+            initialBounds.pMax,
+            expectedInitialBounds.pMax));
 
     const Vector3f centroid =
         (vertex0.position +
@@ -210,6 +229,14 @@ void RunMeshTriangleAcceptanceTests()
         updated2.position - updated0.position;
     const float expectedUpdatedArea =
         0.5f * edge1.cross(edge2).norm();
+    const Bounds3f updatedBounds =
+        triangle.Bounds();
+    const Bounds3f expectedUpdatedBounds =
+        Union(
+            Union(
+                Bounds3f(updated0.position),
+                updated1.position),
+            updated2.position);
 
     const Ray updatedRay(
         Vector3f(
@@ -231,6 +258,21 @@ void RunMeshTriangleAcceptanceTests()
         std::fabs(updatedCentroid.y) > 1e-6f &&
         VectorNear(updatedRecord.point, updatedCentroid, 2e-5f) &&
         Near(triangle.SurfaceArea(), expectedUpdatedArea));
+
+    ExpectTrue(
+        "ocean mesh triangle bounds observe shared vertex update",
+        VectorNear(
+            updatedBounds.pMin,
+            expectedUpdatedBounds.pMin) &&
+        VectorNear(
+            updatedBounds.pMax,
+            expectedUpdatedBounds.pMax) &&
+        (!VectorNear(
+             updatedBounds.pMin,
+             initialBounds.pMin) ||
+         !VectorNear(
+             updatedBounds.pMax,
+             initialBounds.pMax)));
 
     ExpectThrows(
         "ocean mesh triangle null mesh rejected",

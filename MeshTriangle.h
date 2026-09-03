@@ -186,7 +186,27 @@ public:
         SetHitAreaLight(rec);
         return true;
     }
+    Bounds3f Bounds() const override
+    {
+        const TriangleIndices& indices =
+            mesh->Triangles()[triangleIndex];
 
+        const auto& vertices =
+            mesh->Vertices();
+
+        Bounds3f bounds(
+            vertices[indices[0]].position);
+
+        bounds = Union(
+            bounds,
+            vertices[indices[1]].position);
+
+        bounds = Union(
+            bounds,
+            vertices[indices[2]].position);
+
+        return bounds;
+    }
     float SurfaceArea() const override
     {
         const TriangleIndices& indices =

@@ -12,6 +12,19 @@ public:
 	void add(std::shared_ptr<Hittable> object) {
 		objects.push_back(object);
 	}
+	Bounds3f Bounds() const override
+	{
+		Bounds3f bounds;
+
+		for (const auto& object : objects)
+		{
+			bounds = Union(
+				bounds,
+				object->Bounds());
+		}
+
+		return bounds;
+	}
 	bool hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const override
 	{
 		HitRecord temp_rec;

@@ -9,6 +9,17 @@ public :
 	float radius; // 球的半径
 	std::shared_ptr<Material> material; // 球的材质
 	Sphere(const Vector3f& cen, float r, std::shared_ptr<Material> mat) : center(cen), radius(r), material(mat) {}
+	Bounds3f Bounds() const override
+	{
+		const Vector3f radiusVector(
+			radius,
+			radius,
+			radius);
+
+		return Bounds3f(
+			center - radiusVector,
+			center + radiusVector);
+	}
 	bool hit(const Ray& ray, float t_min, float t_max, HitRecord& rec) const override
 	{
 		Vector3f v = ray.orig - center;

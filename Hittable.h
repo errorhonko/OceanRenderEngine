@@ -6,6 +6,7 @@
 #include <memory>
 #include <cmath>
 #include <limits>
+#include "Bounds3f.h"
 class Light;
 struct ShapeSample
 {
@@ -23,7 +24,10 @@ public:
 		float t_min,
 		float  t_max,
 		HitRecord& rec)const = 0;
-
+	virtual Bounds3f Bounds() const
+	{
+		return Bounds3f();
+	}
 	virtual std::optional<ShapeSample> Sample(
 		const Point2f& u) const
 	{

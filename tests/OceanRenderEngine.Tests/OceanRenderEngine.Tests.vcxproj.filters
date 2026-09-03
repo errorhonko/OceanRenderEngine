@@ -15,6 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bounds3fAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ElfouhailySpectrum.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
