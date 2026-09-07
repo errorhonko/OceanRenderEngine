@@ -21,6 +21,7 @@
 #include <utility>
 
 void RunBounds3fAcceptanceTests();
+void RunBVHAccelAcceptanceTests();
 void RunElfouhailySpectrumAcceptanceTests();
 void RunOceanFrequencyFieldAcceptanceTests();
 void RunOceanFFTAcceptanceTests();
@@ -1870,6 +1871,7 @@ void ExpectAreaLightSurfaceEmission()
 int main()
 {
     RunBounds3fAcceptanceTests();
+    RunBVHAccelAcceptanceTests();
     RunElfouhailySpectrumAcceptanceTests();
     RunOceanFrequencyFieldAcceptanceTests();
     RunOceanFFTAcceptanceTests();

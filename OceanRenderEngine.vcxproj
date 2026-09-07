@@ -142,6 +142,7 @@
     <ClInclude Include="Bounds3f.h" />
     <ClInclude Include="BRDFUtils.h" />
     <ClInclude Include="BSDF.h" />
+    <ClInclude Include="BVHAccel.h" />
     <ClInclude Include="BxDF.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="CoefficientSpectrum.h" />

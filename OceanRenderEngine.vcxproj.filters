@@ -252,6 +252,9 @@
     <ClInclude Include="Bounds3f.h">
       <Filter>头文件\BVH</Filter>
     </ClInclude>
+    <ClInclude Include="BVHAccel.h">
+      <Filter>头文件\BVH</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ElfouhailySpectrum.cpp">
