@@ -263,3 +263,18 @@ CreateMeshTriangles(
 
     return triangles;
 }
+inline std::vector<std::shared_ptr<Hittable>>
+CreateMeshHittables(
+    const std::shared_ptr<TriangleMesh>& mesh,
+    const std::shared_ptr<Material>& material)
+{
+    const auto meshTriangles =
+        CreateMeshTriangles(
+            mesh,
+            material);
+
+    return std::vector<
+        std::shared_ptr<Hittable>>(
+            meshTriangles.begin(),
+            meshTriangles.end());
+}

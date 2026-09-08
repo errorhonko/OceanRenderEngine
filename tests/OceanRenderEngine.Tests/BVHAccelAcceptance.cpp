@@ -280,4 +280,107 @@ void RunBVHAccelAcceptanceTests()
             cullingRecord) &&
         visibleHitCount == 1 &&
         culledHitCount == 0);
+
+    const auto movingMaterial =
+        std::make_shared<DiffuseMaterial>(
+            Spectrum(0.4f));
+    const auto movingSphere =
+        std::make_shared<Sphere>(
+            Vector3f(0.0f, 0.0f, -5.0f),
+            1.0f,
+            movingMaterial);
+    const auto stationarySphere =
+        std::make_shared<Sphere>(
+            Vector3f(100.0f, 0.0f, -5.0f),
+            1.0f,
+            nullptr);
+
+    BVHAccel rebuildBVH(
+        std::vector<std::shared_ptr<Hittable>>{
+            movingSphere,
+            stationarySphere},
+        1);
+
+    BVHAccel refitBVH(
+        std::vector<std::shared_ptr<Hittable>>{
+            movingSphere,
+            stationarySphere},
+        1);
+
+    movingSphere->center =
+        Vector3f(200.0f, 0.0f, -5.0f);
+
+    rebuildBVH.Rebuild();
+    refitBVH.Refit();
+
+    const Bounds3f rebuiltBounds =
+        rebuildBVH.Bounds();
+    HitRecord movedRecord;
+    HitRecord oldPositionRecord;
+
+    const bool movedPositionHit =
+        rebuildBVH.hit(
+            Ray(
+                Vector3f(200.0f, 0.0f, 0.0f),
+                Vector3f(0.0f, 0.0f, -1.0f)),
+            1e-4f,
+            infinity,
+            movedRecord);
+
+    const bool oldPositionHit =
+        rebuildBVH.hit(
+            centerRay,
+            1e-4f,
+            infinity,
+            oldPositionRecord);
+
+    ExpectTrue(
+        "BVH rebuild observes moved primitive",
+        VectorNear(
+            rebuiltBounds.pMin,
+            Vector3f(99.0f, -1.0f, -6.0f)) &&
+        VectorNear(
+            rebuiltBounds.pMax,
+            Vector3f(201.0f, 1.0f, -4.0f)) &&
+        movedPositionHit &&
+        Near(movedRecord.t, 4.0f) &&
+        movedRecord.material == movingMaterial &&
+        !oldPositionHit);
+
+    const Bounds3f refittedBounds =
+        refitBVH.Bounds();
+    HitRecord refittedMovedRecord;
+    HitRecord refittedOldPositionRecord;
+
+    const bool refittedMovedPositionHit =
+        refitBVH.hit(
+            Ray(
+                Vector3f(200.0f, 0.0f, 0.0f),
+                Vector3f(0.0f, 0.0f, -1.0f)),
+            1e-4f,
+            infinity,
+            refittedMovedRecord);
+
+    const bool refittedOldPositionHit =
+        refitBVH.hit(
+            centerRay,
+            1e-4f,
+            infinity,
+            refittedOldPositionRecord);
+
+    ExpectTrue(
+        "BVH refit matches rebuild for moved primitive",
+        VectorNear(
+            refittedBounds.pMin,
+            rebuiltBounds.pMin) &&
+        VectorNear(
+            refittedBounds.pMax,
+            rebuiltBounds.pMax) &&
+        refittedMovedPositionHit &&
+        Near(
+            refittedMovedRecord.t,
+            movedRecord.t) &&
+        refittedMovedRecord.material ==
+            movedRecord.material &&
+        !refittedOldPositionHit);
 }

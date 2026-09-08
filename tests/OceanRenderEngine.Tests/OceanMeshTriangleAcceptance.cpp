@@ -1,9 +1,12 @@
 #include "MeshTriangle.h"
 
+#include "BVHAccel.h"
 #include "DiffuseMaterial.h"
+#include "HittableList.h"
 #include "OceanFrequencyField.h"
 #include "OceanHeightField.h"
 #include "OceanSurfaceMesh.h"
+#include "TriangleMeshAggregate.h"
 
 #include <cmath>
 #include <iostream>
@@ -11,6 +14,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace
 {
@@ -326,4 +330,424 @@ void RunMeshTriangleAcceptanceTests()
                 nullptr,
                 material);
         });
+
+    const auto meshHittables =
+        CreateMeshHittables(
+            mesh,
+            material);
+
+    bool validMeshHittables =
+        meshHittables.size() ==
+        mesh->Triangles().size();
+
+    for (const auto& meshHittable : meshHittables)
+    {
+        validMeshHittables =
+            validMeshHittables &&
+            meshHittable != nullptr;
+    }
+
+    ExpectTrue(
+        "mesh hittable factory count",
+        validMeshHittables);
+
+    ExpectThrows(
+        "mesh hittable factory null mesh rejected",
+        [&material]
+        {
+            CreateMeshHittables(
+                nullptr,
+                material);
+        });
+
+    HittableList linearMesh;
+
+    for (const auto& meshHittable : meshHittables)
+        linearMesh.add(meshHittable);
+
+    BVHAccel meshBVH(
+        meshHittables,
+        2);
+
+    const Bounds3f linearBounds =
+        linearMesh.Bounds();
+    const Bounds3f bvhBounds =
+        meshBVH.Bounds();
+
+    ExpectTrue(
+        "ocean mesh BVH aggregate bounds",
+        VectorNear(
+            linearBounds.pMin,
+            bvhBounds.pMin) &&
+        VectorNear(
+            linearBounds.pMax,
+            bvhBounds.pMax));
+
+    const std::vector<std::size_t>
+        representativeTriangleIndices =
+        {
+            0,
+            mesh->Triangles().size() / 2,
+            mesh->Triangles().size() - 1
+        };
+
+    bool representativeHitsMatch = true;
+
+    for (const std::size_t testTriangleIndex :
+         representativeTriangleIndices)
+    {
+        const TriangleIndices& testIndices =
+            mesh->Triangles()[testTriangleIndex];
+
+        const Vector3f testCentroid =
+            (mesh->Vertices()[testIndices[0]].position +
+             mesh->Vertices()[testIndices[1]].position +
+             mesh->Vertices()[testIndices[2]].position) /
+            3.0f;
+
+        const Ray testRay(
+            Vector3f(
+                testCentroid.x,
+                testCentroid.y + 20.0f,
+                testCentroid.z),
+            Vector3f(0.0f, -1.0f, 0.0f));
+
+        HitRecord linearRecord;
+        HitRecord bvhRecord;
+
+        const bool linearHit =
+            linearMesh.hit(
+                testRay,
+                1e-4f,
+                std::numeric_limits<float>::infinity(),
+                linearRecord);
+
+        const bool bvhHit =
+            meshBVH.hit(
+                testRay,
+                1e-4f,
+                std::numeric_limits<float>::infinity(),
+                bvhRecord);
+
+        representativeHitsMatch =
+            representativeHitsMatch &&
+            linearHit &&
+            bvhHit &&
+            Near(linearRecord.t, bvhRecord.t, 2e-5f) &&
+            VectorNear(
+                linearRecord.point,
+                bvhRecord.point,
+                2e-5f) &&
+            VectorNear(
+                linearRecord.geometricNormal,
+                bvhRecord.geometricNormal,
+                2e-5f) &&
+            VectorNear(
+                linearRecord.normal,
+                bvhRecord.normal,
+                2e-5f) &&
+            linearRecord.material == bvhRecord.material;
+    }
+
+    ExpectTrue(
+        "ocean mesh BVH matches linear hits",
+        representativeHitsMatch);
+
+    const Ray outsideMeshRay(
+        Vector3f(
+            config.patchLength,
+            20.0f,
+            0.0f),
+        Vector3f(0.0f, -1.0f, 0.0f));
+    HitRecord linearMissRecord;
+    HitRecord bvhMissRecord;
+
+    ExpectTrue(
+        "ocean mesh BVH matches linear miss",
+        !linearMesh.hit(
+            outsideMeshRay,
+            1e-4f,
+            std::numeric_limits<float>::infinity(),
+            linearMissRecord) &&
+        !meshBVH.hit(
+            outsideMeshRay,
+            1e-4f,
+            std::numeric_limits<float>::infinity(),
+            bvhMissRecord));
+
+    dynamicHeightField.Update(1.1f);
+    oceanSurface.Update(dynamicHeightField);
+    meshBVH.Refit();
+
+    const Bounds3f updatedLinearBounds =
+        linearMesh.Bounds();
+    const Bounds3f refittedMeshBounds =
+        meshBVH.Bounds();
+
+    const std::size_t updatedTriangleIndex =
+        mesh->Triangles().size() / 3;
+    const TriangleIndices& updatedIndices =
+        mesh->Triangles()[updatedTriangleIndex];
+    const Vector3f refitTestCentroid =
+        (mesh->Vertices()[updatedIndices[0]].position +
+         mesh->Vertices()[updatedIndices[1]].position +
+         mesh->Vertices()[updatedIndices[2]].position) /
+        3.0f;
+
+    const Ray refitTestRay(
+        Vector3f(
+            refitTestCentroid.x,
+            refitTestCentroid.y + 20.0f,
+            refitTestCentroid.z),
+        Vector3f(0.0f, -1.0f, 0.0f));
+    HitRecord updatedLinearRecord;
+    HitRecord refittedMeshRecord;
+
+    const bool updatedLinearHit =
+        linearMesh.hit(
+            refitTestRay,
+            1e-4f,
+            std::numeric_limits<float>::infinity(),
+            updatedLinearRecord);
+
+    const bool refittedMeshHit =
+        meshBVH.hit(
+            refitTestRay,
+            1e-4f,
+            std::numeric_limits<float>::infinity(),
+            refittedMeshRecord);
+
+    ExpectTrue(
+        "ocean mesh BVH refit matches updated surface",
+        VectorNear(
+            updatedLinearBounds.pMin,
+            refittedMeshBounds.pMin,
+            2e-5f) &&
+        VectorNear(
+            updatedLinearBounds.pMax,
+            refittedMeshBounds.pMax,
+            2e-5f) &&
+        updatedLinearHit &&
+        refittedMeshHit &&
+        Near(
+            updatedLinearRecord.t,
+            refittedMeshRecord.t,
+            2e-5f) &&
+        VectorNear(
+            updatedLinearRecord.point,
+            refittedMeshRecord.point,
+            2e-5f) &&
+        VectorNear(
+            updatedLinearRecord.geometricNormal,
+            refittedMeshRecord.geometricNormal,
+            2e-5f) &&
+        VectorNear(
+            updatedLinearRecord.normal,
+            refittedMeshRecord.normal,
+            2e-5f) &&
+        updatedLinearRecord.material ==
+            refittedMeshRecord.material);
+
+    ExpectThrows(
+        "triangle mesh aggregate null mesh rejected",
+        [&material]
+        {
+            TriangleMeshAggregate aggregate(
+                nullptr,
+                material);
+        });
+
+    ExpectThrows(
+        "triangle mesh aggregate empty mesh rejected",
+        [&material]
+        {
+            auto emptyMesh =
+                std::make_shared<TriangleMesh>(
+                    std::vector<MeshVertex>(),
+                    std::vector<TriangleIndices>());
+
+            TriangleMeshAggregate aggregate(
+                emptyMesh,
+                material);
+        });
+
+    std::vector<MeshVertex> aggregateVertices =
+    {
+        {
+            Vector3f(-1.0f, 0.0f, -1.0f),
+            Vector3f(0.0f, 1.0f, 0.0f),
+            Vector3f(0.0f, 0.0f, 0.0f)
+        },
+        {
+            Vector3f(-1.0f, 0.0f, 1.0f),
+            Vector3f(0.0f, 1.0f, 0.0f),
+            Vector3f(0.0f, 1.0f, 0.0f)
+        },
+        {
+            Vector3f(1.0f, 0.0f, 1.0f),
+            Vector3f(0.0f, 1.0f, 0.0f),
+            Vector3f(1.0f, 1.0f, 0.0f)
+        },
+        {
+            Vector3f(1.0f, 0.0f, -1.0f),
+            Vector3f(0.0f, 1.0f, 0.0f),
+            Vector3f(1.0f, 0.0f, 0.0f)
+        }
+    };
+
+    std::vector<TriangleIndices> aggregateIndices =
+    {
+        TriangleIndices{ 0, 1, 2 },
+        TriangleIndices{ 0, 2, 3 }
+    };
+
+    auto aggregateMesh =
+        std::make_shared<TriangleMesh>(
+            std::move(aggregateVertices),
+            std::move(aggregateIndices));
+
+    HittableList aggregateLinearMesh;
+    const auto aggregateTriangles =
+        CreateMeshHittables(
+            aggregateMesh,
+            material);
+
+    for (const auto& aggregateTriangle :
+         aggregateTriangles)
+    {
+        aggregateLinearMesh.add(
+            aggregateTriangle);
+    }
+
+    TriangleMeshAggregate aggregate(
+        aggregateMesh,
+        material,
+        1);
+
+    ExpectTrue(
+        "triangle mesh aggregate preserves shared mesh",
+        aggregate.Mesh() == aggregateMesh);
+
+    const Ray aggregateRay(
+        Vector3f(-0.5f, 2.0f, 0.5f),
+        Vector3f(0.0f, -1.0f, 0.0f));
+    HitRecord aggregateLinearRecord;
+    HitRecord aggregateRecord;
+
+    const bool aggregateLinearHit =
+        aggregateLinearMesh.hit(
+            aggregateRay,
+            1e-4f,
+            std::numeric_limits<float>::infinity(),
+            aggregateLinearRecord);
+
+    const bool aggregateHit =
+        aggregate.hit(
+            aggregateRay,
+            1e-4f,
+            std::numeric_limits<float>::infinity(),
+            aggregateRecord);
+
+    const Bounds3f aggregateLinearBounds =
+        aggregateLinearMesh.Bounds();
+    const Bounds3f aggregateBounds =
+        aggregate.Bounds();
+
+    ExpectTrue(
+        "triangle mesh aggregate matches linear mesh",
+        VectorNear(
+            aggregateLinearBounds.pMin,
+            aggregateBounds.pMin) &&
+        VectorNear(
+            aggregateLinearBounds.pMax,
+            aggregateBounds.pMax) &&
+        aggregateLinearHit &&
+        aggregateHit &&
+        Near(
+            aggregateLinearRecord.t,
+            aggregateRecord.t) &&
+        VectorNear(
+            aggregateLinearRecord.point,
+            aggregateRecord.point) &&
+        aggregateRecord.material == material);
+
+    for (std::size_t vertexIndex = 0;
+         vertexIndex < aggregateMesh->Vertices().size();
+         ++vertexIndex)
+    {
+        const Vector3f oldPosition =
+            aggregateMesh->Vertices()[vertexIndex].position;
+
+        aggregateMesh->UpdateVertex(
+            vertexIndex,
+            Vector3f(
+                oldPosition.x,
+                1.0f,
+                oldPosition.z),
+            Vector3f(0.0f, 1.0f, 0.0f));
+    }
+
+    aggregate.Refit();
+
+    const Bounds3f refittedAggregateBounds =
+        aggregate.Bounds();
+    const Bounds3f refittedLinearBounds =
+        aggregateLinearMesh.Bounds();
+    const Ray refittedAggregateRay(
+        Vector3f(-0.5f, 3.0f, 0.5f),
+        Vector3f(0.0f, -1.0f, 0.0f));
+    HitRecord refittedAggregateRecord;
+
+    ExpectTrue(
+        "triangle mesh aggregate refit observes vertex updates",
+        VectorNear(
+            refittedAggregateBounds.pMin,
+            refittedLinearBounds.pMin) &&
+        VectorNear(
+            refittedAggregateBounds.pMax,
+            refittedLinearBounds.pMax) &&
+        Near(refittedAggregateBounds.pMin.y, 1.0f) &&
+        Near(refittedAggregateBounds.pMax.y, 1.0f) &&
+        aggregate.hit(
+            refittedAggregateRay,
+            1e-4f,
+            std::numeric_limits<float>::infinity(),
+            refittedAggregateRecord) &&
+        Near(refittedAggregateRecord.t, 2.0f));
+
+    for (std::size_t vertexIndex = 0;
+         vertexIndex < aggregateMesh->Vertices().size();
+         ++vertexIndex)
+    {
+        const Vector3f oldPosition =
+            aggregateMesh->Vertices()[vertexIndex].position;
+
+        aggregateMesh->UpdateVertex(
+            vertexIndex,
+            Vector3f(
+                oldPosition.x,
+                -1.0f,
+                oldPosition.z),
+            Vector3f(0.0f, 1.0f, 0.0f));
+    }
+
+    aggregate.Rebuild();
+
+    const Bounds3f rebuiltAggregateBounds =
+        aggregate.Bounds();
+    const Ray rebuiltAggregateRay(
+        Vector3f(-0.5f, 1.0f, 0.5f),
+        Vector3f(0.0f, -1.0f, 0.0f));
+    HitRecord rebuiltAggregateRecord;
+
+    ExpectTrue(
+        "triangle mesh aggregate rebuild observes vertex updates",
+        Near(rebuiltAggregateBounds.pMin.y, -1.0f) &&
+        Near(rebuiltAggregateBounds.pMax.y, -1.0f) &&
+        aggregate.hit(
+            rebuiltAggregateRay,
+            1e-4f,
+            std::numeric_limits<float>::infinity(),
+            rebuiltAggregateRecord) &&
+        Near(rebuiltAggregateRecord.t, 2.0f));
 }

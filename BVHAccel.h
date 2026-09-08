@@ -96,15 +96,19 @@ public:
                 "BVH leaf capacity must be positive.");
         }
 
+        Rebuild();
+    }
+    void Rebuild()
+    {
         std::vector<BVHPrimitiveInfo> primitiveInfo;
-        primitiveInfo.reserve(this->primitives.size());
+        primitiveInfo.reserve(primitives.size());
 
         for (std::size_t primitiveIndex = 0;
-            primitiveIndex < this->primitives.size();
+            primitiveIndex < primitives.size();
             ++primitiveIndex)
         {
             const auto& primitive =
-                this->primitives[primitiveIndex];
+                primitives[primitiveIndex];
 
             if (!primitive)
             {
@@ -130,17 +134,29 @@ public:
             orderedPrimitives;
 
         orderedPrimitives.reserve(
-            this->primitives.size());
+            primitives.size());
 
-        root = BuildRecursive(
-            primitiveInfo,
-            0,
-            primitiveInfo.size(),
-            orderedPrimitives);
+        std::unique_ptr<BVHBuildNode> newRoot =
+            BuildRecursive(
+                primitiveInfo,
+                0,
+                primitiveInfo.size(),
+                orderedPrimitives);
 
-        this->primitives =
+        primitives =
             std::move(orderedPrimitives);
+
+        root =
+            std::move(newRoot);
     }
+    void Refit()
+    {
+        if (!root)
+            return;
+
+        RefitNode(root.get());
+    }
+
 
     Bounds3f Bounds() const override
     {
@@ -168,6 +184,74 @@ public:
     }
 
 private:
+    Bounds3f RefitNode(
+        BVHBuildNode* node)
+    {
+        if (!node)
+        {
+            throw std::logic_error(
+                "BVH refit encountered a null node.");
+        }
+
+        if (node->IsLeaf())
+        {
+            Bounds3f leafBounds;
+
+            for (std::size_t index = 0;
+                index < node->primitiveCount;
+                ++index)
+            {
+                const std::size_t primitiveIndex =
+                    node->firstPrimitiveOffset +
+                    index;
+
+                const auto& primitive =
+                    primitives[primitiveIndex];
+
+                if (!primitive)
+                {
+                    throw std::logic_error(
+                        "BVH refit encountered a null primitive.");
+                }
+
+                const Bounds3f primitiveBounds =
+                    primitive->Bounds();
+
+                if (primitiveBounds.IsEmpty())
+                {
+                    throw std::invalid_argument(
+                        "BVH primitive has empty bounds during refit.");
+                }
+
+                leafBounds = Union(
+                    leafBounds,
+                    primitiveBounds);
+            }
+
+            node->bounds = leafBounds;
+            return node->bounds;
+        }
+
+        if (!node->left || !node->right)
+        {
+            throw std::logic_error(
+                "BVH interior node has a missing child.");
+        }
+
+        const Bounds3f leftBounds =
+            RefitNode(
+                node->left.get());
+
+        const Bounds3f rightBounds =
+            RefitNode(
+                node->right.get());
+
+        node->bounds = Union(
+            leftBounds,
+            rightBounds);
+
+        return node->bounds;
+    }
     bool HitNode(
         const BVHBuildNode* node,
         const Ray& ray,

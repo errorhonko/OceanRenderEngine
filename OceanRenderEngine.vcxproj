@@ -193,6 +193,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="ThinDielectricBxDF.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="TriangleMeshAggregate.h" />
     <ClInclude Include="TrowbridgeReitzDistribution.h" />
     <ClInclude Include="UniformInfiniteLight.h" />
     <ClInclude Include="UniformLightSampler.h" />

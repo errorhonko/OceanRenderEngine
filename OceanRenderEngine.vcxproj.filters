@@ -255,6 +255,9 @@
     <ClInclude Include="BVHAccel.h">
       <Filter>头文件\BVH</Filter>
     </ClInclude>
+    <ClInclude Include="TriangleMeshAggregate.h">
+      <Filter>头文件\OceanRender\Heightfield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ElfouhailySpectrum.cpp">
