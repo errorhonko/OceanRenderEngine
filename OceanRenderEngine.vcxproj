@@ -164,6 +164,7 @@
     <ClInclude Include="IndependentSampler.h" />
     <ClInclude Include="Integrator.h" />
     <ClInclude Include="Lambertian.h" />
+    <ClInclude Include="LaserEmitter.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="material.h" />

@@ -73,6 +73,9 @@
     <Filter Include="头文件\OceanRender\Heightfield">
       <UniqueIdentifier>{ebb47772-4777-45b7-94d4-501d93fd573a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Laser">
+      <UniqueIdentifier>{4c99d1e2-0df4-4d2a-94fe-dca90f4147e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector3f.h">
@@ -257,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="TriangleMeshAggregate.h">
       <Filter>头文件\OceanRender\Heightfield</Filter>
+    </ClInclude>
+    <ClInclude Include="LaserEmitter.h">
+      <Filter>头文件\Laser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

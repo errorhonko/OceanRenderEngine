@@ -22,6 +22,7 @@
 
 void RunBounds3fAcceptanceTests();
 void RunBVHAccelAcceptanceTests();
+void RunLaserEmitterAcceptanceTests();
 void RunElfouhailySpectrumAcceptanceTests();
 void RunOceanFrequencyFieldAcceptanceTests();
 void RunOceanFFTAcceptanceTests();
@@ -1872,6 +1873,7 @@ int main()
 {
     RunBounds3fAcceptanceTests();
     RunBVHAccelAcceptanceTests();
+    RunLaserEmitterAcceptanceTests();
     RunElfouhailySpectrumAcceptanceTests();
     RunOceanFrequencyFieldAcceptanceTests();
     RunOceanFFTAcceptanceTests();

@@ -155,6 +155,52 @@ namespace BRDFUtils
 			return 0.0f;
 		return fSquared /denominator;
 	}
+
+	inline Vector3f SampleUniformCone(
+		const Point2f& u,
+		float cosThetaMax)
+	{
+		cosThetaMax =
+			std::clamp(
+				cosThetaMax,
+				-1.0f,
+				1.0f);
+
+		const float cosTheta =
+			1.0f -
+			u.x * (1.0f - cosThetaMax);
+
+		const float sinTheta =
+			Safesqrt(
+				1.0f - cosTheta * cosTheta);
+
+		const float phi =
+			2.0f * Pi * u.y;
+
+		return Vector3f(
+			sinTheta * std::cos(phi),
+			sinTheta * std::sin(phi),
+			cosTheta);
+	}
+
+	inline float UniformConePdf(
+		float cosThetaMax)
+	{
+		cosThetaMax =
+			std::clamp(
+				cosThetaMax,
+				-1.0f,
+				1.0f);
+
+		const float solidAngle =
+			2.0f * Pi *
+			(1.0f - cosThetaMax);
+
+		if (solidAngle <= 0.0f)
+			return 0.0f;
+
+		return 1.0f / solidAngle;
+	}
 	
 }
 	

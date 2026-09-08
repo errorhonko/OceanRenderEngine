@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="BVHAccelAcceptance.cpp" />
     <ClCompile Include="Bounds3fAcceptance.cpp" />
+    <ClCompile Include="LaserEmitterAcceptance.cpp" />
     <ClCompile Include="..\..\ElfouhailySpectrum.cpp" />
     <ClCompile Include="..\..\OceanFFT.cpp" />
     <ClCompile Include="..\..\OceanFrequencyField.cpp" />
