@@ -264,6 +264,9 @@
     <ClInclude Include="LaserEmitter.h">
       <Filter>头文件\Laser</Filter>
     </ClInclude>
+    <ClInclude Include="LidarReceiver.h">
+      <Filter>头文件\Laser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ElfouhailySpectrum.cpp">

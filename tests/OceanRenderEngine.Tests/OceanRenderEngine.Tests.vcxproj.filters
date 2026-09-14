@@ -24,6 +24,9 @@
     <ClCompile Include="LaserEmitterAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="LidarReceiverAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ElfouhailySpectrum.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
