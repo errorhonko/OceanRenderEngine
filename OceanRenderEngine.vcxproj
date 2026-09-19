@@ -202,6 +202,7 @@
     <ClInclude Include="Vector3f.h" />
     <ClInclude Include="Vector4f.h" />
     <ClInclude Include="ScaledBxDF.h" />
+    <ClInclude Include="LidarReturnEstimator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ElfouhailySpectrum.cpp" />
