@@ -24,7 +24,16 @@
     <ClCompile Include="LaserEmitterAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="LidarIntegratorAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="LidarReceiverAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarPulseProfileAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarWaveformAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ElfouhailySpectrum.cpp">

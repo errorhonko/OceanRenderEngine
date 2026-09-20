@@ -157,6 +157,7 @@
     <ClInclude Include="Fresnel.h" />
     <ClInclude Include="FresnelDielectric.h" />
     <ClInclude Include="FresnelNoOp.h" />
+    <ClInclude Include="GaussianPulseProfile.h" />
     <ClInclude Include="HashUtils.h" />
     <ClInclude Include="HitRocord.h" />
     <ClInclude Include="HittableList.h" />
@@ -165,7 +166,10 @@
     <ClInclude Include="Integrator.h" />
     <ClInclude Include="Lambertian.h" />
     <ClInclude Include="LaserEmitter.h" />
+    <ClInclude Include="LidarIntegrator.h" />
+    <ClInclude Include="LidarPulseProfile.h" />
     <ClInclude Include="LidarReceiver.h" />
+    <ClInclude Include="LidarWaveform.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="load_obj.h" />
     <ClInclude Include="material.h" />

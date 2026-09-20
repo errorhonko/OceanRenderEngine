@@ -76,6 +76,9 @@
     <Filter Include="头文件\Laser">
       <UniqueIdentifier>{4c99d1e2-0df4-4d2a-94fe-dca90f4147e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Laser\LidarPulseProfile">
+      <UniqueIdentifier>{68e4a3fd-10f7-4eef-9e6d-526f057dafa7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector3f.h">
@@ -269,6 +272,18 @@
     </ClInclude>
     <ClInclude Include="LidarReturnEstimator.h">
       <Filter>头文件\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarIntegrator.h">
+      <Filter>头文件\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarWaveform.h">
+      <Filter>头文件\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarPulseProfile.h">
+      <Filter>头文件\Laser\LidarPulseProfile</Filter>
+    </ClInclude>
+    <ClInclude Include="GaussianPulseProfile.h">
+      <Filter>头文件\Laser\LidarPulseProfile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
