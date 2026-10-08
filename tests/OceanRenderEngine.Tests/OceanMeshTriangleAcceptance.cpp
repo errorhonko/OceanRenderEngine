@@ -9,6 +9,7 @@
 #include "TriangleMeshAggregate.h"
 
 #include <cmath>
+#include <complex>
 #include <iostream>
 #include <limits>
 #include <memory>
@@ -65,6 +66,72 @@ bool VectorNear(
 
 void RunMeshTriangleAcceptanceTests()
 {
+    // A single Fourier mode gives an independent analytic height and slope.
+    // Use unequal barycentric weights to detect incorrect interpolation.
+    {
+        OceanFrequencyConfig waveConfig;
+        waveConfig.resolution = 8;
+        waveConfig.patchLength = 8.0f;
+        waveConfig.seed = 42;
+        const float k = 2.0f * std::acos(-1.0f) / waveConfig.patchLength;
+        OceanFrequencyField waveFrequency(
+            waveConfig,
+            [k](float kx, float kz)
+            {
+                return std::fabs(kx - k) < 1e-6f &&
+                    std::fabs(kz - k) < 1e-6f ? 0.1f : 0.0f;
+            },
+            [](float) { return 1.0f; });
+        OceanHeightField waveHeight(waveFrequency);
+        waveHeight.Update(0.4f);
+        OceanSurfaceMesh waveSurface(8, 8.0f);
+        waveSurface.Update(waveHeight);
+        const auto amplitude = waveFrequency.H(1, 1, 0.4f);
+        const auto waveMesh = waveSurface.Mesh();
+        const auto ids = waveMesh->Triangles()[0];
+        Vector3f positions[3];
+        Vector3f normals[3];
+        bool analyticVerticesMatch = true;
+        for (int i = 0; i < 3; ++i)
+        {
+            const int x = static_cast<int>(ids[i] % 9);
+            const int z = static_cast<int>(ids[i] / 9);
+            const auto value = amplitude * std::polar(1.0f, k * (x + z));
+            const float height = 2.0f * value.real();
+            const float slope = 2.0f *
+                (std::complex<float>(0.0f, k) * value).real();
+            positions[i] = Vector3f(x - 4.0f, height, z - 4.0f);
+            normals[i] = Vector3f(-slope, 1.0f, -slope).normalize();
+            analyticVerticesMatch = analyticVerticesMatch &&
+                VectorNear(waveMesh->Vertices()[ids[i]].position, positions[i]) &&
+                VectorNear(waveMesh->Vertices()[ids[i]].normal, normals[i]);
+        }
+        ExpectTrue("ocean spectral wave analytic vertex normals", analyticVerticesMatch);
+
+        const Vector3f target = positions[0] * 0.2f +
+            positions[1] * 0.3f + positions[2] * 0.5f;
+        const Vector3f expectedNg = (positions[1] - positions[0]).cross(
+            positions[2] - positions[0]).normalize();
+        Vector3f expectedNs = (normals[0] * 0.2f +
+            normals[1] * 0.3f + normals[2] * 0.5f).normalize();
+        if (expectedNs.dot(expectedNg) < 0.0f)
+            expectedNs = -expectedNs;
+        MeshTriangle waveTriangle(waveMesh, 0, nullptr);
+        HitRecord waveHit;
+        ExpectTrue("ocean spectral normals reach triangle hit",
+            waveTriangle.hit(
+                Ray(target + Vector3f(0.0f, 10.0f, 0.0f),
+                    Vector3f(0.0f, -1.0f, 0.0f)),
+                1e-4f, 20.0f, waveHit) &&
+            VectorNear(waveHit.point, target) &&
+            VectorNear(waveHit.normal, expectedNs) &&
+            VectorNear(waveHit.geometricNormal, expectedNg));
+        ExpectTrue("ocean hit retains distinct geometric and shading normals",
+            !VectorNear(expectedNs, expectedNg, 1e-4f) &&
+            Near(waveHit.normal.norm(), 1.0f) &&
+            waveHit.normal.dot(waveHit.geometricNormal) > 0.0f);
+    }
+
     OceanFrequencyConfig config;
     config.resolution = 4;
     config.patchLength = 8.0f;

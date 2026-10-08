@@ -1,5 +1,6 @@
 #include "LidarReceiver.h"
 #include "LidarReturnEstimator.h"
+#include "LambertianLidarScattering.h"
 #include "HittableList.h"
 #include "Sphere.h"
 
@@ -62,6 +63,39 @@ bool VectorNear(
         Near(actual.y, expected.y, tolerance) &&
         Near(actual.z, expected.z, tolerance);
 }
+
+class TestLidarScattering final
+    : public LidarScatteringModel
+{
+public:
+    explicit TestLidarScattering(double returnValue)
+        : returnValue(returnValue)
+    {
+    }
+
+    double Evaluate(
+        const HitRecord& hit,
+        const Vector3f& incidentDirection,
+        const Vector3f& outgoingDirection,
+        float wavelengthNm) const override
+    {
+        wasEvaluated = true;
+        evaluatedHit = &hit;
+        evaluatedIncidentDirection = incidentDirection;
+        evaluatedOutgoingDirection = outgoingDirection;
+        evaluatedWavelengthNm = wavelengthNm;
+        return returnValue;
+    }
+
+    mutable bool wasEvaluated = false;
+    mutable const HitRecord* evaluatedHit = nullptr;
+    mutable Vector3f evaluatedIncidentDirection;
+    mutable Vector3f evaluatedOutgoingDirection;
+    mutable float evaluatedWavelengthNm = 0.0f;
+
+private:
+    double returnValue = 0.0;
+};
 }
 
 void RunLidarReceiverAcceptanceTests()
@@ -501,12 +535,19 @@ void RunLidarReceiverAcceptanceTests()
     const double lambertBrdf =
         0.5 / std::acos(-1.0);
 
+    const LambertianLidarScattering lambertScattering(0.5);
+
+    const LambertianLidarScattering zeroScattering(0.0);
+
+    TestLidarScattering recordingScattering(
+        lambertBrdf);
+
     const auto onAxisEnergy = EstimateSingleReturn(
         emission,
         energyHit,
         apertureReceiver,
         clearReturnWorld,
-        lambertBrdf);
+        recordingScattering);
 
     const double expectedOnAxisEnergy =
         1.0e-3 * lambertBrdf *
@@ -520,14 +561,26 @@ void RunLidarReceiverAcceptanceTests()
         Near(onAxisEnergy->arrivalTimeSeconds,
              30.0 / speedOfLight, 1e-14) &&
         Near(onAxisEnergy->wavelengthNm,
-             532.0, 0.0));
+             532.0, 0.0) &&
+        recordingScattering.wasEvaluated &&
+        recordingScattering.evaluatedHit == &energyHit &&
+        VectorNear(
+            recordingScattering.evaluatedIncidentDirection,
+            Vector3f(0.0f, 1.0f, 0.0f)) &&
+        VectorNear(
+            recordingScattering.evaluatedOutgoingDirection,
+            Vector3f(0.0f, 1.0f, 0.0f)) &&
+        Near(
+            recordingScattering.evaluatedWavelengthNm,
+            532.0,
+            0.0));
 
     const auto delayedEnergy = EstimateSingleReturn(
         delayedEmission,
         energyHit,
         apertureReceiver,
         clearReturnWorld,
-        lambertBrdf);
+        lambertScattering);
 
     ExpectTrue(
         "lidar return energy preserves emission time",
@@ -552,7 +605,7 @@ void RunLidarReceiverAcceptanceTests()
         surfaceHit,
         bistaticEnergyReceiver,
         clearReturnWorld,
-        lambertBrdf);
+        lambertScattering);
 
     const double bistaticRangeSquared =
         4.0 * 4.0 + 10.0 * 10.0;
@@ -578,7 +631,7 @@ void RunLidarReceiverAcceptanceTests()
             blockedWorldOutboundHit,
             bistaticEnergyReceiver,
             blockedReturnWorld,
-            lambertBrdf).has_value());
+            lambertScattering).has_value());
 
     LidarReceiver zeroEfficiencyReceiver(
         sensorPosition,
@@ -594,19 +647,19 @@ void RunLidarReceiverAcceptanceTests()
             energyHit,
             receiver,
             clearReturnWorld,
-            lambertBrdf).has_value() &&
+            lambertScattering).has_value() &&
         !EstimateSingleReturn(
             emission,
             energyHit,
             zeroEfficiencyReceiver,
             clearReturnWorld,
-            lambertBrdf).has_value() &&
+            lambertScattering).has_value() &&
         !EstimateSingleReturn(
             emission,
             energyHit,
             apertureReceiver,
             clearReturnWorld,
-            0.0).has_value());
+            zeroScattering).has_value());
 
     HitRecord backFacingHit = energyHit;
     backFacingHit.geometricNormal =
@@ -619,7 +672,9 @@ void RunLidarReceiverAcceptanceTests()
             backFacingHit,
             apertureReceiver,
             clearReturnWorld,
-            lambertBrdf).has_value());
+            lambertScattering).has_value());
+
+    const TestLidarScattering negativeScattering(-0.1);
 
     ExpectThrows(
         "lidar return energy rejects negative BRDF",
@@ -630,8 +685,11 @@ void RunLidarReceiverAcceptanceTests()
                 energyHit,
                 apertureReceiver,
                 clearReturnWorld,
-                -0.1);
+                negativeScattering);
         });
+
+    const TestLidarScattering nonfiniteScattering(
+        std::numeric_limits<double>::quiet_NaN());
 
     ExpectThrows(
         "lidar return energy rejects nonfinite BRDF",
@@ -642,6 +700,6 @@ void RunLidarReceiverAcceptanceTests()
                 energyHit,
                 apertureReceiver,
                 clearReturnWorld,
-                std::numeric_limits<double>::quiet_NaN());
+                nonfiniteScattering);
         });
 }

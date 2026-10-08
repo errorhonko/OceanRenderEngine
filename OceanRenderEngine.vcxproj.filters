@@ -73,11 +73,44 @@
     <Filter Include="头文件\OceanRender\Heightfield">
       <UniqueIdentifier>{ebb47772-4777-45b7-94d4-501d93fd573a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Laser">
+    <Filter Include="头文件\LiDAR">
       <UniqueIdentifier>{4c99d1e2-0df4-4d2a-94fe-dca90f4147e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Laser\LidarPulseProfile">
+    <Filter Include="头文件\LiDAR\Emitter\PulseProfile">
       <UniqueIdentifier>{68e4a3fd-10f7-4eef-9e6d-526f057dafa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\LiDAR\Emitter">
+      <UniqueIdentifier>{599d8250-278d-4685-a54c-60b22cc9ec41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\LiDAR\Receiver">
+      <UniqueIdentifier>{8d123458-d237-4a01-b902-a683ea511d80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\LiDAR\Receiver\AnalogSignal">
+      <UniqueIdentifier>{bf4ea4a6-e56e-42d9-9a25-059c43f541b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\LiDAR\Receiver\PhotonCounting">
+      <UniqueIdentifier>{acbda572-0218-477b-b9e7-d0d86a5f86fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\LiDAR\Simulation">
+      <UniqueIdentifier>{b07fd640-2e33-49ae-8af1-fb2fbc8df150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\LiDAR\SignalProcessing">
+      <UniqueIdentifier>{4f19dc42-98e2-4214-9b47-6de40cc6fb53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\LiDAR\Scattering">
+      <UniqueIdentifier>{d10f26a0-4091-4cb3-b1b5-736f91032eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\OceanRender\Scattering">
+      <UniqueIdentifier>{eb9015d4-c2c9-47e6-8c15-0ebf2180e817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Path Tracing\scatter">
+      <UniqueIdentifier>{c836b166-fde6-45ee-b61b-c4b36e96f524}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\OceanRender\SeaSpectrum\beckman">
+      <UniqueIdentifier>{c107e9df-78ca-446a-9555-0d1ab4af4e71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\OceanRender\Whitecap">
+      <UniqueIdentifier>{c84e5b68-4b40-47bf-beb5-b588fbbfc416}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +180,9 @@
     <ClInclude Include="BRDFUtils.h">
       <Filter>头文件\Path Tracing\ReflectionModel</Filter>
     </ClInclude>
+    <ClInclude Include="MicrofacetReflection.h">
+      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
+    </ClInclude>
     <ClInclude Include="BxDF.h">
       <Filter>头文件\Path Tracing\ReflectionModel</Filter>
     </ClInclude>
@@ -173,9 +209,6 @@
     </ClInclude>
     <ClInclude Include="BSDF.h">
       <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseBxDF.h">
-      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ConductorBxDF.h">
       <Filter>头文件\Path Tracing\ReflectionModel\Conductor</Filter>
@@ -213,9 +246,6 @@
     <ClInclude Include="UniformLightSampler.h">
       <Filter>头文件\Light</Filter>
     </ClInclude>
-    <ClInclude Include="IndependentSampler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>头文件\Light</Filter>
     </ClInclude>
@@ -246,6 +276,15 @@
     <ClInclude Include="OceanHeightField.h">
       <Filter>头文件\OceanRender\Heightfield</Filter>
     </ClInclude>
+    <ClInclude Include="OceanSlopeVariance.h">
+      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
+    </ClInclude>
+    <ClInclude Include="OceanNormalDistribution.h">
+      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
+    </ClInclude>
+    <ClInclude Include="OceanSlopeNormalDistribution.h">
+      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
+    </ClInclude>
     <ClInclude Include="MeshTriangle.h">
       <Filter>头文件\OceanRender\Heightfield</Filter>
     </ClInclude>
@@ -265,25 +304,106 @@
       <Filter>头文件\OceanRender\Heightfield</Filter>
     </ClInclude>
     <ClInclude Include="LaserEmitter.h">
-      <Filter>头文件\Laser</Filter>
+      <Filter>头文件\LiDAR\Emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarPulseMetadata.h">
+      <Filter>头文件\LiDAR\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarScanSequence.h">
+      <Filter>头文件\LiDAR\Simulation</Filter>
     </ClInclude>
     <ClInclude Include="LidarReceiver.h">
-      <Filter>头文件\Laser</Filter>
+      <Filter>头文件\LiDAR\Receiver</Filter>
+    </ClInclude>
+    <ClInclude Include="PhotonCountingLidarDetector.h">
+      <Filter>头文件\LiDAR\Receiver\PhotonCounting</Filter>
     </ClInclude>
     <ClInclude Include="LidarReturnEstimator.h">
-      <Filter>头文件\Laser</Filter>
+      <Filter>头文件\LiDAR\Simulation</Filter>
     </ClInclude>
     <ClInclude Include="LidarIntegrator.h">
-      <Filter>头文件\Laser</Filter>
+      <Filter>头文件\LiDAR\Simulation</Filter>
     </ClInclude>
     <ClInclude Include="LidarWaveform.h">
-      <Filter>头文件\Laser</Filter>
+      <Filter>头文件\LiDAR\SignalProcessing</Filter>
     </ClInclude>
     <ClInclude Include="LidarPulseProfile.h">
-      <Filter>头文件\Laser\LidarPulseProfile</Filter>
+      <Filter>头文件\LiDAR\Emitter\PulseProfile</Filter>
     </ClInclude>
     <ClInclude Include="GaussianPulseProfile.h">
-      <Filter>头文件\Laser\LidarPulseProfile</Filter>
+      <Filter>头文件\LiDAR\Emitter\PulseProfile</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarScatteringModel.h">
+      <Filter>头文件\LiDAR\Scattering</Filter>
+    </ClInclude>
+    <ClInclude Include="LambertianLidarScattering.h">
+      <Filter>头文件\LiDAR\Scattering</Filter>
+    </ClInclude>
+    <ClInclude Include="IndependentSampler.h">
+      <Filter>头文件\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="DiffuseBxDF.h">
+      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
+    </ClInclude>
+    <ClInclude Include="FresnelUtils.h">
+      <Filter>头文件\Path Tracing\ReflectionModel\Fresnel</Filter>
+    </ClInclude>
+    <ClInclude Include="RoughDielectricLidarScattering.h">
+      <Filter>头文件\LiDAR\Scattering</Filter>
+    </ClInclude>
+    <ClInclude Include="OceanBeckmannLidarScattering.h">
+      <Filter>头文件\OceanRender\Scattering</Filter>
+    </ClInclude>
+    <ClInclude Include="BeckmannDistribution.h">
+      <Filter>头文件\OceanRender\SeaSpectrum\beckman</Filter>
+    </ClInclude>
+    <ClInclude Include="WhitecapCoverage.h">
+      <Filter>头文件\OceanRender\Whitecap</Filter>
+    </ClInclude>
+    <ClInclude Include="OceanWhitecapField.h">
+      <Filter>头文件\OceanRender\Whitecap</Filter>
+    </ClInclude>
+    <ClInclude Include="WhitecapLidarScattering.h">
+      <Filter>头文件\OceanRender\Whitecap</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarRangeEstimator.h">
+      <Filter>头文件\LiDAR\SignalProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearPhotodetector.h">
+      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarAnalogWaveform.h">
+      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstOrderLidarResponse.h">
+      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
+    </ClInclude>
+    <ClInclude Include="IdealTransimpedanceAmplifier.h">
+      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarVoltageWaveform.h">
+      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
+    </ClInclude>
+    <ClInclude Include="IdealUniformAdc.h">
+      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarDigitalWaveform.h">
+      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarDigitalRangeEstimator.h">
+      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarReceiverPipeline.h">
+      <Filter>头文件\LiDAR\Receiver</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarPulseMeasurement.h">
+      <Filter>头文件\LiDAR\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarPointSample.h">
+      <Filter>头文件\LiDAR\SignalProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="LidarPointCloudBuilder.h">
+      <Filter>头文件\LiDAR\SignalProcessing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

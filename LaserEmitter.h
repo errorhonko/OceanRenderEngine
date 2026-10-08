@@ -16,7 +16,8 @@ struct LaserEmissionSample
     float wavelengthNm = 0.0f;
 
     // 脉冲发射时刻，单位 s。
-    float emissionTimeSeconds = 0.0f;
+    // 与扫描元数据、回波和测距统一为 double，使用相对仿真时钟。
+    double emissionTimeSeconds = 0.0;
 
     // 已经除过采样 PDF 的能量权重，单位 J。
     float energyWeightJ = 0.0f;
@@ -86,10 +87,10 @@ public:
 
     LaserEmissionSample SampleRay(
         const Point2f& u,
-        float emissionTimeSeconds = 0.0f) const
+        double emissionTimeSeconds = 0.0) const
     {
         if (!std::isfinite(emissionTimeSeconds) ||
-            emissionTimeSeconds < 0.0f)
+            emissionTimeSeconds < 0.0)
         {
             throw std::invalid_argument(
                 "Laser emission time must be finite and nonnegative.");

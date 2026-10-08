@@ -1,5 +1,6 @@
 #pragma once
 #include "BxDF.h"
+#include "FresnelUtils.h"
 class ThinDielectricBxDF :public BxDF
 {
 public:

@@ -39,33 +39,26 @@ public:
         LaserEmitter emitter,
         LidarReceiver receiver,
         std::size_t samplesPerPulse,
-        double brdfAtWavelengthPerSr)
+        const LidarScatteringModel& scatteringModel)
         : world(world),
         emitter(std::move(emitter)),
         receiver(std::move(receiver)),
-        samplesPerPulse(samplesPerPulse),
-        brdfAtWavelengthPerSr(brdfAtWavelengthPerSr)
+        scatteringModel(scatteringModel),
+        samplesPerPulse(samplesPerPulse)
     {
         if (samplesPerPulse == 0)
         {
             throw std::invalid_argument(
                 "LiDAR samples per pulse must be positive.");
         }
-
-        if (!std::isfinite(brdfAtWavelengthPerSr) ||
-            brdfAtWavelengthPerSr < 0.0)
-        {
-            throw std::invalid_argument(
-                "LiDAR BRDF must be finite and nonnegative.");
-        }
     }
 
     LidarPulseResult SimulatePulse(
         Sampler& sampler,
-        float emissionTimeSeconds = 0.0f) const
+        double emissionTimeSeconds = 0.0) const
     {
         if (!std::isfinite(emissionTimeSeconds) ||
-            emissionTimeSeconds < 0.0f)
+            emissionTimeSeconds < 0.0)
         {
             throw std::invalid_argument(
                 "LiDAR emission time is invalid.");
@@ -106,7 +99,7 @@ public:
                     hit,
                     receiver,
                     world,
-                    brdfAtWavelengthPerSr);
+                    scatteringModel);
 
             if (!returnSample)
                 continue;
@@ -126,7 +119,7 @@ private:
 
     LaserEmitter emitter;
     LidarReceiver receiver;
-
+    const LidarScatteringModel& scatteringModel;
     std::size_t samplesPerPulse = 0;
-    double brdfAtWavelengthPerSr = 0.0;
+
 };

@@ -21,6 +21,7 @@ struct LidarWaveformConfig
 class LidarWaveform
 {
 public:
+
     explicit LidarWaveform(
         const LidarWaveformConfig& config)
         : config(config),
@@ -56,14 +57,114 @@ public:
         }
     }
 
-    void Accumulate(
+    double AccumulatePulse(
         const LidarPulseResult& pulse)
     {
+        LidarWaveform stagedWaveform(config);
+
+        double recordedEnergyJ = 0.0;
+
         for (const auto& sample : pulse.returns)
-            Accumulate(sample);
+        {
+            const double sampleEnergyJ =
+                stagedWaveform.AccumulateReturn(sample);
+
+            const double newRecordedEnergyJ =
+                recordedEnergyJ +
+                sampleEnergyJ;
+
+            if (!std::isfinite(newRecordedEnergyJ))
+            {
+                throw std::overflow_error(
+                    "Pulse waveform energy overflow.");
+            }
+
+            recordedEnergyJ =
+                newRecordedEnergyJ;
+        }
+
+        for (std::size_t i = 0;
+            i < energyBinsJ.size();
+            ++i)
+        {
+            const double mergedEnergyJ =
+                energyBinsJ[i] +
+                stagedWaveform.energyBinsJ[i];
+
+            if (!std::isfinite(mergedEnergyJ))
+            {
+                throw std::overflow_error(
+                    "Waveform merge energy overflow.");
+            }
+        }
+
+        for (std::size_t i = 0;
+            i < energyBinsJ.size();
+            ++i)
+        {
+            energyBinsJ[i] +=
+                stagedWaveform.energyBinsJ[i];
+        }
+
+        return recordedEnergyJ;
     }
 
-    bool Accumulate(
+    double AccumulatePulse(
+        const LidarPulseResult& pulse,
+        const LidarPulseProfile& profile)
+    {
+        LidarWaveform stagedWaveform(config);
+
+        double recordedEnergyJ = 0.0;
+
+        for (const auto& sample : pulse.returns)
+        {
+            const double sampleEnergyJ =
+                stagedWaveform.AccumulateReturn(
+                    sample,
+                    profile);
+
+            const double newRecordedEnergyJ =
+                recordedEnergyJ +
+                sampleEnergyJ;
+
+            if (!std::isfinite(newRecordedEnergyJ))
+            {
+                throw std::overflow_error(
+                    "Pulse waveform energy overflow.");
+            }
+
+            recordedEnergyJ =
+                newRecordedEnergyJ;
+        }
+
+        for (std::size_t i = 0;
+            i < energyBinsJ.size();
+            ++i)
+        {
+            const double mergedEnergyJ =
+                energyBinsJ[i] +
+                stagedWaveform.energyBinsJ[i];
+
+            if (!std::isfinite(mergedEnergyJ))
+            {
+                throw std::overflow_error(
+                    "Waveform merge energy overflow.");
+            }
+        }
+
+        for (std::size_t i = 0;
+            i < energyBinsJ.size();
+            ++i)
+        {
+            energyBinsJ[i] +=
+                stagedWaveform.energyBinsJ[i];
+        }
+
+        return recordedEnergyJ;
+    }
+
+    double AccumulateReturn(
         const LidarReturnSample& sample)
     {
         if (!std::isfinite(sample.arrivalTimeSeconds) ||
@@ -86,7 +187,7 @@ public:
         if (relativeTime < 0.0 ||
             relativeTime >= duration)
         {
-            return false;
+            return 0.0;
         }
 
         const std::size_t binIndex =
@@ -106,7 +207,7 @@ public:
 
         energyBinsJ[binIndex] = newEnergy;
 
-        return true;
+        return sample.receivedEnergyJ;
     }
 
     void Clear()
@@ -142,7 +243,7 @@ public:
         return total;
     }
 
-    double Accumulate(
+    double AccumulateReturn(
         const LidarReturnSample& sample,
         const LidarPulseProfile& profile)
     {
@@ -166,27 +267,23 @@ public:
         double totalFraction = 0.0;
         double accumulatedEnergyJ = 0.0;
 
+        // 在回波相对时间中构造箱边界，避免先加大时刻再相减。
+        // 相邻箱复用同一个表达式生成公共边界，避免舍入造成重叠。
+        const double recordStartRelativeToReturn =
+            config.startTimeSeconds - sample.arrivalTimeSeconds;
+
         for (std::size_t i = 0;
             i < energyBinsJ.size();
             ++i)
         {
-            const double binStartTime =
-                config.startTimeSeconds +
-                static_cast<double>(i) *
-                config.binWidthSeconds;
-
-            const double binEndTime =
-                binStartTime +
-                config.binWidthSeconds;
-
             // 转换成相对于回波中心的时间。
             const double relativeStart =
-                binStartTime -
-                sample.arrivalTimeSeconds;
+                recordStartRelativeToReturn +
+                static_cast<double>(i) * config.binWidthSeconds;
 
             const double relativeEnd =
-                binEndTime -
-                sample.arrivalTimeSeconds;
+                recordStartRelativeToReturn +
+                static_cast<double>(i + 1) * config.binWidthSeconds;
 
             const double fraction =
                 profile.FractionBetween(
@@ -254,6 +351,11 @@ public:
         }
 
         return accumulatedEnergyJ;
+    }
+
+    const LidarWaveformConfig& Config() const
+    {
+        return config;
     }
 
 private:

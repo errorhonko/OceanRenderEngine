@@ -61,9 +61,6 @@ void RunOceanSurfaceMeshAcceptanceTests()
 {
     constexpr int resolution = 4;
     constexpr float patchLength = 8.0f;
-    constexpr float spacing =
-        patchLength / static_cast<float>(resolution);
-
     OceanFrequencyConfig config;
     config.resolution = resolution;
     config.patchLength = patchLength;
@@ -215,20 +212,10 @@ void RunOceanSurfaceMeshAcceptanceTests()
                     vertex.position.y,
                     dynamicHeightField.Height(sampleX, sampleZ));
 
-            const int leftX =
-                (sampleX - 1 + resolution) % resolution;
-            const int rightX = (sampleX + 1) % resolution;
-            const int backZ =
-                (sampleZ - 1 + resolution) % resolution;
-            const int frontZ = (sampleZ + 1) % resolution;
             const float dhdx =
-                (dynamicHeightField.Height(rightX, sampleZ) -
-                 dynamicHeightField.Height(leftX, sampleZ)) /
-                (2.0f * spacing);
+                dynamicHeightField.SlopeX(sampleX, sampleZ);
             const float dhdz =
-                (dynamicHeightField.Height(sampleX, frontZ) -
-                 dynamicHeightField.Height(sampleX, backZ)) /
-                (2.0f * spacing);
+                dynamicHeightField.SlopeZ(sampleX, sampleZ);
             const Vector3f expectedNormal =
                 Vector3f(-dhdx, 1.0f, -dhdz).normalize();
 
@@ -245,7 +232,7 @@ void RunOceanSurfaceMeshAcceptanceTests()
         heightsMatch);
 
     ExpectTrue(
-        "ocean surface mesh central difference normals",
+        "ocean surface mesh spectral slope normals",
         normalsMatch);
 
     ExpectTrue(

@@ -21,6 +21,9 @@
     <ClCompile Include="Bounds3fAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="FresnelUtilsAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="LaserEmitterAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -33,7 +36,55 @@
     <ClCompile Include="LidarPulseProfileAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="LidarScatteringAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="LidarWaveformAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarRangeEstimatorAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarAnalogAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstOrderLidarResponseAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarVoltageAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IdealUniformAdcAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarDigitalAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarRangeCalibrationAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarVoltageNoiseAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarDigitalBaselineAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarReceiverPipelineAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarPulseMetadataAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarPulseMeasurementAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarPointCloudBuilderAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarScanSequenceAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LidarDoubleTimeAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ElfouhailySpectrum.cpp">
@@ -58,6 +109,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="OceanHeightFieldAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanSlopeVarianceAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanNormalDistributionAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanSlopeNormalDistributionAcceptance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OceanSlopeMaskingAcceptance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="OceanMeshTriangleAcceptance.cpp">

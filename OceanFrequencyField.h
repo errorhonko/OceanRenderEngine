@@ -42,7 +42,22 @@ public:
         return deltaK;
     }
 
-  
+    float SpatialSpacing() const
+    {
+        return
+            config.patchLength /
+            static_cast<float>(
+                config.resolution);
+    }
+
+    float NyquistWaveNumber() const
+    {
+        return
+            0.5f *
+            static_cast<float>(
+                config.resolution) *
+            deltaK;
+    }
 
     // FFT 数组下标对应的实际波数
     float WaveNumber(int index) const;

@@ -1,4 +1,5 @@
 #include "LidarIntegrator.h"
+#include "LambertianLidarScattering.h"
 
 #include "HittableList.h"
 #include "IndependentSampler.h"
@@ -93,6 +94,8 @@ void RunLidarIntegratorAcceptanceTests()
     constexpr double lambertBrdf =
         0.5 / 3.14159265358979323846;
 
+    const LambertianLidarScattering lambertScattering(0.5);
+
     const Vector3f sensorPosition(
         0.0f,
         15.0f,
@@ -125,7 +128,7 @@ void RunLidarIntegratorAcceptanceTests()
         pencilEmitter,
         receiver,
         1,
-        lambertBrdf);
+        lambertScattering);
 
     SequenceSampler oneSampleSampler({
         Point2f(0.25f, 0.75f)
@@ -160,7 +163,7 @@ void RunLidarIntegratorAcceptanceTests()
         pencilEmitter,
         receiver,
         repeatedSampleCount,
-        lambertBrdf);
+        lambertScattering);
 
     SequenceSampler repeatedSampler(
         std::vector<Point2f>(
@@ -213,7 +216,7 @@ void RunLidarIntegratorAcceptanceTests()
         coneEmitter,
         receiver,
         2,
-        lambertBrdf);
+        lambertScattering);
 
     // u.x == 0 samples the cone axis and hits the sphere.
     // u.x == 1 samples the cone boundary and misses it.
@@ -240,7 +243,7 @@ void RunLidarIntegratorAcceptanceTests()
         coneEmitter,
         receiver,
         64,
-        lambertBrdf);
+        lambertScattering);
 
     IndependentSampler firstSampler(12345);
     IndependentSampler secondSampler(12345);
@@ -291,19 +294,7 @@ void RunLidarIntegratorAcceptanceTests()
                 pencilEmitter,
                 receiver,
                 0,
-                lambertBrdf);
-        });
-
-    ExpectThrows(
-        "lidar integrator rejects invalid BRDF",
-        [&]
-        {
-            LidarIntegrator invalid(
-                world,
-                pencilEmitter,
-                receiver,
-                1,
-                std::numeric_limits<double>::quiet_NaN());
+                lambertScattering);
         });
 
     SequenceSampler invalidTimeSampler({

@@ -141,8 +141,7 @@ public:
             returnDistance,
             pathLength,
             timeOfFlight,
-            static_cast<double>(
-                emission.emissionTimeSeconds) +
+            emission.emissionTimeSeconds +
                 timeOfFlight
         };
     }

@@ -118,33 +118,11 @@ Vector3f OceanSurfaceMesh::ComputeNormal(
     const int centerZ =
         Wrap(z);
 
-    const float left =
-        heightField.Height(
-            Wrap(centerX - 1),
-            centerZ);
-
-    const float right =
-        heightField.Height(
-            Wrap(centerX + 1),
-            centerZ);
-
-    const float back =
-        heightField.Height(
-            centerX,
-            Wrap(centerZ - 1));
-
-    const float front =
-        heightField.Height(
-            centerX,
-            Wrap(centerZ + 1));
-
     const float dhdx =
-        (right - left) /
-        (2.0f * spacing);
+        heightField.SlopeX(centerX, centerZ);
 
     const float dhdz =
-        (front - back) /
-        (2.0f * spacing);
+        heightField.SlopeZ(centerX, centerZ);
 
     return Vector3f(
         -dhdx,

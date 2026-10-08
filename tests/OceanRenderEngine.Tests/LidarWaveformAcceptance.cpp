@@ -84,29 +84,29 @@ void RunLidarWaveformAcceptanceTests()
         Near(boundaryWaveform.BinCenterTimeSeconds(3),
              10.875));
 
-    const bool acceptedStart =
-        boundaryWaveform.Accumulate({
+    const double recordedStartEnergy =
+        boundaryWaveform.AccumulateReturn({
             1.0,
             10.0,
             532.0f
         });
 
-    const bool acceptedBoundary =
-        boundaryWaveform.Accumulate({
+    const double recordedBoundaryEnergy =
+        boundaryWaveform.AccumulateReturn({
             2.0,
             10.25,
             532.0f
         });
 
-    const bool rejectedBeforeStart =
-        !boundaryWaveform.Accumulate({
+    const double recordedBeforeStartEnergy =
+        boundaryWaveform.AccumulateReturn({
             4.0,
             9.75,
             532.0f
         });
 
-    const bool rejectedAtEnd =
-        !boundaryWaveform.Accumulate({
+    const double recordedAtEndEnergy =
+        boundaryWaveform.AccumulateReturn({
             8.0,
             11.0,
             532.0f
@@ -117,10 +117,10 @@ void RunLidarWaveformAcceptanceTests()
 
     ExpectTrue(
         "lidar waveform uses half-open bin boundaries",
-        acceptedStart &&
-        acceptedBoundary &&
-        rejectedBeforeStart &&
-        rejectedAtEnd &&
+        Near(recordedStartEnergy, 1.0) &&
+        Near(recordedBoundaryEnergy, 2.0) &&
+        Near(recordedBeforeStartEnergy, 0.0) &&
+        Near(recordedAtEndEnergy, 0.0) &&
         Near(boundaryBins[0], 1.0) &&
         Near(boundaryBins[1], 2.0) &&
         Near(boundaryBins[2], 0.0) &&
@@ -132,13 +132,13 @@ void RunLidarWaveformAcceptanceTests()
         2
     });
 
-    accumulationWaveform.Accumulate({
+    accumulationWaveform.AccumulateReturn({
         0.25,
         0.1,
         532.0f
     });
 
-    accumulationWaveform.Accumulate({
+    accumulationWaveform.AccumulateReturn({
         0.75,
         0.9,
         1064.0f
@@ -166,7 +166,8 @@ void RunLidarWaveformAcceptanceTests()
         2
     });
 
-    pulseWaveform.Accumulate(pulse);
+    const double recordedPulseEnergy =
+        pulseWaveform.AccumulatePulse(pulse);
 
     ExpectTrue(
         "lidar waveform preserves pulse energy",
@@ -174,6 +175,8 @@ void RunLidarWaveformAcceptanceTests()
              0.125) &&
         Near(pulseWaveform.EnergyBinsJ()[1],
              0.750) &&
+        Near(recordedPulseEnergy,
+             pulse.TotalReceivedEnergyJ()) &&
         Near(pulseWaveform.TotalEnergyJ(),
              pulse.TotalReceivedEnergyJ()));
 
@@ -185,8 +188,8 @@ void RunLidarWaveformAcceptanceTests()
         Near(pulseWaveform.EnergyBinsJ()[1], 0.0) &&
         Near(pulseWaveform.TotalEnergyJ(), 0.0));
 
-    const bool acceptedZeroEnergy =
-        pulseWaveform.Accumulate({
+    const double recordedZeroEnergy =
+        pulseWaveform.AccumulateReturn({
             0.0,
             20.25,
             532.0f
@@ -194,7 +197,7 @@ void RunLidarWaveformAcceptanceTests()
 
     ExpectTrue(
         "lidar waveform accepts zero energy",
-        acceptedZeroEnergy &&
+        Near(recordedZeroEnergy, 0.0) &&
         Near(pulseWaveform.TotalEnergyJ(), 0.0));
 
     ExpectThrows(
@@ -263,7 +266,7 @@ void RunLidarWaveformAcceptanceTests()
         "lidar waveform rejects nonfinite return time",
         [&]
         {
-            pulseWaveform.Accumulate({
+            pulseWaveform.AccumulateReturn({
                 1.0,
                 std::numeric_limits<double>::infinity(),
                 532.0f
@@ -274,7 +277,7 @@ void RunLidarWaveformAcceptanceTests()
         "lidar waveform rejects negative return energy",
         [&]
         {
-            pulseWaveform.Accumulate({
+            pulseWaveform.AccumulateReturn({
                 -1.0,
                 20.25,
                 532.0f
@@ -285,7 +288,7 @@ void RunLidarWaveformAcceptanceTests()
         "lidar waveform rejects nonfinite return energy",
         [&]
         {
-            pulseWaveform.Accumulate({
+            pulseWaveform.AccumulateReturn({
                 std::numeric_limits<double>::infinity(),
                 20.25,
                 532.0f
@@ -298,7 +301,7 @@ void RunLidarWaveformAcceptanceTests()
         1
     });
 
-    overflowWaveform.Accumulate({
+    overflowWaveform.AccumulateReturn({
         std::numeric_limits<double>::max(),
         0.5,
         532.0f
@@ -308,7 +311,7 @@ void RunLidarWaveformAcceptanceTests()
         "lidar waveform detects energy overflow",
         [&]
         {
-            overflowWaveform.Accumulate({
+            overflowWaveform.AccumulateReturn({
                 std::numeric_limits<double>::max(),
                 0.5,
                 532.0f
@@ -331,7 +334,7 @@ void RunLidarWaveformAcceptanceTests()
     });
 
     const double recordedGaussianEnergy =
-        gaussianWaveform.Accumulate(
+        gaussianWaveform.AccumulateReturn(
             {10.0, 0.0, 532.0f},
             gaussian);
 
@@ -366,7 +369,7 @@ void RunLidarWaveformAcceptanceTests()
     });
 
     const double clippedEnergy =
-        clippedWaveform.Accumulate(
+        clippedWaveform.AccumulateReturn(
             {10.0, 0.0, 532.0f},
             gaussian);
 
@@ -387,7 +390,7 @@ void RunLidarWaveformAcceptanceTests()
     });
 
     const double tailEnergy =
-        tailWaveform.Accumulate(
+        tailWaveform.AccumulateReturn(
             {10.0, -sigma, 532.0f},
             gaussian);
 
@@ -430,19 +433,19 @@ void RunLidarWaveformAcceptanceTests()
         532.0f
     };
 
-    firstReturnWaveform.Accumulate(
+    firstReturnWaveform.AccumulateReturn(
         firstReturn,
         gaussian);
 
-    secondReturnWaveform.Accumulate(
+    secondReturnWaveform.AccumulateReturn(
         secondReturn,
         gaussian);
 
-    overlappingWaveform.Accumulate(
+    overlappingWaveform.AccumulateReturn(
         firstReturn,
         gaussian);
 
-    overlappingWaveform.Accumulate(
+    overlappingWaveform.AccumulateReturn(
         secondReturn,
         gaussian);
 
@@ -463,13 +466,49 @@ void RunLidarWaveformAcceptanceTests()
         "lidar waveform linearly adds overlapping returns",
         overlapIsLinear);
 
+    LidarPulseResult profiledPulse;
+    profiledPulse.returns = {
+        firstReturn,
+        secondReturn
+    };
+
+    LidarWaveform profiledPulseWaveform({
+        -2.0 * sigma,
+        sigma,
+        4
+    });
+
+    const double recordedProfiledPulseEnergy =
+        profiledPulseWaveform.AccumulatePulse(
+            profiledPulse,
+            gaussian);
+
+    bool profiledPulseMatchesReturns =
+        Near(recordedProfiledPulseEnergy,
+             profiledPulseWaveform.TotalEnergyJ(),
+             1e-12);
+
+    for (std::size_t i = 0; i < 4; ++i)
+    {
+        profiledPulseMatchesReturns =
+            profiledPulseMatchesReturns &&
+            Near(
+                profiledPulseWaveform.EnergyBinsJ()[i],
+                overlappingWaveform.EnergyBinsJ()[i],
+                1e-12);
+    }
+
+    ExpectTrue(
+        "lidar waveform accumulates a profiled pulse",
+        profiledPulseMatchesReturns);
+
     LidarWaveform atomicWaveform({
         0.0,
         1.0,
         3
     });
 
-    atomicWaveform.Accumulate({
+    atomicWaveform.AccumulateReturn({
         1.0,
         0.5,
         532.0f
@@ -484,7 +523,7 @@ void RunLidarWaveformAcceptanceTests()
         "lidar waveform rejects invalid pulse profile",
         [&]
         {
-            atomicWaveform.Accumulate(
+            atomicWaveform.AccumulateReturn(
                 {2.0, 0.5, 532.0f},
                 failingProfile);
         });

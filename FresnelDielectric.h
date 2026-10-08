@@ -1,6 +1,6 @@
 #pragma once
 #include "Fresnel.h"
-#include "BxDF.h"
+#include "FresnelUtils.h"
 class FresnelDielectric :public Fresnel
 {
 public:

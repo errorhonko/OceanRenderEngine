@@ -141,6 +141,18 @@
   <ItemGroup>
     <ClInclude Include="Bounds3f.h" />
     <ClInclude Include="BRDFUtils.h" />
+    <ClInclude Include="IdealTransimpedanceAmplifier.h" />
+    <ClInclude Include="IdealUniformAdc.h" />
+    <ClInclude Include="LidarAnalogWaveform.h" />
+    <ClInclude Include="LidarDigitalRangeEstimator.h" />
+    <ClInclude Include="LidarPulseMeasurement.h" />
+    <ClInclude Include="LidarPointSample.h" />
+    <ClInclude Include="LidarPointCloudBuilder.h" />
+    <ClInclude Include="LidarReceiverPipeline.h" />
+    <ClInclude Include="LidarDigitalWaveform.h" />
+    <ClInclude Include="LidarRangeEstimator.h" />
+    <ClInclude Include="LidarVoltageWaveform.h" />
+    <ClInclude Include="MicrofacetReflection.h" />
     <ClInclude Include="BSDF.h" />
     <ClInclude Include="BVHAccel.h" />
     <ClInclude Include="BxDF.h" />
@@ -157,6 +169,7 @@
     <ClInclude Include="Fresnel.h" />
     <ClInclude Include="FresnelDielectric.h" />
     <ClInclude Include="FresnelNoOp.h" />
+    <ClInclude Include="FresnelUtils.h" />
     <ClInclude Include="GaussianPulseProfile.h" />
     <ClInclude Include="HashUtils.h" />
     <ClInclude Include="HitRocord.h" />
@@ -165,10 +178,15 @@
     <ClInclude Include="IndependentSampler.h" />
     <ClInclude Include="Integrator.h" />
     <ClInclude Include="Lambertian.h" />
+    <ClInclude Include="LambertianLidarScattering.h" />
     <ClInclude Include="LaserEmitter.h" />
+    <ClInclude Include="LidarPulseMetadata.h" />
+    <ClInclude Include="LidarScanSequence.h" />
     <ClInclude Include="LidarIntegrator.h" />
     <ClInclude Include="LidarPulseProfile.h" />
     <ClInclude Include="LidarReceiver.h" />
+    <ClInclude Include="PhotonCountingLidarDetector.h" />
+    <ClInclude Include="LidarScatteringModel.h" />
     <ClInclude Include="LidarWaveform.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="load_obj.h" />
@@ -176,11 +194,17 @@
     <ClInclude Include="Matrix4f.h" />
     <ClInclude Include="Hittable.h" />
     <ClInclude Include="MixMaterial.h" />
+    <ClInclude Include="OceanBeckmannLidarScattering.h" />
     <ClInclude Include="OceanFFT.h" />
     <ClInclude Include="OceanFrequencyField.h" />
     <ClInclude Include="OceanHeightField.h" />
+    <ClInclude Include="OceanSlopeVariance.h" />
+    <ClInclude Include="BeckmannDistribution.h" />
+    <ClInclude Include="OceanNormalDistribution.h" />
+    <ClInclude Include="OceanSlopeNormalDistribution.h" />
     <ClInclude Include="MeshTriangle.h" />
     <ClInclude Include="OceanSurfaceMesh.h" />
+    <ClInclude Include="RoughDielectricLidarScattering.h" />
     <ClInclude Include="TriangleMesh.h" />
     <ClInclude Include="PathIntegrator.h" />
     <ClInclude Include="Point2f.h" />
@@ -207,6 +231,11 @@
     <ClInclude Include="Vector4f.h" />
     <ClInclude Include="ScaledBxDF.h" />
     <ClInclude Include="LidarReturnEstimator.h" />
+    <ClInclude Include="WhitecapCoverage.h" />
+    <ClInclude Include="OceanWhitecapField.h" />
+    <ClInclude Include="WhitecapLidarScattering.h" />
+    <ClInclude Include="LinearPhotodetector.h" />
+    <ClInclude Include="FirstOrderLidarResponse.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ElfouhailySpectrum.cpp" />

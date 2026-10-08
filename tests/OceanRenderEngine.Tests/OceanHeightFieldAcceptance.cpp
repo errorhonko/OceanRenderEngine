@@ -159,6 +159,23 @@ void RunOceanHeightFieldAcceptanceTests()
     frequencyField.BuildSpectrumAtTime(
         testTime,
         manualBuffer);
+    const float cutoffSquared =
+        heightField.CutoffWaveNumber() *
+        heightField.CutoffWaveNumber();
+    for (int z = 0; z < config.resolution; ++z)
+    {
+        const float kz = frequencyField.WaveNumber(z);
+        for (int x = 0; x < config.resolution; ++x)
+        {
+            const float kx = frequencyField.WaveNumber(x);
+            if (kx * kx + kz * kz >= cutoffSquared)
+            {
+                manualBuffer[
+                    static_cast<std::size_t>(z) *
+                    config.resolution + x] = {0.0f, 0.0f};
+            }
+        }
+    }
     OceanFFT::Inverse2D(
         manualBuffer,
         config.resolution);
@@ -182,6 +199,58 @@ void RunOceanHeightFieldAcceptanceTests()
     ExpectTrue(
         "ocean height field matches frequency FFT pipeline",
         matchesManualPipeline);
+
+    OceanFrequencyField outerFrequencyField(
+        config,
+        [](float kx, float kz)
+        {
+            return kx * kx + kz * kz > 17.5f &&
+                kx * kx + kz * kz < 18.5f
+                ? 1.0f : 0.0f;
+        },
+        dispersion);
+    OceanHeightField outerHeightField(outerFrequencyField);
+    outerHeightField.Update(testTime);
+
+    ExpectTrue(
+        "ocean corner mode exists before circular cutoff",
+        std::abs(outerFrequencyField.H(3, 3, testTime)) > 1e-6f);
+
+    bool outerModesRemoved = true;
+    for (int z = 0; z < config.resolution; ++z)
+    {
+        for (int x = 0; x < config.resolution; ++x)
+        {
+            outerModesRemoved = outerModesRemoved &&
+                outerHeightField.Height(x, z) == 0.0f &&
+                outerHeightField.SlopeX(x, z) == 0.0f &&
+                outerHeightField.SlopeZ(x, z) == 0.0f;
+        }
+    }
+
+    ExpectTrue(
+        "ocean height field circular cutoff removes corner modes",
+        outerModesRemoved);
+
+    OceanFrequencyField innerFrequencyField(
+        config,
+        [](float kx, float kz)
+        {
+            return kx * kx + kz * kz > 0.5f &&
+                kx * kx + kz * kz < 1.5f
+                ? 1.0f : 0.0f;
+        },
+        dispersion);
+    OceanHeightField innerHeightField(innerFrequencyField);
+    innerHeightField.Update(testTime);
+
+    bool innerModeRetained = false;
+    for (float height : innerHeightField.Heights())
+        innerModeRetained = innerModeRetained || std::fabs(height) > 1e-6f;
+
+    ExpectTrue(
+        "ocean height field circular cutoff retains inner modes",
+        innerModeRetained);
 
     OceanFrequencyField zeroFrequencyField(
         config,

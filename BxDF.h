@@ -89,22 +89,7 @@ public:
 	const BxDFType type;
 
 };
-inline float FrDielectric(float cosThetaI, float etaI, float etaT)
-{
-	cosThetaI = clamp(cosThetaI, -1.0f, 1.0f);
-	bool entering = cosThetaI > 0.0f;
-	if (!entering)
-	{
-		std::swap(etaI, etaT);
-		cosThetaI = std::fabs(cosThetaI);
-	}
-	float sinThetaI = std::sqrt(std::max(0.0f, 1.0f - cosThetaI * cosThetaI));
-	float sinthetaT = etaI / etaT * sinThetaI;
-	float cosThetaT = std::sqrt(std::max(0.0f, 1.0f - sinthetaT * sinthetaT));
-	float Rparl = (etaT * cosThetaI - etaI * cosThetaT) / (etaT * cosThetaI + etaI * cosThetaT);
-	float Rperp = (etaI * cosThetaI - etaT * cosThetaT) / (etaI * cosThetaI + etaT * cosThetaT);
-	return (Rparl * Rparl + Rperp * Rperp) / 2.0f;
-}
+
 
 inline float FrComplex(float cosTheta_i, std::complex<float> eta)
 {

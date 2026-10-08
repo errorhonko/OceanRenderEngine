@@ -1,5 +1,6 @@
 #pragma once
 #include "BxDF.h"
+#include "FresnelUtils.h"
 #include "TrowbridgeReitzDistribution.h"
 class DielectricBxDF :public BxDF
 {
