@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Synthetic OBJ material fixtures are source data, not compiled object files.
+!tests/OceanRenderEngine.Tests/fixtures/obj_materials/*.obj

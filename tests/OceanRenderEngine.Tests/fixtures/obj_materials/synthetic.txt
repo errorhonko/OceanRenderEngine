@@ -1,0 +1,7 @@
+Name: Synthetic spectral material binding fixture
+Sample No.: OBJ-TEST
+Measurement: Synthetic, not a real material
+X Units: Wavelength (micrometers)
+Y Units: Reflectance (percent)
+0.532 60
+1.55 30

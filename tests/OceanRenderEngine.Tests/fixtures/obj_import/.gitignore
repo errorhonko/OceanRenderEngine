@@ -1,0 +1,2 @@
+# Wavefront OBJ fixtures are source assets, not compiler object files.
+!*.obj

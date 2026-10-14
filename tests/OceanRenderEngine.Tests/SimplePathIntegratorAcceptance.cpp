@@ -1,14 +1,14 @@
-#include "SimplePathIntegrator.h"
-#include "PathIntegrator.h"
-#include "IndependentSampler.h"
-#include "DiffuseMaterial.h"
-#include "DielectricMaterial.h"
-#include "HittableList.h"
-#include "Sphere.h"
-#include "Triangle.h"
-#include "PointLight.h"
-#include "DistantLight.h"
-#include "DiffuseAreaLight.h"
+#include "render/integrators/SimplePathIntegrator.h"
+#include "render/integrators/PathIntegrator.h"
+#include "core/sampling/IndependentSampler.h"
+#include "reflection/materials/DiffuseMaterial.h"
+#include "reflection/materials/DielectricMaterial.h"
+#include "core/ray/HittableList.h"
+#include "geometry/primitives/Sphere.h"
+#include "geometry/primitives/Triangle.h"
+#include "render/lights/PointLight.h"
+#include "render/lights/DistantLight.h"
+#include "render/lights/DiffuseAreaLight.h"
 #include <cmath>
 #include <cstdint>
 #include <iostream>
@@ -17,13 +17,31 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "UniformInfiniteLight.h"
+#include "render/lights/UniformInfiniteLight.h"
 #include <utility>
 
 void RunBounds3fAcceptanceTests();
 void RunBVHAccelAcceptanceTests();
+void RunObjMeshLoaderAcceptanceTests();
+void RunObjMeshConversionAcceptanceTests();
+void RunObjUnitAxisAcceptanceTests();
+void RunSceneBuilderAcceptanceTests();
+void RunToyblocksImportAcceptanceTests();
+void RunHeliosUrbanStaticSceneAcceptanceTests();
+void RunSpectralReflectanceCurveAcceptanceTests();
+void RunSpectralLambertianLidarAcceptanceTests();
+void RunSurfaceMaterialAcceptanceTests();
+void RunObjMaterialBindingAcceptanceTests();
+void RunRoughConductorLidarAcceptanceTests();
 void RunFresnelUtilsAcceptanceTests();
 void RunLaserEmitterAcceptanceTests();
+void RunLidarBeamProfileAcceptanceTests();
+void RunBasicLidarBeamProfileAcceptanceTests();
+void RunGaussianLidarBeamDensityAcceptanceTests();
+void RunGaussianLidarBeamSamplingAcceptanceTests();
+void RunLidarBeamIntegrationAcceptanceTests();
+void RunGaussianBeamFootprintAcceptanceTests();
+void RunStratified2DSamplerAcceptanceTests();
 void RunLidarIntegratorAcceptanceTests();
 void RunLidarPulseProfileAcceptanceTests();
 void RunLidarReceiverAcceptanceTests();
@@ -35,14 +53,26 @@ void RunFirstOrderLidarResponseAcceptanceTests();
 void RunLidarVoltageAcceptanceTests();
 void RunIdealUniformAdcAcceptanceTests();
 void RunLidarDigitalAcceptanceTests();
+void RunLidarDigitalPeakDetectorAcceptanceTests();
+void RunLidarDigitalMultiEchoAcceptanceTests();
+void RunLidarMultiEchoPointCloudAcceptanceTests();
+void RunLidarReturnSelectionAcceptanceTests();
 void RunLidarRangeCalibrationAcceptanceTests();
 void RunLidarVoltageNoiseAcceptanceTests();
 void RunLidarDigitalBaselineAcceptanceTests();
 void RunLidarReceiverPipelineAcceptanceTests();
+void RunLidarMultiEchoPipelineAcceptanceTests();
 void RunLidarPulseMetadataAcceptanceTests();
 void RunLidarPulseMeasurementAcceptanceTests();
 void RunLidarPointCloudBuilderAcceptanceTests();
 void RunLidarScanSequenceAcceptanceTests();
+void RunLidarScanDriverAcceptanceTests();
+void RunStratifiedScanDriverAcceptanceTests();
+void RunLidarScanPlanAcceptanceTests();
+void RunLidarRotaryScanAcceptanceTests();
+void RunLidarStaticSceneAcceptanceTests();
+void RunLidarOutputAcceptanceTests();
+void RunLidarMotionAcceptanceTests();
 void RunLidarDoubleTimeAcceptanceTests();
 void RunElfouhailySpectrumAcceptanceTests();
 void RunOceanFrequencyFieldAcceptanceTests();
@@ -1896,10 +1926,28 @@ void ExpectAreaLightSurfaceEmission()
 
 int main()
 {
+    RunObjMeshLoaderAcceptanceTests();
+    RunObjMeshConversionAcceptanceTests();
+    RunObjUnitAxisAcceptanceTests();
+    RunSceneBuilderAcceptanceTests();
+    RunToyblocksImportAcceptanceTests();
+    RunHeliosUrbanStaticSceneAcceptanceTests();
+    RunSpectralReflectanceCurveAcceptanceTests();
+    RunSpectralLambertianLidarAcceptanceTests();
+    RunSurfaceMaterialAcceptanceTests();
+    RunObjMaterialBindingAcceptanceTests();
+    RunRoughConductorLidarAcceptanceTests();
     RunBounds3fAcceptanceTests();
     RunBVHAccelAcceptanceTests();
     RunFresnelUtilsAcceptanceTests();
     RunLaserEmitterAcceptanceTests();
+    RunLidarBeamProfileAcceptanceTests();
+    RunBasicLidarBeamProfileAcceptanceTests();
+    RunGaussianLidarBeamDensityAcceptanceTests();
+    RunGaussianLidarBeamSamplingAcceptanceTests();
+    RunLidarBeamIntegrationAcceptanceTests();
+    RunGaussianBeamFootprintAcceptanceTests();
+    RunStratified2DSamplerAcceptanceTests();
     RunLidarIntegratorAcceptanceTests();
     RunLidarPulseProfileAcceptanceTests();
     RunLidarReceiverAcceptanceTests();
@@ -1911,14 +1959,26 @@ int main()
     RunLidarVoltageAcceptanceTests();
     RunIdealUniformAdcAcceptanceTests();
     RunLidarDigitalAcceptanceTests();
+    RunLidarDigitalPeakDetectorAcceptanceTests();
+    RunLidarDigitalMultiEchoAcceptanceTests();
+    RunLidarMultiEchoPointCloudAcceptanceTests();
+    RunLidarReturnSelectionAcceptanceTests();
     RunLidarRangeCalibrationAcceptanceTests();
     RunLidarVoltageNoiseAcceptanceTests();
     RunLidarDigitalBaselineAcceptanceTests();
     RunLidarReceiverPipelineAcceptanceTests();
+    RunLidarMultiEchoPipelineAcceptanceTests();
     RunLidarPulseMetadataAcceptanceTests();
     RunLidarPulseMeasurementAcceptanceTests();
     RunLidarPointCloudBuilderAcceptanceTests();
     RunLidarScanSequenceAcceptanceTests();
+    RunLidarScanDriverAcceptanceTests();
+    RunStratifiedScanDriverAcceptanceTests();
+    RunLidarScanPlanAcceptanceTests();
+    RunLidarRotaryScanAcceptanceTests();
+    RunLidarStaticSceneAcceptanceTests();
+    RunLidarOutputAcceptanceTests();
+    RunLidarMotionAcceptanceTests();
     RunLidarDoubleTimeAcceptanceTests();
     RunElfouhailySpectrumAcceptanceTests();
     RunOceanFrequencyFieldAcceptanceTests();

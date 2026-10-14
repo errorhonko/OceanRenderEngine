@@ -1,5 +1,5 @@
-#include "rasterizer.h"
-#include "Matrix4f.h"
+#include "legacy/rasterizer/Rasterizer.h"
+#include "core/math/Matrix4f.h"
 int width = 800;
 int height = 600;
 float c0 = 200.0f;

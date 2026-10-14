@@ -1,5 +1,5 @@
-#include "LidarScanSequence.h"
-#include "LidarPointCloudBuilder.h"
+#include "lidar/scan/LidarScanSequence.h"
+#include "lidar/output/LidarPointCloudBuilder.h"
 #include <cmath>
 #include <iostream>
 #include <limits>

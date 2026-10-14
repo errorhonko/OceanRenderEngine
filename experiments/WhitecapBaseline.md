@@ -7,9 +7,9 @@
 ## 接入现有 LiDAR
 
 ```cpp
-#include "OceanWhitecapField.h"
-#include "WhitecapLidarScattering.h"
-#include "OceanBeckmannLidarScattering.h"
+#include "ocean/whitecap/OceanWhitecapField.h"
+#include "reflection/lidar/WhitecapLidarScattering.h"
+#include "reflection/lidar/OceanBeckmannLidarScattering.h"
 
 // frequency、heightField、oceanMesh、world、emitter、receiver 已构造。
 auto whitecaps = std::make_shared<OceanWhitecapField>(

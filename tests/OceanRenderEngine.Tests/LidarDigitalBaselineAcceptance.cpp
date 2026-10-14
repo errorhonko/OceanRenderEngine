@@ -1,5 +1,5 @@
-#include "LidarDigitalBaselineEstimator.h"
-#include "LidarVoltageNoise.h"
+#include "lidar/signal_processing/LidarDigitalBaselineEstimator.h"
+#include "lidar/receiver/analog/LidarVoltageNoise.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>

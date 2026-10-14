@@ -1,7 +1,7 @@
-#include "Bounds3f.h"
-#include "HittableList.h"
-#include "Sphere.h"
-#include "Triangle.h"
+#include "geometry/acceleration/Bounds3f.h"
+#include "core/ray/HittableList.h"
+#include "geometry/primitives/Sphere.h"
+#include "geometry/primitives/Triangle.h"
 
 #include <cmath>
 #include <iostream>

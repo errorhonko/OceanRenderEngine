@@ -1,4 +1,4 @@
-#include "LaserEmitter.h"
+#include "lidar/emitter/LaserEmitter.h"
 
 #include <cmath>
 #include <iostream>

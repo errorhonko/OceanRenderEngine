@@ -1,5 +1,5 @@
-#include "IdealUniformAdc.h"
-#include "LidarVoltageWaveform.h"
+#include "lidar/receiver/adc/IdealUniformAdc.h"
+#include "lidar/receiver/analog/LidarVoltageWaveform.h"
 #include <cmath>
 #include <iostream>
 #include <limits>

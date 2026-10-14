@@ -1,8 +1,8 @@
-#include "LidarReceiver.h"
-#include "LidarReturnEstimator.h"
-#include "LambertianLidarScattering.h"
-#include "HittableList.h"
-#include "Sphere.h"
+#include "lidar/receiver/LidarReceiver.h"
+#include "lidar/simulation/LidarReturnEstimator.h"
+#include "reflection/lidar/LambertianLidarScattering.h"
+#include "core/ray/HittableList.h"
+#include "geometry/primitives/Sphere.h"
 
 #include <cmath>
 #include <iostream>

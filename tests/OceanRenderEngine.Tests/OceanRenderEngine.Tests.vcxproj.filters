@@ -1,139 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <Filter Include="Engine"><UniqueIdentifier>{BDEB758E-15B2-D205-F184-39F43FE046AB}</UniqueIdentifier></Filter>
+    <Filter Include="Engine\ocean"><UniqueIdentifier>{D2E6008E-B340-87B5-7442-F818D9F5D6BA}</UniqueIdentifier></Filter>
+    <Filter Include="Engine\ocean\field"><UniqueIdentifier>{489447D0-FFB6-9BFD-41AA-8A779AF801AF}</UniqueIdentifier></Filter>
+    <Filter Include="Engine\ocean\spectrum"><UniqueIdentifier>{DE2A0560-344E-C245-2FE8-C23B5195DD7B}</UniqueIdentifier></Filter>
+    <Filter Include="Engine\scene"><UniqueIdentifier>{F98FFDD0-67C1-55DD-6375-2EF6C95BB15C}</UniqueIdentifier></Filter>
+    <Filter Include="Engine\scene\import"><UniqueIdentifier>{8DC22DF8-3C29-4607-9775-F399F0F96D81}</UniqueIdentifier></Filter>
+    <Filter Include="Tests"><UniqueIdentifier>{03D7C9E5-AD0B-FEA2-792A-D7E4A26CA443}</UniqueIdentifier></Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BVHAccelAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Bounds3fAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FresnelUtilsAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LaserEmitterAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarIntegratorAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarReceiverAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarPulseProfileAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarScatteringAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarWaveformAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarRangeEstimatorAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarAnalogAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FirstOrderLidarResponseAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarVoltageAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="IdealUniformAdcAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarDigitalAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarRangeCalibrationAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarVoltageNoiseAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarDigitalBaselineAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarReceiverPipelineAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarPulseMetadataAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarPulseMeasurementAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarPointCloudBuilderAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarScanSequenceAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LidarDoubleTimeAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ElfouhailySpectrum.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\OceanFFT.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\OceanHeightField.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\OceanFrequencyField.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\OceanSurfaceMesh.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ElfouhailySpectrumAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanFFTAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanHeightFieldAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanSlopeVarianceAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanNormalDistributionAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanSlopeNormalDistributionAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanSlopeMaskingAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanMeshTriangleAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanFrequencyFieldAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanSurfaceMeshAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SimplePathIntegratorAcceptance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClCompile Include="BVHAccelAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="ObjMeshLoaderAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="SceneBuilderAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="ToyblocksImportAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="HeliosUrbanStaticSceneAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="SpectralReflectanceCurveAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="SpectralLambertianLidarAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="SurfaceMaterialAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="ObjMaterialBindingAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="RoughConductorLidarAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="Bounds3fAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="FresnelUtilsAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LaserEmitterAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarBeamProfileAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarBeamIntegrationAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="GaussianBeamFootprintAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="Stratified2DSamplerAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarIntegratorAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarPulseProfileAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarReceiverAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarScatteringAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarWaveformAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarRangeEstimatorAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarAnalogAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="FirstOrderLidarResponseAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarVoltageAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="IdealUniformAdcAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarDigitalAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarDigitalPeakDetectorAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarDigitalMultiEchoAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarMultiEchoPointCloudAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarRangeCalibrationAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarVoltageNoiseAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarDigitalBaselineAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarReceiverPipelineAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarPulseMetadataAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarPulseMeasurementAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarPointCloudBuilderAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarScanSequenceAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarScanDriverAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarScanPlanAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarRotaryScanAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarStaticSceneAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarOutputAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarMotionAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarDoubleTimeAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="..\..\src\ocean\spectrum\ElfouhailySpectrum.cpp"><Filter>Engine\ocean\spectrum</Filter></ClCompile>
+    <ClCompile Include="..\..\src\scene\import\TinyObjLoaderImplementation.cpp"><Filter>Engine\scene\import</Filter></ClCompile>
+    <ClCompile Include="..\..\src\ocean\field\OceanFFT.cpp"><Filter>Engine\ocean\field</Filter></ClCompile>
+    <ClCompile Include="..\..\src\ocean\field\OceanFrequencyField.cpp"><Filter>Engine\ocean\field</Filter></ClCompile>
+    <ClCompile Include="..\..\src\ocean\field\OceanHeightField.cpp"><Filter>Engine\ocean\field</Filter></ClCompile>
+    <ClCompile Include="..\..\src\ocean\field\OceanSurfaceMesh.cpp"><Filter>Engine\ocean\field</Filter></ClCompile>
+    <ClCompile Include="ElfouhailySpectrumAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanFFTAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanFrequencyFieldAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanHeightFieldAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanSlopeVarianceAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanNormalDistributionAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanSlopeNormalDistributionAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanSlopeMaskingAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanMeshTriangleAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OceanSurfaceMeshAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="SimplePathIntegratorAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
   </ItemGroup>
 </Project>

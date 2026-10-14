@@ -1,0 +1,5 @@
+# External test assets stay local; fetch exact files rather than republish them.
+*
+!.gitignore
+!README.md
+!FetchToyblocks.ps1

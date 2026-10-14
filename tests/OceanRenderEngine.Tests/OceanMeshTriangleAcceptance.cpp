@@ -1,12 +1,12 @@
-#include "MeshTriangle.h"
+#include "geometry/mesh/MeshTriangle.h"
 
-#include "BVHAccel.h"
-#include "DiffuseMaterial.h"
-#include "HittableList.h"
-#include "OceanFrequencyField.h"
-#include "OceanHeightField.h"
-#include "OceanSurfaceMesh.h"
-#include "TriangleMeshAggregate.h"
+#include "geometry/acceleration/BVHAccel.h"
+#include "reflection/materials/DiffuseMaterial.h"
+#include "core/ray/HittableList.h"
+#include "ocean/field/OceanFrequencyField.h"
+#include "ocean/field/OceanHeightField.h"
+#include "ocean/field/OceanSurfaceMesh.h"
+#include "geometry/mesh/TriangleMeshAggregate.h"
 
 #include <cmath>
 #include <complex>

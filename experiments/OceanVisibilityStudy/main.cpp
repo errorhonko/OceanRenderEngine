@@ -1,7 +1,7 @@
-#include "BVHAccel.h"
-#include "ElfouhailySpectrum.h"
-#include "OceanFFT.h"
-#include "OceanSlopeVariance.h"
+#include "geometry/acceleration/BVHAccel.h"
+#include "ocean/spectrum/ElfouhailySpectrum.h"
+#include "ocean/field/OceanFFT.h"
+#include "ocean/statistics/OceanSlopeVariance.h"
 #include <algorithm>
 #include <array>
 #include <chrono>

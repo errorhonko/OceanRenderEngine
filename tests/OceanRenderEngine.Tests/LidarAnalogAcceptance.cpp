@@ -1,7 +1,7 @@
-#include "LinearPhotodetector.h"
-#include "LidarAnalogWaveform.h"
-#include "GaussianPulseProfile.h"
-#include "LidarRangeEstimator.h"
+#include "lidar/receiver/analog/LinearPhotodetector.h"
+#include "lidar/receiver/analog/LidarAnalogWaveform.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
+#include "lidar/signal_processing/LidarRangeEstimator.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>

@@ -1,7 +1,7 @@
-#include "LidarDigitalRangeEstimator.h"
-#include "LidarDigitalBaselineEstimator.h"
-#include "FirstOrderLidarResponse.h"
-#include "GaussianPulseProfile.h"
+#include "lidar/signal_processing/LidarDigitalRangeEstimator.h"
+#include "lidar/signal_processing/LidarDigitalBaselineEstimator.h"
+#include "lidar/receiver/analog/FirstOrderLidarResponse.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>

@@ -1,7 +1,7 @@
-#include "BVHAccel.h"
+#include "geometry/acceleration/BVHAccel.h"
 
-#include "DiffuseMaterial.h"
-#include "Sphere.h"
+#include "reflection/materials/DiffuseMaterial.h"
+#include "geometry/primitives/Sphere.h"
 
 #include <cmath>
 #include <iostream>

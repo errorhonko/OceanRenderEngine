@@ -1,5 +1,5 @@
-#include "LidarPulseMeasurement.h"
-#include "GaussianPulseProfile.h"
+#include "lidar/simulation/LidarPulseMeasurement.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
 #include <iostream>
 #include <stdexcept>
 #include <string>

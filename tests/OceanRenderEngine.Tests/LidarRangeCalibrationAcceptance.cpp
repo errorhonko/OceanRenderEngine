@@ -1,6 +1,6 @@
-#include "LidarRangeCalibration.h"
-#include "FirstOrderLidarResponse.h"
-#include "GaussianPulseProfile.h"
+#include "lidar/signal_processing/LidarRangeCalibration.h"
+#include "lidar/receiver/analog/FirstOrderLidarResponse.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>

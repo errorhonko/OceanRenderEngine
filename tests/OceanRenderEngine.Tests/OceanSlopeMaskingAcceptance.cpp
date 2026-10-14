@@ -1,4 +1,4 @@
-#include "OceanSlopeNormalDistribution.h"
+#include "ocean/statistics/OceanSlopeNormalDistribution.h"
 #include <algorithm>
 #include <array>
 #include <cmath>

@@ -1,5 +1,5 @@
-#include "LidarWaveform.h"
-#include "GaussianPulseProfile.h"
+#include "lidar/simulation/LidarWaveform.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
 
 #include <cmath>
 #include <iostream>

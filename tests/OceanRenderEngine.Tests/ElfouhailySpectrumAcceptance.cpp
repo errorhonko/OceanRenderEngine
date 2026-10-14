@@ -1,4 +1,4 @@
-#include "ElfouhailySpectrum.h"
+#include "ocean/spectrum/ElfouhailySpectrum.h"
 
 #include <cmath>
 #include <iostream>

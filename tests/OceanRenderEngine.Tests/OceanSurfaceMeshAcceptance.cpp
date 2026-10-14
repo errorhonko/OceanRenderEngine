@@ -1,7 +1,7 @@
-#include "OceanSurfaceMesh.h"
+#include "ocean/field/OceanSurfaceMesh.h"
 
-#include "OceanFrequencyField.h"
-#include "OceanHeightField.h"
+#include "ocean/field/OceanFrequencyField.h"
+#include "ocean/field/OceanHeightField.h"
 
 #include <cmath>
 #include <iostream>

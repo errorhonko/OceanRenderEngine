@@ -1,439 +1,202 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="头文件\core/math">
-      <UniqueIdentifier>{97c7af21-2467-4f16-b265-1c0993c33d30}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\core/Rasterizer">
-      <UniqueIdentifier>{d87f5a72-592b-4d2e-b81c-6296dcc69b50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\core/Raytracing">
-      <UniqueIdentifier>{3a36a571-d5aa-467b-a71c-454109817d03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\core/Raytracing\objects">
-      <UniqueIdentifier>{314a55bb-3958-4a89-933e-7974db92188b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\material">
-      <UniqueIdentifier>{6d97937f-26e1-441c-bdb6-0533ea029556}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\material\materials">
-      <UniqueIdentifier>{20e7910c-517d-44b9-9cd8-ce832dce677b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\spectrum">
-      <UniqueIdentifier>{6c8a0343-30f4-423b-a892-a5cd8d6ce7e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Path Tracing">
-      <UniqueIdentifier>{c64db0e2-f1af-477c-9e23-9dd8d88b6a9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Sampler">
-      <UniqueIdentifier>{0becd960-21f7-4c29-8f29-b38fbe5a2ae2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Light">
-      <UniqueIdentifier>{7d837ce1-f0dc-4cdf-a9dc-4414a0d61a04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Path Tracing\ReflectionModel">
-      <UniqueIdentifier>{d3f001e6-0e86-4c09-a26c-c84bcf9dccc9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Path Tracing\ReflectionModel\Fresnel">
-      <UniqueIdentifier>{dc0c9b6c-1e4f-441f-b41b-9b0a8fc8e42e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Path Tracing\ReflectionModel\Specular">
-      <UniqueIdentifier>{0704eec5-6ffb-420a-9734-fa621f81ec1c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Path Tracing\ReflectionModel\Diffuse">
-      <UniqueIdentifier>{694d1b9c-feaf-4278-b0fd-4dca5d255e16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Path Tracing\ReflectionModel\Conductor">
-      <UniqueIdentifier>{b9e8f999-6079-496b-973d-9e66f955c470}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Path Tracing\ReflectionModel\Dielectric">
-      <UniqueIdentifier>{d38db91d-1b24-424e-81f6-25d056f63b41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\OceanRender">
-      <UniqueIdentifier>{9c205631-8974-48b3-bcc0-cc7c86992663}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\OceanRender\SeaSpectrum">
-      <UniqueIdentifier>{881073ac-a702-4f5e-8e45-5408abdedc0a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\OceanRender\FrequencyField">
-      <UniqueIdentifier>{1642e4f3-0903-4392-9c4a-bb0fa1f5b3fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\OceanRender\Heightfield">
-      <UniqueIdentifier>{ebb47772-4777-45b7-94d4-501d93fd573a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR">
-      <UniqueIdentifier>{4c99d1e2-0df4-4d2a-94fe-dca90f4147e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR\Emitter\PulseProfile">
-      <UniqueIdentifier>{68e4a3fd-10f7-4eef-9e6d-526f057dafa7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR\Emitter">
-      <UniqueIdentifier>{599d8250-278d-4685-a54c-60b22cc9ec41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR\Receiver">
-      <UniqueIdentifier>{8d123458-d237-4a01-b902-a683ea511d80}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR\Receiver\AnalogSignal">
-      <UniqueIdentifier>{bf4ea4a6-e56e-42d9-9a25-059c43f541b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR\Receiver\PhotonCounting">
-      <UniqueIdentifier>{acbda572-0218-477b-b9e7-d0d86a5f86fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR\Simulation">
-      <UniqueIdentifier>{b07fd640-2e33-49ae-8af1-fb2fbc8df150}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR\SignalProcessing">
-      <UniqueIdentifier>{4f19dc42-98e2-4214-9b47-6de40cc6fb53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\LiDAR\Scattering">
-      <UniqueIdentifier>{d10f26a0-4091-4cb3-b1b5-736f91032eca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\OceanRender\Scattering">
-      <UniqueIdentifier>{eb9015d4-c2c9-47e6-8c15-0ebf2180e817}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Path Tracing\scatter">
-      <UniqueIdentifier>{c836b166-fde6-45ee-b61b-c4b36e96f524}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\OceanRender\SeaSpectrum\beckman">
-      <UniqueIdentifier>{c107e9df-78ca-446a-9555-0d1ab4af4e71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\OceanRender\Whitecap">
-      <UniqueIdentifier>{c84e5b68-4b40-47bf-beb5-b588fbbfc416}</UniqueIdentifier>
-    </Filter>
+    <Filter Include="Resources"><UniqueIdentifier>{AA309BE8-C31D-6A0A-D8C3-4610689BEDE8}</UniqueIdentifier></Filter>
+    <Filter Include="src"><UniqueIdentifier>{4263A625-C163-F6B1-FC46-97A04E2B9904}</UniqueIdentifier></Filter>
+    <Filter Include="src\app"><UniqueIdentifier>{D3DB532B-AD95-4141-DC9E-3DCE793BDAB8}</UniqueIdentifier></Filter>
+    <Filter Include="src\core"><UniqueIdentifier>{12F2A195-2A9D-4CE3-2810-6BCF6AB6A693}</UniqueIdentifier></Filter>
+    <Filter Include="src\core\math"><UniqueIdentifier>{0D17955B-8EDC-2E2A-A086-EEB52D36F725}</UniqueIdentifier></Filter>
+    <Filter Include="src\core\ray"><UniqueIdentifier>{2C9CF780-8977-6E56-1001-75CD3C53D9D8}</UniqueIdentifier></Filter>
+    <Filter Include="src\core\sampling"><UniqueIdentifier>{B10479E2-E6BC-8FB0-FA91-231352666B98}</UniqueIdentifier></Filter>
+    <Filter Include="src\core\spectrum"><UniqueIdentifier>{65204C82-D597-DD4E-0793-7B51ADD0BD8B}</UniqueIdentifier></Filter>
+    <Filter Include="src\geometry"><UniqueIdentifier>{E836E7AB-9422-A1DC-FC77-147529DFC64F}</UniqueIdentifier></Filter>
+    <Filter Include="src\geometry\acceleration"><UniqueIdentifier>{4BFF6BAB-9220-B4D7-594C-A6D52343862B}</UniqueIdentifier></Filter>
+    <Filter Include="src\geometry\mesh"><UniqueIdentifier>{01D37B8E-B168-A923-46E7-1D4ADE5CE225}</UniqueIdentifier></Filter>
+    <Filter Include="src\geometry\primitives"><UniqueIdentifier>{7D55F98E-67A9-1D55-EC81-D39BD8496610}</UniqueIdentifier></Filter>
+    <Filter Include="src\legacy"><UniqueIdentifier>{3FECDA11-9D37-2177-EB39-4EA781F41F62}</UniqueIdentifier></Filter>
+    <Filter Include="src\legacy\obj"><UniqueIdentifier>{BC39D0F3-B58B-AD03-87E9-8058669730E7}</UniqueIdentifier></Filter>
+    <Filter Include="src\legacy\rasterizer"><UniqueIdentifier>{08684E10-40C7-F326-485C-CAE8CA45DCF6}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar"><UniqueIdentifier>{1CE774C8-DC2D-7D40-1395-1C07B50770CC}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\emitter"><UniqueIdentifier>{EACF28F8-7C1C-545C-DCE5-1CDAAD5C1CCB}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\emitter\beam"><UniqueIdentifier>{A69CB269-CA13-0248-794E-8D7E25D972C8}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\emitter\pulse"><UniqueIdentifier>{D753AC1C-6712-8887-4085-C59971AAB7FF}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\output"><UniqueIdentifier>{55B36E43-1755-5680-A8C7-1B99A41D15A5}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\receiver"><UniqueIdentifier>{5680AE43-7DDE-D3B4-A97F-E5C06BC53DDC}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\receiver\adc"><UniqueIdentifier>{E58564DE-0CFF-67EA-2FED-C670EF95F5BE}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\receiver\analog"><UniqueIdentifier>{74F0F646-1518-B88D-A9E5-54CE58DF520D}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\receiver\photon_counting"><UniqueIdentifier>{5B9F1ED6-236B-AB34-7B96-5F5BB30BBD73}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\scan"><UniqueIdentifier>{20FFCB4E-8E76-DF97-213D-5B14BAE0B420}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\signal_processing"><UniqueIdentifier>{C9A6D574-DA0E-9948-DE8F-F862CB99A772}</UniqueIdentifier></Filter>
+    <Filter Include="src\lidar\simulation"><UniqueIdentifier>{EFFFA7EB-0FE7-3A4C-0EFD-FF5D262ACF64}</UniqueIdentifier></Filter>
+    <Filter Include="src\ocean"><UniqueIdentifier>{4EF70259-B890-230D-5A0F-B5AFEE5BC661}</UniqueIdentifier></Filter>
+    <Filter Include="src\ocean\field"><UniqueIdentifier>{0A73C5E9-3633-3B60-84C9-35D4FE0D4AC5}</UniqueIdentifier></Filter>
+    <Filter Include="src\ocean\spectrum"><UniqueIdentifier>{F09C95B5-20D2-C8ED-B125-E49106D46AC9}</UniqueIdentifier></Filter>
+    <Filter Include="src\ocean\statistics"><UniqueIdentifier>{19CCAF45-D46F-C583-C72E-BD3B97E24C80}</UniqueIdentifier></Filter>
+    <Filter Include="src\ocean\whitecap"><UniqueIdentifier>{D57F3C0E-14C4-D8E1-88E3-C4153B8B5CDC}</UniqueIdentifier></Filter>
+    <Filter Include="src\reflection"><UniqueIdentifier>{C5ABCF85-F713-7313-D9C2-C6E999E4CA45}</UniqueIdentifier></Filter>
+    <Filter Include="src\reflection\bxdfs"><UniqueIdentifier>{B7074CC1-BE6F-BCE8-AE14-FE4FFCEFA077}</UniqueIdentifier></Filter>
+    <Filter Include="src\reflection\fresnel"><UniqueIdentifier>{913D5859-6FE8-4605-8FBE-984F37CD27D1}</UniqueIdentifier></Filter>
+    <Filter Include="src\reflection\lidar"><UniqueIdentifier>{189AA77C-D854-8DAA-0F13-55CCD007AC79}</UniqueIdentifier></Filter>
+    <Filter Include="src\reflection\materials"><UniqueIdentifier>{2C4F7BC1-8F34-813D-C81C-CC83F629EE43}</UniqueIdentifier></Filter>
+    <Filter Include="src\reflection\microfacet"><UniqueIdentifier>{670EAD43-C619-DAF8-E0F0-6C8FDBB6AC94}</UniqueIdentifier></Filter>
+    <Filter Include="src\reflection\textures"><UniqueIdentifier>{EDFA02AE-4599-463F-C7A8-7873DE896636}</UniqueIdentifier></Filter>
+    <Filter Include="src\render"><UniqueIdentifier>{4DCD5503-CD81-E9DD-BF3A-D9AA281089F7}</UniqueIdentifier></Filter>
+    <Filter Include="src\render\cameras"><UniqueIdentifier>{620A89CA-BBF0-085C-A3CD-6DEEA3BEB007}</UniqueIdentifier></Filter>
+    <Filter Include="src\render\integrators"><UniqueIdentifier>{BB789E5A-99FD-281F-3183-B8D95402B04E}</UniqueIdentifier></Filter>
+    <Filter Include="src\render\lights"><UniqueIdentifier>{DADB49FA-D0DB-BBD1-7FD5-290C731251F5}</UniqueIdentifier></Filter>
+    <Filter Include="src\scene"><UniqueIdentifier>{971A9018-522E-4FC4-3BC7-44FA7038F60B}</UniqueIdentifier></Filter>
+    <Filter Include="src\scene\examples"><UniqueIdentifier>{944B5F9B-E068-3C1B-2FBE-E06AD184F254}</UniqueIdentifier></Filter>
+    <Filter Include="src\scene\import"><UniqueIdentifier>{394035B2-E0D4-F249-8763-8C4798DE1A6A}</UniqueIdentifier></Filter>
+    <Filter Include="third_party"><UniqueIdentifier>{88557622-C81F-2305-7314-9ACE0B1846C3}</UniqueIdentifier></Filter>
+    <Filter Include="third_party\stb"><UniqueIdentifier>{B052AB13-1524-189F-226B-9724D63E64B5}</UniqueIdentifier></Filter>
+    <Filter Include="third_party\tinyobjloader"><UniqueIdentifier>{824577FC-2404-198E-28FF-5B35AE75B8D7}</UniqueIdentifier></Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vector3f.h">
-      <Filter>头文件\core/math</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector4f.h">
-      <Filter>头文件\core/math</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix4f.h">
-      <Filter>头文件\core/math</Filter>
-    </ClInclude>
-    <ClInclude Include="load_obj.h">
-      <Filter>头文件\core/math</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rasterizer.h">
-      <Filter>头文件\core/Rasterizer</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>头文件\core/Raytracing</Filter>
-    </ClInclude>
-    <ClInclude Include="HitRocord.h">
-      <Filter>头文件\core/Raytracing</Filter>
-    </ClInclude>
-    <ClInclude Include="Hittable.h">
-      <Filter>头文件\core/Raytracing</Filter>
-    </ClInclude>
-    <ClInclude Include="Ray.h">
-      <Filter>头文件\core/Raytracing</Filter>
-    </ClInclude>
-    <ClInclude Include="HittableList.h">
-      <Filter>头文件\core/Raytracing</Filter>
-    </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>头文件\core/Raytracing\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>头文件\core/Raytracing\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="material.h">
-      <Filter>头文件\material</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>头文件\material</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageTexture.h">
-      <Filter>头文件\material</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>头文件\material</Filter>
-    </ClInclude>
-    <ClInclude Include="Lambertian.h">
-      <Filter>头文件\material\materials</Filter>
-    </ClInclude>
-    <ClInclude Include="CoefficientSpectrum.h">
-      <Filter>头文件\spectrum</Filter>
-    </ClInclude>
-    <ClInclude Include="SampledSpectrum.h">
-      <Filter>头文件\spectrum</Filter>
-    </ClInclude>
-    <ClInclude Include="RGBSpectrum.h">
-      <Filter>头文件\spectrum</Filter>
-    </ClInclude>
-    <ClInclude Include="BRDFUtils.h">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="MicrofacetReflection.h">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="BxDF.h">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="Point2f.h">
-      <Filter>头文件\core/math</Filter>
-    </ClInclude>
-    <ClInclude Include="ScaledBxDF.h">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="Fresnel.h">
-      <Filter>头文件\Path Tracing\ReflectionModel\Fresnel</Filter>
-    </ClInclude>
-    <ClInclude Include="FresnelDielectric.h">
-      <Filter>头文件\Path Tracing\ReflectionModel\Fresnel</Filter>
-    </ClInclude>
-    <ClInclude Include="FresnelNoOp.h">
-      <Filter>头文件\Path Tracing\ReflectionModel\Fresnel</Filter>
-    </ClInclude>
-    <ClInclude Include="SpecularReflection.h">
-      <Filter>头文件\Path Tracing\ReflectionModel\Specular</Filter>
-    </ClInclude>
-    <ClInclude Include="SpecularTransmission.h">
-      <Filter>头文件\Path Tracing\ReflectionModel\Specular</Filter>
-    </ClInclude>
-    <ClInclude Include="BSDF.h">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="ConductorBxDF.h">
-      <Filter>头文件\Path Tracing\ReflectionModel\Conductor</Filter>
-    </ClInclude>
-    <ClInclude Include="TrowbridgeReitzDistribution.h">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="DielectricBxDF.h">
-      <Filter>头文件\Path Tracing\ReflectionModel\Dielectric</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseMaterial.h">
-      <Filter>头文件\material\materials</Filter>
-    </ClInclude>
-    <ClInclude Include="DielectricMaterial.h">
-      <Filter>头文件\material\materials</Filter>
-    </ClInclude>
-    <ClInclude Include="MixMaterial.h">
-      <Filter>头文件\material\materials</Filter>
-    </ClInclude>
-    <ClInclude Include="HashUtils.h">
-      <Filter>头文件\core/math</Filter>
-    </ClInclude>
-    <ClInclude Include="ThinDielectricBxDF.h">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="SimplePathIntegrator.h">
-      <Filter>头文件\Path Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="Sampler.h">
-      <Filter>头文件\Sampler</Filter>
-    </ClInclude>
-    <ClInclude Include="Integrator.h">
-      <Filter>头文件\Path Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="UniformLightSampler.h">
-      <Filter>头文件\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>头文件\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="PointLight.h">
-      <Filter>头文件\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="DistantLight.h">
-      <Filter>头文件\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="UniformInfiniteLight.h">
-      <Filter>头文件\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseAreaLight.h">
-      <Filter>头文件\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="PathIntegrator.h">
-      <Filter>头文件\Path Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="ElfouhailySpectrum.h">
-      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanFrequencyField.h">
-      <Filter>头文件\OceanRender\FrequencyField</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanFFT.h">
-      <Filter>头文件\OceanRender\Heightfield</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanHeightField.h">
-      <Filter>头文件\OceanRender\Heightfield</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanSlopeVariance.h">
-      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanNormalDistribution.h">
-      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanSlopeNormalDistribution.h">
-      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshTriangle.h">
-      <Filter>头文件\OceanRender\Heightfield</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanSurfaceMesh.h">
-      <Filter>头文件\OceanRender\Heightfield</Filter>
-    </ClInclude>
-    <ClInclude Include="TriangleMesh.h">
-      <Filter>头文件\OceanRender\Heightfield</Filter>
-    </ClInclude>
-    <ClInclude Include="Bounds3f.h">
-      <Filter>头文件\BVH</Filter>
-    </ClInclude>
-    <ClInclude Include="BVHAccel.h">
-      <Filter>头文件\BVH</Filter>
-    </ClInclude>
-    <ClInclude Include="TriangleMeshAggregate.h">
-      <Filter>头文件\OceanRender\Heightfield</Filter>
-    </ClInclude>
-    <ClInclude Include="LaserEmitter.h">
-      <Filter>头文件\LiDAR\Emitter</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarPulseMetadata.h">
-      <Filter>头文件\LiDAR\Simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarScanSequence.h">
-      <Filter>头文件\LiDAR\Simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarReceiver.h">
-      <Filter>头文件\LiDAR\Receiver</Filter>
-    </ClInclude>
-    <ClInclude Include="PhotonCountingLidarDetector.h">
-      <Filter>头文件\LiDAR\Receiver\PhotonCounting</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarReturnEstimator.h">
-      <Filter>头文件\LiDAR\Simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarIntegrator.h">
-      <Filter>头文件\LiDAR\Simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarWaveform.h">
-      <Filter>头文件\LiDAR\SignalProcessing</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarPulseProfile.h">
-      <Filter>头文件\LiDAR\Emitter\PulseProfile</Filter>
-    </ClInclude>
-    <ClInclude Include="GaussianPulseProfile.h">
-      <Filter>头文件\LiDAR\Emitter\PulseProfile</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarScatteringModel.h">
-      <Filter>头文件\LiDAR\Scattering</Filter>
-    </ClInclude>
-    <ClInclude Include="LambertianLidarScattering.h">
-      <Filter>头文件\LiDAR\Scattering</Filter>
-    </ClInclude>
-    <ClInclude Include="IndependentSampler.h">
-      <Filter>头文件\Sampler</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseBxDF.h">
-      <Filter>头文件\Path Tracing\ReflectionModel</Filter>
-    </ClInclude>
-    <ClInclude Include="FresnelUtils.h">
-      <Filter>头文件\Path Tracing\ReflectionModel\Fresnel</Filter>
-    </ClInclude>
-    <ClInclude Include="RoughDielectricLidarScattering.h">
-      <Filter>头文件\LiDAR\Scattering</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanBeckmannLidarScattering.h">
-      <Filter>头文件\OceanRender\Scattering</Filter>
-    </ClInclude>
-    <ClInclude Include="BeckmannDistribution.h">
-      <Filter>头文件\OceanRender\SeaSpectrum\beckman</Filter>
-    </ClInclude>
-    <ClInclude Include="WhitecapCoverage.h">
-      <Filter>头文件\OceanRender\Whitecap</Filter>
-    </ClInclude>
-    <ClInclude Include="OceanWhitecapField.h">
-      <Filter>头文件\OceanRender\Whitecap</Filter>
-    </ClInclude>
-    <ClInclude Include="WhitecapLidarScattering.h">
-      <Filter>头文件\OceanRender\Whitecap</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarRangeEstimator.h">
-      <Filter>头文件\LiDAR\SignalProcessing</Filter>
-    </ClInclude>
-    <ClInclude Include="LinearPhotodetector.h">
-      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarAnalogWaveform.h">
-      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
-    </ClInclude>
-    <ClInclude Include="FirstOrderLidarResponse.h">
-      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
-    </ClInclude>
-    <ClInclude Include="IdealTransimpedanceAmplifier.h">
-      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarVoltageWaveform.h">
-      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
-    </ClInclude>
-    <ClInclude Include="IdealUniformAdc.h">
-      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarDigitalWaveform.h">
-      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarDigitalRangeEstimator.h">
-      <Filter>头文件\LiDAR\Receiver\AnalogSignal</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarReceiverPipeline.h">
-      <Filter>头文件\LiDAR\Receiver</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarPulseMeasurement.h">
-      <Filter>头文件\LiDAR\Simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarPointSample.h">
-      <Filter>头文件\LiDAR\SignalProcessing</Filter>
-    </ClInclude>
-    <ClInclude Include="LidarPointCloudBuilder.h">
-      <Filter>头文件\LiDAR\SignalProcessing</Filter>
-    </ClInclude>
+    <ClInclude Include="src\geometry\acceleration\Bounds3f.h"><Filter>src\geometry\acceleration</Filter></ClInclude>
+    <ClInclude Include="src\reflection\microfacet\BRDFUtils.h"><Filter>src\reflection\microfacet</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\analog\IdealTransimpedanceAmplifier.h"><Filter>src\lidar\receiver\analog</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\adc\IdealUniformAdc.h"><Filter>src\lidar\receiver\adc</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\analog\LidarAnalogWaveform.h"><Filter>src\lidar\receiver\analog</Filter></ClInclude>
+    <ClInclude Include="src\lidar\signal_processing\LidarDigitalRangeEstimator.h"><Filter>src\lidar\signal_processing</Filter></ClInclude>
+    <ClInclude Include="src\lidar\signal_processing\LidarDigitalPeakDetector.h"><Filter>src\lidar\signal_processing</Filter></ClInclude>
+    <ClInclude Include="src\lidar\signal_processing\LidarDigitalMultiEchoEstimator.h"><Filter>src\lidar\signal_processing</Filter></ClInclude>
+    <ClInclude Include="src\lidar\simulation\LidarPulseMeasurement.h"><Filter>src\lidar\simulation</Filter></ClInclude>
+    <ClInclude Include="src\lidar\output\LidarPointSample.h"><Filter>src\lidar\output</Filter></ClInclude>
+    <ClInclude Include="src\lidar\output\LidarPointCloudBuilder.h"><Filter>src\lidar\output</Filter></ClInclude>
+    <ClInclude Include="src\lidar\signal_processing\LidarReturnSelection.h"><Filter>src\lidar\signal_processing</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\LidarReceiverPipeline.h"><Filter>src\lidar\receiver</Filter></ClInclude>
+    <ClInclude Include="src\lidar\signal_processing\LidarDigitalBaselineEstimator.h"><Filter>src\lidar\signal_processing</Filter></ClInclude>
+    <ClInclude Include="src\lidar\signal_processing\LidarRangeCalibration.h"><Filter>src\lidar\signal_processing</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\analog\LidarVoltageNoise.h"><Filter>src\lidar\receiver\analog</Filter></ClInclude>
+    <ClInclude Include="src\reflection\fresnel\FresnelConductor.h"><Filter>src\reflection\fresnel</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\adc\LidarDigitalWaveform.h"><Filter>src\lidar\receiver\adc</Filter></ClInclude>
+    <ClInclude Include="src\lidar\signal_processing\LidarRangeEstimator.h"><Filter>src\lidar\signal_processing</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\analog\LidarVoltageWaveform.h"><Filter>src\lidar\receiver\analog</Filter></ClInclude>
+    <ClInclude Include="src\reflection\microfacet\MicrofacetReflection.h"><Filter>src\reflection\microfacet</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\BSDF.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\geometry\acceleration\BVHAccel.h"><Filter>src\geometry\acceleration</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\BxDF.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\render\cameras\camera.h"><Filter>src\render\cameras</Filter></ClInclude>
+    <ClInclude Include="src\core\spectrum\CoefficientSpectrum.h"><Filter>src\core\spectrum</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\ConductorBxDF.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\DielectricBxDF.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\reflection\materials\DielectricMaterial.h"><Filter>src\reflection\materials</Filter></ClInclude>
+    <ClInclude Include="src\render\lights\DiffuseAreaLight.h"><Filter>src\render\lights</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\DiffuseBxDF.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\reflection\materials\DiffuseMaterial.h"><Filter>src\reflection\materials</Filter></ClInclude>
+    <ClInclude Include="src\render\lights\DistantLight.h"><Filter>src\render\lights</Filter></ClInclude>
+    <ClInclude Include="src\ocean\spectrum\ElfouhailySpectrum.h"><Filter>src\ocean\spectrum</Filter></ClInclude>
+    <ClInclude Include="src\reflection\fresnel\Fresnel.h"><Filter>src\reflection\fresnel</Filter></ClInclude>
+    <ClInclude Include="src\reflection\fresnel\FresnelDielectric.h"><Filter>src\reflection\fresnel</Filter></ClInclude>
+    <ClInclude Include="src\reflection\fresnel\FresnelNoOp.h"><Filter>src\reflection\fresnel</Filter></ClInclude>
+    <ClInclude Include="src\reflection\fresnel\FresnelUtils.h"><Filter>src\reflection\fresnel</Filter></ClInclude>
+    <ClInclude Include="src\lidar\emitter\pulse\GaussianPulseProfile.h"><Filter>src\lidar\emitter\pulse</Filter></ClInclude>
+    <ClInclude Include="src\core\math\HashUtils.h"><Filter>src\core\math</Filter></ClInclude>
+    <ClInclude Include="src\core\ray\HitRocord.h"><Filter>src\core\ray</Filter></ClInclude>
+    <ClInclude Include="src\core\ray\HittableList.h"><Filter>src\core\ray</Filter></ClInclude>
+    <ClInclude Include="src\reflection\textures\ImageTexture.h"><Filter>src\reflection\textures</Filter></ClInclude>
+    <ClInclude Include="src\core\sampling\IndependentSampler.h"><Filter>src\core\sampling</Filter></ClInclude>
+    <ClInclude Include="src\core\sampling\Stratified2DSampler.h"><Filter>src\core\sampling</Filter></ClInclude>
+    <ClInclude Include="src\render\integrators\Integrator.h"><Filter>src\render\integrators</Filter></ClInclude>
+    <ClInclude Include="src\reflection\materials\Lambertian.h"><Filter>src\reflection\materials</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\LambertianLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\SpectralLambertianLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\reflection\materials\SurfaceMaterial.h"><Filter>src\reflection\materials</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\SurfaceLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\lidar\emitter\LaserEmitter.h"><Filter>src\lidar\emitter</Filter></ClInclude>
+    <ClInclude Include="src\lidar\emitter\beam\LidarBeamProfile.h"><Filter>src\lidar\emitter\beam</Filter></ClInclude>
+    <ClInclude Include="src\lidar\emitter\beam\GaussianLidarBeamProfile.h"><Filter>src\lidar\emitter\beam</Filter></ClInclude>
+    <ClInclude Include="src\lidar\emitter\beam\DeltaLidarBeamProfile.h"><Filter>src\lidar\emitter\beam</Filter></ClInclude>
+    <ClInclude Include="src\lidar\emitter\beam\UniformConeLidarBeamProfile.h"><Filter>src\lidar\emitter\beam</Filter></ClInclude>
+    <ClInclude Include="src\lidar\simulation\LidarPulseMetadata.h"><Filter>src\lidar\simulation</Filter></ClInclude>
+    <ClInclude Include="src\lidar\scan\LidarScanSequence.h"><Filter>src\lidar\scan</Filter></ClInclude>
+    <ClInclude Include="src\lidar\scan\LidarScanPlan.h"><Filter>src\lidar\scan</Filter></ClInclude>
+    <ClInclude Include="src\lidar\scan\LidarRotaryScanPlan.h"><Filter>src\lidar\scan</Filter></ClInclude>
+    <ClInclude Include="src\scene\examples\LidarStaticTestScene.h"><Filter>src\scene\examples</Filter></ClInclude>
+    <ClInclude Include="src\lidar\scan\LidarMultiFrameDriver.h"><Filter>src\lidar\scan</Filter></ClInclude>
+    <ClInclude Include="src\lidar\scan\LidarPoseTrajectory.h"><Filter>src\lidar\scan</Filter></ClInclude>
+    <ClInclude Include="src\lidar\output\LidarPointCloudFrame.h"><Filter>src\lidar\output</Filter></ClInclude>
+    <ClInclude Include="src\lidar\output\LidarPcdWriter.h"><Filter>src\lidar\output</Filter></ClInclude>
+    <ClInclude Include="src\lidar\scan\LidarScanDriver.h"><Filter>src\lidar\scan</Filter></ClInclude>
+    <ClInclude Include="src\lidar\simulation\LidarIntegrator.h"><Filter>src\lidar\simulation</Filter></ClInclude>
+    <ClInclude Include="src\lidar\emitter\pulse\LidarPulseProfile.h"><Filter>src\lidar\emitter\pulse</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\LidarReceiver.h"><Filter>src\lidar\receiver</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\photon_counting\PhotonCountingLidarDetector.h"><Filter>src\lidar\receiver\photon_counting</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\LidarScatteringModel.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\lidar\simulation\LidarWaveform.h"><Filter>src\lidar\simulation</Filter></ClInclude>
+    <ClInclude Include="src\render\lights\Light.h"><Filter>src\render\lights</Filter></ClInclude>
+    <ClInclude Include="src\legacy\obj\load_obj.h"><Filter>src\legacy\obj</Filter></ClInclude>
+    <ClInclude Include="src\scene\import\ObjMeshLoader.h"><Filter>src\scene\import</Filter></ClInclude>
+    <ClInclude Include="src\scene\import\ObjMaterialBinding.h"><Filter>src\scene\import</Filter></ClInclude>
+    <ClInclude Include="src\scene\import\ObjSceneAsset.h"><Filter>src\scene\import</Filter></ClInclude>
+    <ClInclude Include="src\scene\SceneBuilder.h"><Filter>src\scene</Filter></ClInclude>
+    <ClInclude Include="src\scene\examples\HeliosUrbanStaticScene.h"><Filter>src\scene\examples</Filter></ClInclude>
+    <ClInclude Include="src\scene\examples\HeliosUrbanStaticSceneParts.h"><Filter>src\scene\examples</Filter></ClInclude>
+    <ClInclude Include="src\scene\StaticScene.h"><Filter>src\scene</Filter></ClInclude>
+    <ClInclude Include="third_party\tinyobjloader\tiny_obj_loader.h"><Filter>third_party\tinyobjloader</Filter></ClInclude>
+    <ClInclude Include="src\reflection\materials\material.h"><Filter>src\reflection\materials</Filter></ClInclude>
+    <ClInclude Include="src\core\math\Matrix4f.h"><Filter>src\core\math</Filter></ClInclude>
+    <ClInclude Include="src\core\ray\Hittable.h"><Filter>src\core\ray</Filter></ClInclude>
+    <ClInclude Include="src\reflection\materials\MixMaterial.h"><Filter>src\reflection\materials</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\OceanBeckmannLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\ocean\field\OceanFFT.h"><Filter>src\ocean\field</Filter></ClInclude>
+    <ClInclude Include="src\ocean\field\OceanFrequencyField.h"><Filter>src\ocean\field</Filter></ClInclude>
+    <ClInclude Include="src\ocean\field\OceanHeightField.h"><Filter>src\ocean\field</Filter></ClInclude>
+    <ClInclude Include="src\ocean\statistics\OceanSlopeVariance.h"><Filter>src\ocean\statistics</Filter></ClInclude>
+    <ClInclude Include="src\reflection\microfacet\BeckmannDistribution.h"><Filter>src\reflection\microfacet</Filter></ClInclude>
+    <ClInclude Include="src\ocean\statistics\OceanNormalDistribution.h"><Filter>src\ocean\statistics</Filter></ClInclude>
+    <ClInclude Include="src\ocean\statistics\OceanSlopeNormalDistribution.h"><Filter>src\ocean\statistics</Filter></ClInclude>
+    <ClInclude Include="src\geometry\mesh\MeshTriangle.h"><Filter>src\geometry\mesh</Filter></ClInclude>
+    <ClInclude Include="src\ocean\field\OceanSurfaceMesh.h"><Filter>src\ocean\field</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\RoughDielectricLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\RoughConductorLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\geometry\mesh\TriangleMesh.h"><Filter>src\geometry\mesh</Filter></ClInclude>
+    <ClInclude Include="src\render\integrators\PathIntegrator.h"><Filter>src\render\integrators</Filter></ClInclude>
+    <ClInclude Include="src\core\math\Point2f.h"><Filter>src\core\math</Filter></ClInclude>
+    <ClInclude Include="src\render\lights\PointLight.h"><Filter>src\render\lights</Filter></ClInclude>
+    <ClInclude Include="src\legacy\rasterizer\Rasterizer.h"><Filter>src\legacy\rasterizer</Filter></ClInclude>
+    <ClInclude Include="src\core\ray\Ray.h"><Filter>src\core\ray</Filter></ClInclude>
+    <ClInclude Include="resource.h"><Filter>Resources</Filter></ClInclude>
+    <ClInclude Include="src\core\spectrum\RGBSpectrum.h"><Filter>src\core\spectrum</Filter></ClInclude>
+    <ClInclude Include="src\core\spectrum\SampledSpectrum.h"><Filter>src\core\spectrum</Filter></ClInclude>
+    <ClInclude Include="src\core\spectrum\SpectralReflectanceCurve.h"><Filter>src\core\spectrum</Filter></ClInclude>
+    <ClInclude Include="src\core\sampling\Sampler.h"><Filter>src\core\sampling</Filter></ClInclude>
+    <ClInclude Include="src\render\integrators\SimplePathIntegrator.h"><Filter>src\render\integrators</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\SpecularReflection.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\SpecularTransmission.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\geometry\primitives\Sphere.h"><Filter>src\geometry\primitives</Filter></ClInclude>
+    <ClInclude Include="third_party\stb\stb_image.h"><Filter>third_party\stb</Filter></ClInclude>
+    <ClInclude Include="src\reflection\textures\Texture.h"><Filter>src\reflection\textures</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\ThinDielectricBxDF.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\geometry\primitives\Triangle.h"><Filter>src\geometry\primitives</Filter></ClInclude>
+    <ClInclude Include="src\geometry\mesh\TriangleMeshAggregate.h"><Filter>src\geometry\mesh</Filter></ClInclude>
+    <ClInclude Include="src\reflection\microfacet\TrowbridgeReitzDistribution.h"><Filter>src\reflection\microfacet</Filter></ClInclude>
+    <ClInclude Include="src\render\lights\UniformInfiniteLight.h"><Filter>src\render\lights</Filter></ClInclude>
+    <ClInclude Include="src\render\lights\UniformLightSampler.h"><Filter>src\render\lights</Filter></ClInclude>
+    <ClInclude Include="src\core\math\Vector3f.h"><Filter>src\core\math</Filter></ClInclude>
+    <ClInclude Include="src\core\math\Vector4f.h"><Filter>src\core\math</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\ScaledBxDF.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\lidar\simulation\LidarReturnEstimator.h"><Filter>src\lidar\simulation</Filter></ClInclude>
+    <ClInclude Include="src\ocean\whitecap\WhitecapCoverage.h"><Filter>src\ocean\whitecap</Filter></ClInclude>
+    <ClInclude Include="src\ocean\whitecap\OceanWhitecapField.h"><Filter>src\ocean\whitecap</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\WhitecapLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\analog\LinearPhotodetector.h"><Filter>src\lidar\receiver\analog</Filter></ClInclude>
+    <ClInclude Include="src\lidar\receiver\analog\FirstOrderLidarResponse.h"><Filter>src\lidar\receiver\analog</Filter></ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ElfouhailySpectrum.cpp">
-      <Filter>头文件\OceanRender\SeaSpectrum</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanFrequencyField.cpp">
-      <Filter>头文件\OceanRender\FrequencyField</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanFFT.cpp">
-      <Filter>头文件\OceanRender\Heightfield</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanHeightField.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="OceanSurfaceMesh.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClCompile Include="src\ocean\spectrum\ElfouhailySpectrum.cpp"><Filter>src\ocean\spectrum</Filter></ClCompile>
+    <ClCompile Include="src\app\main.cpp"><Filter>src\app</Filter></ClCompile>
+    <ClCompile Include="src\scene\import\TinyObjLoaderImplementation.cpp"><Filter>src\scene\import</Filter></ClCompile>
+    <ClCompile Include="src\ocean\field\OceanFFT.cpp"><Filter>src\ocean\field</Filter></ClCompile>
+    <ClCompile Include="src\ocean\field\OceanFrequencyField.cpp"><Filter>src\ocean\field</Filter></ClCompile>
+    <ClCompile Include="src\ocean\field\OceanHeightField.cpp"><Filter>src\ocean\field</Filter></ClCompile>
+    <ClCompile Include="src\ocean\field\OceanSurfaceMesh.cpp"><Filter>src\ocean\field</Filter></ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="OceanRenderEngine.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="OceanRenderEngine.rc"><Filter>Resources</Filter></ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="头文件\BVH">
-      <UniqueIdentifier>{d4c00f7d-b230-4b1b-b07b-f9e04c6882b6}</UniqueIdentifier>
-    </Filter>
+    <None Include="third_party\tinyobjloader\LICENSE"><Filter>third_party\tinyobjloader</Filter></None>
+    <None Include="third_party\tinyobjloader\README.md"><Filter>third_party\tinyobjloader</Filter></None>
   </ItemGroup>
 </Project>

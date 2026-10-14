@@ -5,4 +5,8 @@
   </Configurations>
   <Project Path="OceanRenderEngine.vcxproj" Id="379586c0-5637-41f8-810b-5c1c84bae526" />
   <Project Path="tests/OceanRenderEngine.Tests/OceanRenderEngine.Tests.vcxproj" Id="36c58a2f-c5e4-461b-9702-b0b252188fb5" />
+  <Folder Name="/GPU/">
+    <Project Path="gpu/OceanRenderEngine.GpuDx12/OceanRenderEngine.GpuDx12.vcxproj" Id="1d7248df-553e-42d0-b14e-a5ca7882f241" />
+    <Project Path="tests/OceanRenderEngine.GpuTests/OceanRenderEngine.GpuTests.vcxproj" Id="6518c626-bc72-4a59-9e36-308483a9c2ea" />
+  </Folder>
 </Solution>

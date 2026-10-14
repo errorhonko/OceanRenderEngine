@@ -1,12 +1,12 @@
-#include "LaserEmitter.h"
-#include "LidarIntegrator.h"
-#include "LidarScanSequence.h"
-#include "LidarReceiverPipeline.h"
-#include "GaussianPulseProfile.h"
-#include "LambertianLidarScattering.h"
-#include "HittableList.h"
-#include "Sphere.h"
-#include "IndependentSampler.h"
+#include "lidar/emitter/LaserEmitter.h"
+#include "lidar/simulation/LidarIntegrator.h"
+#include "lidar/scan/LidarScanSequence.h"
+#include "lidar/receiver/LidarReceiverPipeline.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
+#include "reflection/lidar/LambertianLidarScattering.h"
+#include "core/ray/HittableList.h"
+#include "geometry/primitives/Sphere.h"
+#include "core/sampling/IndependentSampler.h"
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -23,7 +23,8 @@ using PulseSignature=LidarPulseResult(LidarIntegrator::*)(Sampler&,double) const
 static_assert(std::is_same_v<decltype(LaserEmissionSample::emissionTimeSeconds),double>);
 static_assert(std::is_same_v<decltype(&LaserEmitter::SampleRay),RaySignature>);
 static_assert(std::is_same_v<decltype(&LidarIntegrator::SimulatePulse),PulseSignature>);
-static_assert(std::is_same_v<decltype(LaserEmissionSample::energyWeightJ),float>);
+static_assert(std::is_same_v<decltype(LaserEmissionSample::energyWeightJ),double>);
+static_assert(std::is_same_v<decltype(LaserEmissionSample::directionPdf),double>);
 }
 
 void RunLidarDoubleTimeAcceptanceTests(){

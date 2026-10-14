@@ -1,5 +1,5 @@
-#include "LidarPointCloudBuilder.h"
-#include "GaussianPulseProfile.h"
+#include "lidar/output/LidarPointCloudBuilder.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
 #include <cmath>
 #include <iostream>
 #include <limits>

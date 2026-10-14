@@ -1,4 +1,4 @@
-#include "LidarPulseMetadata.h"
+#include "lidar/simulation/LidarPulseMetadata.h"
 #include <cmath>
 #include <iostream>
 #include <limits>

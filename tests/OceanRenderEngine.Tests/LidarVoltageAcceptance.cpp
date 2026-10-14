@@ -1,6 +1,6 @@
-#include "LidarVoltageWaveform.h"
-#include "FirstOrderLidarResponse.h"
-#include "GaussianPulseProfile.h"
+#include "lidar/receiver/analog/LidarVoltageWaveform.h"
+#include "lidar/receiver/analog/FirstOrderLidarResponse.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>

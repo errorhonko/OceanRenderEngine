@@ -1,9 +1,9 @@
-#include "LidarIntegrator.h"
-#include "LambertianLidarScattering.h"
+#include "lidar/simulation/LidarIntegrator.h"
+#include "reflection/lidar/LambertianLidarScattering.h"
 
-#include "HittableList.h"
-#include "IndependentSampler.h"
-#include "Sphere.h"
+#include "core/ray/HittableList.h"
+#include "core/sampling/IndependentSampler.h"
+#include "geometry/primitives/Sphere.h"
 
 #include <cmath>
 #include <iostream>

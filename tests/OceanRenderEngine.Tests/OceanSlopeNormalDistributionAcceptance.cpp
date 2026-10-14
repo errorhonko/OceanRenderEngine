@@ -1,6 +1,6 @@
-#include "OceanSlopeNormalDistribution.h"
-#include "OceanNormalDistribution.h"
-#include "ElfouhailySpectrum.h"
+#include "ocean/statistics/OceanSlopeNormalDistribution.h"
+#include "ocean/statistics/OceanNormalDistribution.h"
+#include "ocean/spectrum/ElfouhailySpectrum.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>

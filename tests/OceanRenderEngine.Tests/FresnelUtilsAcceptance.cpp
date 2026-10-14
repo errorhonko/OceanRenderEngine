@@ -1,5 +1,5 @@
-#include "FresnelDielectric.h"
-#include "FresnelUtils.h"
+#include "reflection/fresnel/FresnelDielectric.h"
+#include "reflection/fresnel/FresnelUtils.h"
 
 #include <cmath>
 #include <concepts>

@@ -1,0 +1,5 @@
+Name: Invalid synthetic spectrum
+X Units: Wavelength (nanometers)
+Y Units: Reflectance (fraction)
+532 0.3
+1550 1.2

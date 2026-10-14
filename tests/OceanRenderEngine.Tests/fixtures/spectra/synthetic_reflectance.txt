@@ -1,0 +1,16 @@
+# Synthetic acceptance fixture, not a measured material.
+Name: Synthetic test curve
+Sample No.: TEST-001
+Measurement: Synthetic directional hemispherical example
+First Column: X
+Second Column: Y
+X Units: Wavelength (micrometers)
+Y Units: Reflectance (percent)
+First X Value: 0.4
+Last X Value: 1.55
+Number of X Values: 3
+Additional Information: This header is intentionally not 26 lines.
+
+0.4 20
+0.532 40
+1.55 80

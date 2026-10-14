@@ -1,5 +1,5 @@
-#include "LidarReceiverPipeline.h"
-#include "GaussianPulseProfile.h"
+#include "lidar/receiver/LidarReceiverPipeline.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -156,4 +156,110 @@ void RunLidarReceiverPipelineAcceptanceTests() {
     Check("pipeline invalid ADC config rejected by module",Throws<std::invalid_argument>([&]{LidarReceiverPipeline bad(config);}));
     config=Configuration();config.noiseSigmaVoltageV=.01;config.thresholdMultiplier=std::numeric_limits<double>::max();
     Check("pipeline threshold multiplication overflow detected",Throws<std::overflow_error>([&]{LidarReceiverPipeline(config).Process(optical,0,42);}));
+}
+
+void RunLidarMultiEchoPipelineAcceptanceTests()
+{
+    auto config = Configuration();
+    config.noiseWindow = {0, 20e-9};
+    config.searchWindow = {40e-9, 140e-9};
+    config.noiseSigmaVoltageV = 0;
+    config.adcBitCount = 16;
+    config.minimumThresholdCodes = 4;
+    config.multiEcho.peakDetection.minimumPeakSeparationSeconds = 15e-9;
+    config.multiEcho.neighborhood = {24, 47};
+    LidarWaveform optical({0, .25e-9, 1024});
+    const GaussianPulseProfile profile(4e-9);
+    optical.AccumulateReturn({1e-12, 70e-9, 532}, profile);
+    optical.AccumulateReturn({.6e-12, 100e-9, 532}, profile);
+    const auto before = optical.EnergyBinsJ();
+    const LidarReceiverPipeline pipeline(config);
+    const auto result = pipeline.ProcessMultiEcho(optical, 0, 42);
+    Check("multi pipeline real optical to ADC chain detects two echoes", result.echoes.size() == 2);
+    Check("multi pipeline automatic baseline and minimum threshold exposed", result.baseline.sampleCount == 80 && result.baseline.meanCode == 32768 && result.thresholdCodes == 4);
+    Check("multi pipeline raw echoes chronologically ordered", result.echoes.size() == 2 && result.echoes[0].estimate.measured.arrivalTimeSeconds < result.echoes[1].estimate.measured.arrivalTimeSeconds);
+    Check("multi pipeline local windows remain disjoint", result.echoes.size() == 2 && result.echoes[0].estimate.lastBinIndex < result.echoes[1].estimate.firstBinIndex);
+    Check("multi pipeline absent calibration leaves both corrected empty", result.echoes.size() == 2 && !result.echoes[0].corrected && !result.echoes[1].corrected);
+    Check("multi pipeline optical input unchanged", optical.EnergyBinsJ() == before);
+    const auto replay = pipeline.ProcessMultiEcho(optical, 0, 42);
+    bool same = replay.echoes.size() == result.echoes.size();
+    for (std::size_t i = 0; i < result.echoes.size(); ++i)
+        same = same && Same(result.echoes[i].estimate.measured, replay.echoes[i].estimate.measured);
+    Check("multi pipeline deterministic replay of all echoes", same);
+
+    // Independently compose the existing modules, checking the actual digital input and centroid windows.
+    const auto current = LidarAnalogWaveform::FromOpticalWaveform(optical, LinearPhotodetector(config.wavelengthNm, config.quantumEfficiency));
+    const auto received = FirstOrderLidarResponse(config.responseTimeConstantSeconds).Apply(current);
+    const auto voltage = LidarVoltageWaveform::FromCurrentWaveform(received, IdealTransimpedanceAmplifier(config.transimpedanceGainVoltsPerAmp));
+    const auto digital = LidarDigitalWaveform::FromVoltageWaveform(voltage,
+        IdealUniformAdc(config.adcBitCount, config.adcMinimumVoltageV, config.adcMaximumVoltageV));
+    const auto estimates = LidarDigitalMultiEchoEstimator(config.multiEcho).Estimate(digital, 0,
+        config.searchWindow, result.baseline.meanCode, result.thresholdCodes);
+    bool manual = estimates.size() == result.echoes.size();
+    for (std::size_t i = 0; i < estimates.size(); ++i)
+        manual = manual && Same(estimates[i].measured, result.echoes[i].estimate.measured) &&
+            estimates[i].firstBinIndex == result.echoes[i].estimate.firstBinIndex && estimates[i].lastBinIndex == result.echoes[i].estimate.lastBinIndex;
+    Check("multi pipeline matches standalone digital multi echo estimator", manual);
+    const auto legacy = pipeline.Process(optical, 0, 42);
+    Check("multi pipeline legacy Process still returns original single echo", legacy.measured && Same(legacy, Manual(config, optical, 0, 42)));
+    Check("multi pipeline both paths share identical frontend diagnostics", legacy.baseline.meanCode == result.baseline.meanCode && legacy.baseline.sigmaCodes == result.baseline.sigmaCodes && legacy.thresholdCodes == result.thresholdCodes && legacy.hasAdcOutOfRangeSamples == result.hasAdcOutOfRangeSamples);
+    auto changedSingle = config;
+    changedSingle.rangeMethod = LidarReceiverRangeMethod::Centroid;
+    changedSingle.neighborhood = {0, 0};
+    const auto independentMulti = LidarReceiverPipeline(changedSingle).ProcessMultiEcho(optical, 0, 42);
+    Check("multi pipeline ignores legacy single echo method and neighborhood", independentMulti.echoes.size() == 2 && Same(independentMulti.echoes[1].estimate.measured, result.echoes[1].estimate.measured));
+    auto separated = config;
+    separated.multiEcho.peakDetection.minimumPeakSeparationSeconds = 50e-9;
+    const auto suppressed = LidarReceiverPipeline(separated).ProcessMultiEcho(optical, 0, 42);
+    Check("multi pipeline separation configuration suppresses weaker echo", suppressed.echoes.size() == 1);
+    Check("multi pipeline changing multi configuration leaves old Process unchanged", Same(legacy, LidarReceiverPipeline(separated).Process(optical, 0, 42)));
+    auto calibrated = config;
+    calibrated.calibration = LidarRangeCalibration(2e-9);
+    const auto corrected = LidarReceiverPipeline(calibrated).ProcessMultiEcho(optical, 0, 42);
+    bool allCorrected = corrected.echoes.size() == 2;
+    for (const auto& echo : corrected.echoes)
+        allCorrected = allCorrected && echo.corrected &&
+            echo.corrected->correctedTimeOfFlightSeconds == echo.estimate.measured.timeOfFlightSeconds - 2e-9 &&
+            Same(echo.corrected->measured, echo.estimate.measured);
+    Check("multi pipeline independently calibrates each echo retaining raw measurement", allCorrected);
+    calibrated.calibration = LidarRangeCalibration(90e-9);
+    const auto partiallyCorrected = LidarReceiverPipeline(calibrated).ProcessMultiEcho(optical, 0, 42);
+    Check("multi pipeline invalid corrected delay retains raw echo without zero clamping", partiallyCorrected.echoes.size() == 2 && !partiallyCorrected.echoes[0].corrected && partiallyCorrected.echoes[1].corrected);
+    LidarWaveform empty({0, .25e-9, 1024});
+    const auto missed = pipeline.ProcessMultiEcho(empty, 0, 42);
+    Check("multi pipeline empty signal returns empty echoes with diagnostics", missed.echoes.empty() && missed.baseline.sampleCount == 80 && missed.thresholdCodes == 4);
+    auto high = config;
+    high.minimumThresholdCodes = 65536;
+    const auto undetected = LidarReceiverPipeline(high).ProcessMultiEcho(optical, 0, 42);
+    Check("multi pipeline unreachable valid threshold returns empty without error", undetected.echoes.empty() && undetected.thresholdCodes == 65536 && undetected.baseline.sampleCount == 80);
+    LidarWaveform clippedSignal({0, .25e-9, 1024});
+    clippedSignal.AccumulateReturn({1e-9, 70e-9, 532}, profile);
+    const auto clipping = pipeline.ProcessMultiEcho(clippedSignal, 0, 42);
+    Check("multi pipeline clipped plateau retained with full diagnostics", !clipping.echoes.empty() && clipping.hasAdcOutOfRangeSamples && clipping.echoes[0].estimate.peak.plateauOutOfRange && clipping.echoes[0].estimate.localWindowHasOutOfRangeSamples && clipping.echoes[0].estimate.measured.searchHasOutOfRangeSamples);
+    const auto outside = pipeline.ProcessMultiEcho(Signal(1e-9, 200e-9), 0, 42);
+    Check("multi pipeline clipping outside search retained even with zero echoes", outside.echoes.empty() && outside.hasAdcOutOfRangeSamples);
+    auto noisy = config;
+    noisy.noiseSigmaVoltageV = 1e-4;
+    const LidarReceiverPipeline noisyPipeline(noisy);
+    const auto noiseA = noisyPipeline.ProcessMultiEcho(optical, 0, 42);
+    const auto noiseB = noisyPipeline.ProcessMultiEcho(optical, 0, 42);
+    bool noiseSame = noiseA.echoes.size() == noiseB.echoes.size();
+    for (std::size_t i = 0; i < noiseA.echoes.size(); ++i) noiseSame = noiseSame && Same(noiseA.echoes[i].estimate.measured, noiseB.echoes[i].estimate.measured);
+    Check("multi pipeline receiver noise fixed seed replays all candidates", noiseSame && noiseA.baseline.meanCode == noiseB.baseline.meanCode);
+    const auto noiseC = noisyPipeline.ProcessMultiEcho(optical, 0, 43);
+    Check("multi pipeline different noise seed changes measured baseline", noiseA.baseline.meanCode != noiseC.baseline.meanCode || noiseA.baseline.sigmaCodes != noiseC.baseline.sigmaCodes);
+    Check("multi pipeline noisy single and multiple paths share baseline and threshold", noisyPipeline.Process(optical, 0, 42).thresholdCodes == noiseA.thresholdCodes && noisyPipeline.Process(optical, 0, 42).baseline.meanCode == noiseA.baseline.meanCode);
+    auto snapshotConfig = config;
+    const LidarReceiverPipeline snapshot(snapshotConfig);
+    snapshotConfig.multiEcho.peakDetection.minimumPeakSeparationSeconds = 50e-9;
+    Check("multi pipeline owns configuration snapshot", snapshot.Config().multiEcho.peakDetection.minimumPeakSeparationSeconds == 15e-9 && snapshot.ProcessMultiEcho(optical, 0, 42).echoes.size() == 2);
+    const double nan = std::numeric_limits<double>::quiet_NaN();
+    auto bad = config; bad.multiEcho.peakDetection.minimumPeakSeparationSeconds = -1;
+    Check("multi pipeline invalid separation rejected at construction", Throws<std::invalid_argument>([&] { LidarReceiverPipeline p(bad); }));
+    bad = config; bad.multiEcho.peakDetection.minimumPeakSeparationSeconds = nan;
+    Check("multi pipeline NaN separation rejected at construction", Throws<std::invalid_argument>([&] { LidarReceiverPipeline p(bad); }));
+    Check("multi pipeline invalid emission checked before frontend", Throws<std::invalid_argument>([&] { pipeline.ProcessMultiEcho(optical, -1, 42); }));
+    Check("multi pipeline nonfinite emission rejected", Throws<std::invalid_argument>([&] { pipeline.ProcessMultiEcho(optical, nan, 42); }));
+    bad = config; bad.noiseWindow = {0, .1e-9};
+    Check("multi pipeline insufficient baseline bins rejected", Throws<std::invalid_argument>([&] { LidarReceiverPipeline(bad).ProcessMultiEcho(optical, 0, 42); }));
 }

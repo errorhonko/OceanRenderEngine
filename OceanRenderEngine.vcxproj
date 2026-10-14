@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{379586c0-5637-41f8-810b-5c1c84bae526}</ProjectGuid>
     <RootNamespace>OceanRenderEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -77,6 +77,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -95,6 +97,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,6 +115,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +135,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,116 +147,156 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Bounds3f.h" />
-    <ClInclude Include="BRDFUtils.h" />
-    <ClInclude Include="IdealTransimpedanceAmplifier.h" />
-    <ClInclude Include="IdealUniformAdc.h" />
-    <ClInclude Include="LidarAnalogWaveform.h" />
-    <ClInclude Include="LidarDigitalRangeEstimator.h" />
-    <ClInclude Include="LidarPulseMeasurement.h" />
-    <ClInclude Include="LidarPointSample.h" />
-    <ClInclude Include="LidarPointCloudBuilder.h" />
-    <ClInclude Include="LidarReceiverPipeline.h" />
-    <ClInclude Include="LidarDigitalWaveform.h" />
-    <ClInclude Include="LidarRangeEstimator.h" />
-    <ClInclude Include="LidarVoltageWaveform.h" />
-    <ClInclude Include="MicrofacetReflection.h" />
-    <ClInclude Include="BSDF.h" />
-    <ClInclude Include="BVHAccel.h" />
-    <ClInclude Include="BxDF.h" />
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="CoefficientSpectrum.h" />
-    <ClInclude Include="ConductorBxDF.h" />
-    <ClInclude Include="DielectricBxDF.h" />
-    <ClInclude Include="DielectricMaterial.h" />
-    <ClInclude Include="DiffuseAreaLight.h" />
-    <ClInclude Include="DiffuseBxDF.h" />
-    <ClInclude Include="DiffuseMaterial.h" />
-    <ClInclude Include="DistantLight.h" />
-    <ClInclude Include="ElfouhailySpectrum.h" />
-    <ClInclude Include="Fresnel.h" />
-    <ClInclude Include="FresnelDielectric.h" />
-    <ClInclude Include="FresnelNoOp.h" />
-    <ClInclude Include="FresnelUtils.h" />
-    <ClInclude Include="GaussianPulseProfile.h" />
-    <ClInclude Include="HashUtils.h" />
-    <ClInclude Include="HitRocord.h" />
-    <ClInclude Include="HittableList.h" />
-    <ClInclude Include="ImageTexture.h" />
-    <ClInclude Include="IndependentSampler.h" />
-    <ClInclude Include="Integrator.h" />
-    <ClInclude Include="Lambertian.h" />
-    <ClInclude Include="LambertianLidarScattering.h" />
-    <ClInclude Include="LaserEmitter.h" />
-    <ClInclude Include="LidarPulseMetadata.h" />
-    <ClInclude Include="LidarScanSequence.h" />
-    <ClInclude Include="LidarIntegrator.h" />
-    <ClInclude Include="LidarPulseProfile.h" />
-    <ClInclude Include="LidarReceiver.h" />
-    <ClInclude Include="PhotonCountingLidarDetector.h" />
-    <ClInclude Include="LidarScatteringModel.h" />
-    <ClInclude Include="LidarWaveform.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="load_obj.h" />
-    <ClInclude Include="material.h" />
-    <ClInclude Include="Matrix4f.h" />
-    <ClInclude Include="Hittable.h" />
-    <ClInclude Include="MixMaterial.h" />
-    <ClInclude Include="OceanBeckmannLidarScattering.h" />
-    <ClInclude Include="OceanFFT.h" />
-    <ClInclude Include="OceanFrequencyField.h" />
-    <ClInclude Include="OceanHeightField.h" />
-    <ClInclude Include="OceanSlopeVariance.h" />
-    <ClInclude Include="BeckmannDistribution.h" />
-    <ClInclude Include="OceanNormalDistribution.h" />
-    <ClInclude Include="OceanSlopeNormalDistribution.h" />
-    <ClInclude Include="MeshTriangle.h" />
-    <ClInclude Include="OceanSurfaceMesh.h" />
-    <ClInclude Include="RoughDielectricLidarScattering.h" />
-    <ClInclude Include="TriangleMesh.h" />
-    <ClInclude Include="PathIntegrator.h" />
-    <ClInclude Include="Point2f.h" />
-    <ClInclude Include="PointLight.h" />
-    <ClInclude Include="Rasterizer.h" />
-    <ClInclude Include="Ray.h" />
+    <ClInclude Include="src\geometry\acceleration\Bounds3f.h" />
+    <ClInclude Include="src\reflection\microfacet\BRDFUtils.h" />
+    <ClInclude Include="src\lidar\receiver\analog\IdealTransimpedanceAmplifier.h" />
+    <ClInclude Include="src\lidar\receiver\adc\IdealUniformAdc.h" />
+    <ClInclude Include="src\lidar\receiver\analog\LidarAnalogWaveform.h" />
+    <ClInclude Include="src\lidar\signal_processing\LidarDigitalRangeEstimator.h" />
+    <ClInclude Include="src\lidar\signal_processing\LidarDigitalPeakDetector.h" />
+    <ClInclude Include="src\lidar\signal_processing\LidarDigitalMultiEchoEstimator.h" />
+    <ClInclude Include="src\lidar\simulation\LidarPulseMeasurement.h" />
+    <ClInclude Include="src\lidar\output\LidarPointSample.h" />
+    <ClInclude Include="src\lidar\output\LidarPointCloudBuilder.h" />
+    <ClInclude Include="src\lidar\signal_processing\LidarReturnSelection.h" />
+    <ClInclude Include="src\lidar\receiver\LidarReceiverPipeline.h" />
+    <ClInclude Include="src\lidar\signal_processing\LidarDigitalBaselineEstimator.h" />
+    <ClInclude Include="src\lidar\signal_processing\LidarRangeCalibration.h" />
+    <ClInclude Include="src\lidar\receiver\analog\LidarVoltageNoise.h" />
+    <ClInclude Include="src\reflection\fresnel\FresnelConductor.h" />
+    <ClInclude Include="src\lidar\receiver\adc\LidarDigitalWaveform.h" />
+    <ClInclude Include="src\lidar\signal_processing\LidarRangeEstimator.h" />
+    <ClInclude Include="src\lidar\receiver\analog\LidarVoltageWaveform.h" />
+    <ClInclude Include="src\reflection\microfacet\MicrofacetReflection.h" />
+    <ClInclude Include="src\reflection\bxdfs\BSDF.h" />
+    <ClInclude Include="src\geometry\acceleration\BVHAccel.h" />
+    <ClInclude Include="src\reflection\bxdfs\BxDF.h" />
+    <ClInclude Include="src\render\cameras\camera.h" />
+    <ClInclude Include="src\core\spectrum\CoefficientSpectrum.h" />
+    <ClInclude Include="src\reflection\bxdfs\ConductorBxDF.h" />
+    <ClInclude Include="src\reflection\bxdfs\DielectricBxDF.h" />
+    <ClInclude Include="src\reflection\materials\DielectricMaterial.h" />
+    <ClInclude Include="src\render\lights\DiffuseAreaLight.h" />
+    <ClInclude Include="src\reflection\bxdfs\DiffuseBxDF.h" />
+    <ClInclude Include="src\reflection\materials\DiffuseMaterial.h" />
+    <ClInclude Include="src\render\lights\DistantLight.h" />
+    <ClInclude Include="src\ocean\spectrum\ElfouhailySpectrum.h" />
+    <ClInclude Include="src\reflection\fresnel\Fresnel.h" />
+    <ClInclude Include="src\reflection\fresnel\FresnelDielectric.h" />
+    <ClInclude Include="src\reflection\fresnel\FresnelNoOp.h" />
+    <ClInclude Include="src\reflection\fresnel\FresnelUtils.h" />
+    <ClInclude Include="src\lidar\emitter\pulse\GaussianPulseProfile.h" />
+    <ClInclude Include="src\core\math\HashUtils.h" />
+    <ClInclude Include="src\core\ray\HitRocord.h" />
+    <ClInclude Include="src\core\ray\HittableList.h" />
+    <ClInclude Include="src\reflection\textures\ImageTexture.h" />
+    <ClInclude Include="src\core\sampling\IndependentSampler.h" />
+    <ClInclude Include="src\core\sampling\Stratified2DSampler.h" />
+    <ClInclude Include="src\render\integrators\Integrator.h" />
+    <ClInclude Include="src\reflection\materials\Lambertian.h" />
+    <ClInclude Include="src\reflection\lidar\LambertianLidarScattering.h" />
+    <ClInclude Include="src\reflection\lidar\SpectralLambertianLidarScattering.h" />
+    <ClInclude Include="src\reflection\materials\SurfaceMaterial.h" />
+    <ClInclude Include="src\reflection\lidar\SurfaceLidarScattering.h" />
+    <ClInclude Include="src\lidar\emitter\LaserEmitter.h" />
+    <ClInclude Include="src\lidar\emitter\beam\LidarBeamProfile.h" />
+    <ClInclude Include="src\lidar\emitter\beam\GaussianLidarBeamProfile.h" />
+    <ClInclude Include="src\lidar\emitter\beam\DeltaLidarBeamProfile.h" />
+    <ClInclude Include="src\lidar\emitter\beam\UniformConeLidarBeamProfile.h" />
+    <ClInclude Include="src\lidar\simulation\LidarPulseMetadata.h" />
+    <ClInclude Include="src\lidar\scan\LidarScanSequence.h" />
+    <ClInclude Include="src\lidar\scan\LidarScanPlan.h" />
+    <ClInclude Include="src\lidar\scan\LidarRotaryScanPlan.h" />
+    <ClInclude Include="src\scene\examples\LidarStaticTestScene.h" />
+    <ClInclude Include="src\lidar\scan\LidarMultiFrameDriver.h" />
+    <ClInclude Include="src\lidar\scan\LidarPoseTrajectory.h" />
+    <ClInclude Include="src\lidar\output\LidarPointCloudFrame.h" />
+    <ClInclude Include="src\lidar\output\LidarPcdWriter.h" />
+    <ClInclude Include="src\lidar\scan\LidarScanDriver.h" />
+    <ClInclude Include="src\lidar\simulation\LidarIntegrator.h" />
+    <ClInclude Include="src\lidar\emitter\pulse\LidarPulseProfile.h" />
+    <ClInclude Include="src\lidar\receiver\LidarReceiver.h" />
+    <ClInclude Include="src\lidar\receiver\photon_counting\PhotonCountingLidarDetector.h" />
+    <ClInclude Include="src\reflection\lidar\LidarScatteringModel.h" />
+    <ClInclude Include="src\lidar\simulation\LidarWaveform.h" />
+    <ClInclude Include="src\render\lights\Light.h" />
+    <ClInclude Include="src\legacy\obj\load_obj.h" />
+    <ClInclude Include="src\scene\import\ObjMeshLoader.h" />
+    <ClInclude Include="src\scene\import\ObjMaterialBinding.h" />
+    <ClInclude Include="src\scene\import\ObjSceneAsset.h" />
+    <ClInclude Include="src\scene\SceneBuilder.h" />
+    <ClInclude Include="src\scene\examples\HeliosUrbanStaticScene.h" />
+    <ClInclude Include="src\scene\examples\HeliosUrbanStaticSceneParts.h" />
+    <ClInclude Include="src\scene\StaticScene.h" />
+    <ClInclude Include="third_party\tinyobjloader\tiny_obj_loader.h" />
+    <ClInclude Include="src\reflection\materials\material.h" />
+    <ClInclude Include="src\core\math\Matrix4f.h" />
+    <ClInclude Include="src\core\ray\Hittable.h" />
+    <ClInclude Include="src\reflection\materials\MixMaterial.h" />
+    <ClInclude Include="src\reflection\lidar\OceanBeckmannLidarScattering.h" />
+    <ClInclude Include="src\ocean\field\OceanFFT.h" />
+    <ClInclude Include="src\ocean\field\OceanFrequencyField.h" />
+    <ClInclude Include="src\ocean\field\OceanHeightField.h" />
+    <ClInclude Include="src\ocean\statistics\OceanSlopeVariance.h" />
+    <ClInclude Include="src\reflection\microfacet\BeckmannDistribution.h" />
+    <ClInclude Include="src\ocean\statistics\OceanNormalDistribution.h" />
+    <ClInclude Include="src\ocean\statistics\OceanSlopeNormalDistribution.h" />
+    <ClInclude Include="src\geometry\mesh\MeshTriangle.h" />
+    <ClInclude Include="src\ocean\field\OceanSurfaceMesh.h" />
+    <ClInclude Include="src\reflection\lidar\RoughDielectricLidarScattering.h" />
+    <ClInclude Include="src\reflection\lidar\RoughConductorLidarScattering.h" />
+    <ClInclude Include="src\geometry\mesh\TriangleMesh.h" />
+    <ClInclude Include="src\render\integrators\PathIntegrator.h" />
+    <ClInclude Include="src\core\math\Point2f.h" />
+    <ClInclude Include="src\render\lights\PointLight.h" />
+    <ClInclude Include="src\legacy\rasterizer\Rasterizer.h" />
+    <ClInclude Include="src\core\ray\Ray.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="RGBSpectrum.h" />
-    <ClInclude Include="SampledSpectrum.h" />
-    <ClInclude Include="Sampler.h" />
-    <ClInclude Include="SimplePathIntegrator.h" />
-    <ClInclude Include="SpecularReflection.h" />
-    <ClInclude Include="SpecularTransmission.h" />
-    <ClInclude Include="Sphere.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="ThinDielectricBxDF.h" />
-    <ClInclude Include="Triangle.h" />
-    <ClInclude Include="TriangleMeshAggregate.h" />
-    <ClInclude Include="TrowbridgeReitzDistribution.h" />
-    <ClInclude Include="UniformInfiniteLight.h" />
-    <ClInclude Include="UniformLightSampler.h" />
-    <ClInclude Include="Vector3f.h" />
-    <ClInclude Include="Vector4f.h" />
-    <ClInclude Include="ScaledBxDF.h" />
-    <ClInclude Include="LidarReturnEstimator.h" />
-    <ClInclude Include="WhitecapCoverage.h" />
-    <ClInclude Include="OceanWhitecapField.h" />
-    <ClInclude Include="WhitecapLidarScattering.h" />
-    <ClInclude Include="LinearPhotodetector.h" />
-    <ClInclude Include="FirstOrderLidarResponse.h" />
+    <ClInclude Include="src\core\spectrum\RGBSpectrum.h" />
+    <ClInclude Include="src\core\spectrum\SampledSpectrum.h" />
+    <ClInclude Include="src\core\spectrum\SpectralReflectanceCurve.h" />
+    <ClInclude Include="src\core\sampling\Sampler.h" />
+    <ClInclude Include="src\render\integrators\SimplePathIntegrator.h" />
+    <ClInclude Include="src\reflection\bxdfs\SpecularReflection.h" />
+    <ClInclude Include="src\reflection\bxdfs\SpecularTransmission.h" />
+    <ClInclude Include="src\geometry\primitives\Sphere.h" />
+    <ClInclude Include="third_party\stb\stb_image.h" />
+    <ClInclude Include="src\reflection\textures\Texture.h" />
+    <ClInclude Include="src\reflection\bxdfs\ThinDielectricBxDF.h" />
+    <ClInclude Include="src\geometry\primitives\Triangle.h" />
+    <ClInclude Include="src\geometry\mesh\TriangleMeshAggregate.h" />
+    <ClInclude Include="src\reflection\microfacet\TrowbridgeReitzDistribution.h" />
+    <ClInclude Include="src\render\lights\UniformInfiniteLight.h" />
+    <ClInclude Include="src\render\lights\UniformLightSampler.h" />
+    <ClInclude Include="src\core\math\Vector3f.h" />
+    <ClInclude Include="src\core\math\Vector4f.h" />
+    <ClInclude Include="src\reflection\bxdfs\ScaledBxDF.h" />
+    <ClInclude Include="src\lidar\simulation\LidarReturnEstimator.h" />
+    <ClInclude Include="src\ocean\whitecap\WhitecapCoverage.h" />
+    <ClInclude Include="src\ocean\whitecap\OceanWhitecapField.h" />
+    <ClInclude Include="src\reflection\lidar\WhitecapLidarScattering.h" />
+    <ClInclude Include="src\lidar\receiver\analog\LinearPhotodetector.h" />
+    <ClInclude Include="src\lidar\receiver\analog\FirstOrderLidarResponse.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ElfouhailySpectrum.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="OceanFFT.cpp" />
-    <ClCompile Include="OceanFrequencyField.cpp" />
-    <ClCompile Include="OceanHeightField.cpp" />
-    <ClCompile Include="OceanSurfaceMesh.cpp" />
+    <ClCompile Include="src\ocean\spectrum\ElfouhailySpectrum.cpp" />
+    <ClCompile Include="src\app\main.cpp" />
+    <ClCompile Include="src\scene\import\TinyObjLoaderImplementation.cpp">
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\ocean\field\OceanFFT.cpp" />
+    <ClCompile Include="src\ocean\field\OceanFrequencyField.cpp" />
+    <ClCompile Include="src\ocean\field\OceanHeightField.cpp" />
+    <ClCompile Include="src\ocean\field\OceanSurfaceMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OceanRenderEngine.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemGroup>
+    <None Include="third_party\tinyobjloader\LICENSE" />
+    <None Include="third_party\tinyobjloader\README.md" />
+  </ItemGroup>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

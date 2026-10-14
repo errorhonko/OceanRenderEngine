@@ -1,8 +1,8 @@
-#include "LidarRangeEstimator.h"
-#include "GaussianPulseProfile.h"
-#include "Sphere.h"
-#include "HittableList.h"
-#include "IndependentSampler.h"
+#include "lidar/signal_processing/LidarRangeEstimator.h"
+#include "lidar/emitter/pulse/GaussianPulseProfile.h"
+#include "geometry/primitives/Sphere.h"
+#include "core/ray/HittableList.h"
+#include "core/sampling/IndependentSampler.h"
 #include <cmath>
 #include <iostream>
 #include <limits>

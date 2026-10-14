@@ -1,7 +1,7 @@
-#include "OceanHeightField.h"
+#include "ocean/field/OceanHeightField.h"
 
-#include "OceanFFT.h"
-#include "OceanFrequencyField.h"
+#include "ocean/field/OceanFFT.h"
+#include "ocean/field/OceanFrequencyField.h"
 
 #include <cmath>
 #include <complex>
