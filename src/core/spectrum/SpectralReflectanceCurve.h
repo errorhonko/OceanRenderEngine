@@ -1,4 +1,5 @@
 #pragma once
+#include "core/spectrum/SpectrumInterpolation.h"
 
 #include <algorithm>
 #include <charconv>
@@ -52,13 +53,9 @@ public:
             throw std::invalid_argument("Reflectance query wavelength must be finite positive nm.");
         if (!Contains(wavelengthNm))
             throw std::out_of_range("Reflectance query lies outside the measured wavelength range.");
-        const auto upper = std::lower_bound(samples.begin(), samples.end(), wavelengthNm,
-            [](const auto& sample, double value) { return sample.wavelengthNm < value; });
-        if (upper->wavelengthNm == wavelengthNm) return upper->reflectance;
-        const auto& lower = *(upper - 1);
-        const double t = (wavelengthNm - lower.wavelengthNm) /
-            (upper->wavelengthNm - lower.wavelengthNm);
-        return std::lerp(lower.reflectance, upper->reflectance, t);
+        const auto interval = SpectrumInterpolation::FindInterval(std::span(samples), wavelengthNm,
+            [](const SpectralReflectanceSample& sample) { return sample.wavelengthNm; });
+        return interval.Evaluate(samples[interval.lower].reflectance, samples[interval.upper].reflectance);
     }
 
     bool Contains(double wavelengthNm) const noexcept

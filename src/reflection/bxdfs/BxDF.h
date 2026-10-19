@@ -65,6 +65,8 @@ struct BSDFSample
 	float pdf = 0;
 	BxDFType flags;
 	float eta = 1;
+    // Layered samples can carry a path-wise proportional f/pdf pair.
+    // Keep that pair for throughput; query Pdf() separately for external MIS.
 	bool pdfIsProportional = false;
 };
 class BxDF
@@ -73,6 +75,8 @@ public:
 	
 
 	BxDF(BxDFType type) : type(type) {}
+    virtual bool NeedsComponentSample() const
+    { return (type & BSDF_REFLECTION)!=0 && (type & BSDF_TRANSMISSION)!=0; }
 	bool MatchesFlags(BxDFType t) const
 	{
 		return (type & t) == type;
@@ -82,6 +86,12 @@ public:
 		const Point2f& sample,
 		TransportMode mode= TransportMode::Radiance,
 		BxDFReflectionType sampledType = BxDFReflectionType::All) const=0;
+    // PBRT-style independent event dimension. Single-lobe legacy BxDFs can
+    // ignore uc; mixed continuous lobes must override this overload.
+    virtual std::optional<BSDFSample> Sample_f(const Vector3f& wo, float uc,
+        const Point2f& sample, TransportMode mode = TransportMode::Radiance,
+        BxDFReflectionType sampledType = BxDFReflectionType::All) const
+    { return Sample_f(wo, sample, mode, sampledType); }
 	virtual Spectrum rho(const Vector3f& wo, int nSamples, const Point2f* samples) const=0;
 	virtual float Pdf(const Vector3f& wo, const Vector3f& wi , 
 		TransportMode mode,
@@ -113,27 +123,40 @@ inline Vector3f Reflect(const Vector3f& wo, const Vector3f& n)
 {
 	return -wo + 2.0f * wo.dot(n) * n;
 }
-inline bool Refract(const Vector3f& wi,  Vector3f n
-	, float eta, float* etap, Vector3f* wt)
+namespace DielectricDetail {
+// Temporary arithmetic: no change to Vector3f, ray storage or public APIs.
+struct Direction { double x = 0, y = 0, z = 0; };
+inline Direction Unit(Direction v)
 {
-	float cosTheta_i = n.dot(wi);
-	if (cosTheta_i < 0)
-	{
-		eta = 1 / eta;
-		cosTheta_i = -cosTheta_i;
-		n = -n;
-	}
-	float sin2Theta_i = std::max(0.0f, 1.0f - cosTheta_i * cosTheta_i);
-	float sin2Theta_t = sin2Theta_i / (eta * eta);
-
-	if (sin2Theta_t >= 1.0f)
-		return false;
-	float cosTheta_t = Safesqrt(1 - sin2Theta_t);
-	*wt = -wi / eta + (cosTheta_i / eta - cosTheta_t) * n;
-	if (etap)
-		*etap = eta;
-
-
-	return true;
-
+    const double length = std::hypot(v.x, v.y, v.z);
+    if (!(length > 0) || !std::isfinite(length)) return {};
+    return {v.x / length, v.y / length, v.z / length};
+}
+inline Direction Promote(const Vector3f& v) { return Unit({double(v.x), double(v.y), double(v.z)}); }
+inline Vector3f Store(Direction v) { return {float(v.x), float(v.y), float(v.z)}; }
+inline double Dot(Direction a, Direction b) { return std::fma(a.x, b.x, std::fma(a.y, b.y, a.z * b.z)); }
+inline Direction Combine(Direction a, double sa, Direction b, double sb)
+{
+    return {std::fma(sa, a.x, sb * b.x), std::fma(sa, a.y, sb * b.y), std::fma(sa, a.z, sb * b.z)};
+}
+inline bool RefractUnit(Direction wi, Direction n, const Interface& optics, Direction& wt)
+{
+    if (optics.tir) return false;
+    if (optics.flipNormal) n = {-n.x, -n.y, -n.z};
+    wt = Unit(Combine(wi, -1 / optics.eta, n, optics.cosI / optics.eta - optics.cosT));
+    return Dot(wt, wt) > 0;
+}
+}
+inline bool Refract(const Vector3f& wi, Vector3f n, float eta, float* etap, Vector3f* wt)
+{
+    if (!wt || !(eta > 0) || !std::isfinite(eta)) return false;
+    // Promote BEFORE normalization/dot/reciprocal, not after float roundoff.
+    const auto w = DielectricDetail::Promote(wi), normal = DielectricDetail::Promote(n);
+    if (DielectricDetail::Dot(w, w) == 0 || DielectricDetail::Dot(normal, normal) == 0) return false;
+    const auto optics = DielectricDetail::EvaluateInterface(DielectricDetail::Dot(w, normal), 1.0, double(eta));
+    DielectricDetail::Direction transmitted;
+    if (!DielectricDetail::RefractUnit(w, normal, optics, transmitted)) return false;
+    *wt = DielectricDetail::Store(transmitted);
+    if (etap) *etap = float(optics.eta); // Round only the public result.
+    return true;
 }

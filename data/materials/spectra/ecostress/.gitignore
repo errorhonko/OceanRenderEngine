@@ -1,0 +1,8 @@
+# Preserve third-party data locally; do not implicitly redistribute it to GitHub.
+*
+!.gitignore
+!README.md
+!FetchEcostress.ps1
+!Inventory.ps1
+!InspectLibrary.cpp
+!Inspect.cmd

@@ -48,6 +48,11 @@ public:
 		}
 	}
 
+    std::optional<BSDFSample> Sample_f(const Vector3f& wo, float uc, const Point2f& u,
+        TransportMode mode = TransportMode::Radiance,
+        BxDFReflectionType sampleFlags = BxDFReflectionType::All) const override
+    { return Sample_f(wo, Point2f(uc, u.y), mode, sampleFlags); }
+
 	float Pdf(const Vector3f& wo, const Vector3f& wi,
 		TransportMode mode,
 		BxDFReflectionType sampleFlags = BxDFReflectionType::All) const override

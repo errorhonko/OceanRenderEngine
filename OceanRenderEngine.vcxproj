@@ -196,6 +196,9 @@
     <ClInclude Include="src\reflection\materials\Lambertian.h" />
     <ClInclude Include="src\reflection\lidar\LambertianLidarScattering.h" />
     <ClInclude Include="src\reflection\lidar\SpectralLambertianLidarScattering.h" />
+    <ClInclude Include="src\reflection\lidar\HeliosEmpiricalLidarScattering.h" />
+    <ClInclude Include="src\reflection\lidar\LidarMaterialConfig.h" />
+    <ClInclude Include="src\reflection\lidar\LidarScatteringFactory.h" />
     <ClInclude Include="src\reflection\materials\SurfaceMaterial.h" />
     <ClInclude Include="src\reflection\lidar\SurfaceLidarScattering.h" />
     <ClInclude Include="src\lidar\emitter\LaserEmitter.h" />
@@ -245,6 +248,12 @@
     <ClInclude Include="src\ocean\field\OceanSurfaceMesh.h" />
     <ClInclude Include="src\reflection\lidar\RoughDielectricLidarScattering.h" />
     <ClInclude Include="src\reflection\lidar\RoughConductorLidarScattering.h" />
+    <ClInclude Include="src\reflection\layered\LayeredReflection.h" />
+    <ClInclude Include="src\reflection\layered\LayeredReflectionSampling.h" />
+    <ClInclude Include="src\reflection\bxdfs\CoatedDiffuseBxDF.h" />
+    <ClInclude Include="src\reflection\materials\CoatedDiffuseMaterial.h" />
+    <ClInclude Include="src\reflection\layered\CoatedDiffuseReflection.h" />
+    <ClInclude Include="src\reflection\lidar\CoatedDiffuseLidarScattering.h" />
     <ClInclude Include="src\geometry\mesh\TriangleMesh.h" />
     <ClInclude Include="src\render\integrators\PathIntegrator.h" />
     <ClInclude Include="src\core\math\Point2f.h" />
@@ -255,6 +264,9 @@
     <ClInclude Include="src\core\spectrum\RGBSpectrum.h" />
     <ClInclude Include="src\core\spectrum\SampledSpectrum.h" />
     <ClInclude Include="src\core\spectrum\SpectralReflectanceCurve.h" />
+    <ClInclude Include="src\core\spectrum\SpectralOpticalConstants.h" />
+    <ClInclude Include="src\core\spectrum\SpectrumInterpolation.h" />
+    <ClInclude Include="src\core\spectrum\OpticalConstantsTableReader.h" />
     <ClInclude Include="src\core\sampling\Sampler.h" />
     <ClInclude Include="src\render\integrators\SimplePathIntegrator.h" />
     <ClInclude Include="src\reflection\bxdfs\SpecularReflection.h" />
@@ -296,6 +308,10 @@
   <ItemGroup>
     <None Include="third_party\tinyobjloader\LICENSE" />
     <None Include="third_party\tinyobjloader\README.md" />
+    <None Include="third_party\refractiveindex-info\README.md" />
+    <None Include="third_party\refractiveindex-info\Al\Rakic.yml" />
+    <None Include="data\materials\optical_constants\README.md" />
+    <None Include="data\materials\optical_constants\Al_Rakic1995_um.txt" />
   </ItemGroup>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

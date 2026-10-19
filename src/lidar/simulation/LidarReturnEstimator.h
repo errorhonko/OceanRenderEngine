@@ -61,8 +61,8 @@ inline std::optional<LidarReturnSample> EstimateSingleReturn(
         return std::nullopt;
     }
 
-    const double brdfAtWavelengthPerSr =
-        scatteringModel.Evaluate(
+    const double projectedResponsePerSr =
+        scatteringModel.EvaluateProjectedResponse(
             hit,
             incidentDirection,
             outgoingDirection,
@@ -70,11 +70,11 @@ inline std::optional<LidarReturnSample> EstimateSingleReturn(
 
     // 不能只依靠具体模型的构造函数验证：
     // 任意派生模型都有可能返回非法结果。
-    if (!std::isfinite(brdfAtWavelengthPerSr) ||
-        brdfAtWavelengthPerSr < 0.0)
+    if (!std::isfinite(projectedResponsePerSr) ||
+        projectedResponsePerSr < 0.0)
     {
         throw std::domain_error(
-            "LiDAR scattering model returned an invalid BRDF.");
+            "LiDAR scattering model returned an invalid projected response.");
     }
 
     const double solidAngle =
@@ -83,8 +83,7 @@ inline std::optional<LidarReturnSample> EstimateSingleReturn(
     const double receivedEnergy =
         static_cast<double>(
             emission.energyWeightJ) *
-        brdfAtWavelengthPerSr *
-        cosReturn *
+        projectedResponsePerSr *
         solidAngle *
         receiver.OpticalEfficiency();
 

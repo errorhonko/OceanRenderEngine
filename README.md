@@ -4,6 +4,12 @@
 
 > 开发中：已有确定性验收和静态场景扫描示例，但不是经过真实仪器标定的商用仿真器，也尚未接入 SLAM 系统。默认入口仍是 Bunny 栅格化示例；完整 LiDAR 链路请运行验收或导入实验。
 
+最新阶段检查点（2026-10-19）：已重跑 **Urban 同位姿 RGB＋360° LiDAR**，
+11,520次发射生成9,613个数字波形测距点；CPU x64 Debug/Release 各3,103项通过。
+见[阶段总结](experiments/VersionCheckpoint20261019.md)及
+[可复现实验、参数与聚合结果](experiments/UrbanSensorCheckpoint/README.md)。
+外部资产、场景预览和点云保留本地，不因公开代码而假定拥有其再发布授权。
+
 ## 当前能力
 
 | 模块 | 已实现内容 | 入口 |
@@ -14,10 +20,10 @@
 | 光学回波 | 单次表面命中、接收视场/口径、回程可见性、物理飞行时间、多射线脉冲能量平均及波形积累 | [回波仿真](src/lidar/simulation/) |
 | 接收与测距 | 线性光电转换、一阶响应、跨阻放大、电压噪声、ADC；基线估计、峰值/重心测距、多回波、门限/峰间隔及输出选择 | [接收器](src/lidar/receiver/)、[信号处理](src/lidar/signal_processing/) |
 | 点云输出 | 带脉冲/扫描/时间信息的测量结果、世界/传感器坐标点、ASCII PCD 输出 | [点云模块](src/lidar/output/) |
-| 场景与材质 | tinyobjloader 解析 OBJ/MTL、单位/坐标轴转换、场景组装、逐面材质绑定；光谱 Lambert、介质/Beckmann 海面和固定波长粗糙导体 BRDF | [场景](src/scene/)、[反射材质](src/reflection/) |
+| 场景与材质 | OBJ/MTL、坐标转换、组装和逐面绑定；光谱 Lambert、介质/Beckmann 海面、光谱 n/k 粗糙导体、MC 涂层；可选 HELIOS 经验响应及 Urban 真实地形采样贴地 | [场景](src/scene/)、[反射材质](src/reflection/) |
 | GPU 基础层 | DX12 仿射 compute、持久单三角形 BLAS/TLAS、DXR 最近命中/有限线段遮挡与缓冲区复用 | [GPU 说明](gpu/README.md) |
 
-导体的 RGB BxDF 与单波长 LiDAR 适配共用 BRDF 内核及 Fresnel 实现，不把 RGB 通道当激光波长，也不重复维护两套反射公式。层状/实测 BRDF 等扩展见[反射材质方案](experiments/ReflectionMaterialRoadmap.md)。
+导体的 RGB BxDF 与 LiDAR 适配共用 BRDF 内核及 Fresnel 实现，不把 RGB 通道当激光波长，也不重复维护两套反射公式。已加入光谱光学常数、共同插值层和数据/角度响应配置工厂；涂层提供有限阶 MC 求值、随机游走、俄罗斯轮盘及近似外部 MIS 密度，不声称完整无限层精确 PDF。详见[反射材质方案](experiments/ReflectionMaterialRoadmap.md)。
 
 ## 数据链路
 
@@ -67,7 +73,13 @@ GPU 普通计算需要 SM6.0；硬件 RayQuery 验收需要 DXR 1.1/SM6.5。默�
 
 ## 验证与示例
 
-2026-10-14 本机验证：
+2026-10-19 当前 CPU 阶段验证：
+
+- x64 Debug / Release 正常构建并运行 CPU 全量验收，各 **3103 PASS / 0 FAIL / 0 SKIP**；计数依赖本机已获取外部资源。
+- Urban 独立扫描与视觉实验通过，并核对 PCD、脉冲分组、共享位姿、投影和线性图像；这不是完整 SLAM、真实仪器标定或性能基准。
+- 本轮未重新验证 GPU、Win32、完整海面数值研究和整套解决方案；此前结果保留为下列历史记录，不扩写为当前保证。
+
+2026-10-14 历史本机验证：
 
 - x64 Debug、Release 整套解决方案重建通过，**正常启用清单生成**，不需要关闭 mt.exe。
 - CPU 两个配置各 **2300 PASS / 0 FAIL / 0 SKIP**，包含本机已获取的外部场景。
@@ -89,6 +101,8 @@ GPU 普通计算需要 SM6.0；硬件 RayQuery 验收需要 DXR 1.1/SM6.5。默�
 
 [扫描 Toyblocks](experiments/ToyblocksImport.md) 和 [静态 Urban 导入](experiments/UrbanStaticImport.md) 提供完整导入/扫描示例；对应 Run.ps1 在 VS x64 开发终端执行，导出 PCD 和评估结果到独立输出目录。它们不是对 HELIOS XML survey 的完整复现。
 
+最新的[Urban RGB＋LiDAR 示例](experiments/UrbanSensorCheckpoint/README.md)使用显式 TerrainContact 布局和共享传感器位姿。脚本需要 PowerShell 7、numpy 和 Pillow；保留原始线性RGB、数字测距点和完整诊断，不修改默认主程序。
+
 [src/app/main.cpp](src/app/main.cpp) 仍是 Bunny 栅格化入口，需要自行提供运行目录下的 `models/stanford-bunny.obj`；它不是默认 LiDAR 演示，仓库不包含该模型。
 
 ## 目录与约定
@@ -101,12 +115,12 @@ GPU 普通计算需要 SM6.0；硬件 RayQuery 验收需要 DXR 1.1/SM6.5。默�
 
 - 当前光学主链路为一次表面回波；多次反射、水下体散射和大气介质仍是扩展方向。
 - 海面短波使用有限积分频带、统计微表面及坡度映射近似；白冠为基线模型，不等于完整破碎波流体仿真。
-- 粗糙导体目前显式配置单个波长的 n/k；尚未提供通用金属光学常数光谱库、层状材质或实测 BRDF 导入。
+- 粗糙导体支持显式单波长 n/k 或已加载的光谱 n/k；已有一份来源明确的铝数据，尚不是通用金属材质库。MC 涂层已提供有限阶基线及随机游走；解析近似后端、通用实测 BRDF 导入和真实材质标定尚未完成。
 - 接收器是可控基线模型；光子计数接口为占位，尚未完成实际仪器标定和完整偏振模型。
 - GPU 仅为单三角形/单位实例的同步基础模块，尚未接入整个海面、材质或 LiDAR 仿真；没有性能加速结论。
 - 点云可用于后续 SLAM 对接，但本仓库尚未实现或验证 KISS-ICP、FAST-LIO、LIO-SAM。
 
-本次版本汇总见[版本检查点](experiments/VersionCheckpoint20261014.md)。
+最新版本汇总见[2026-10-19检查点](experiments/VersionCheckpoint20261019.md)，此前目录/SDK整理见[2026-10-14检查点](experiments/VersionCheckpoint20261014.md)。后续优先学习点云配准、激光里程计与SLAM，不继续无边界扩张仿真器功能。
 
 ## 参考与许可
 

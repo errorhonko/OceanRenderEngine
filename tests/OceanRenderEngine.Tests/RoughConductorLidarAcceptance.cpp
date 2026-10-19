@@ -250,3 +250,98 @@ void RunRoughConductorLidarAcceptanceTests()
     Check("conductor lidar waveform energy conserved",Near(waveform.AccumulatePulse(many),many.TotalReceivedEnergyJ()));
     Check("conductor lidar bound wrong wavelength fails explicitly",Rejects<std::out_of_range>([&]{Pulse(*scene,dispatch,1,532);}));
 }
+
+void RunSpectralConductorLidarAcceptanceTests()
+{
+    // Synthetic optical constants, not a measured metal database.
+    SpectralOpticalConstants source({{500, .15, 2}, {905, .3, 3}, {1600, .6, 4.5}},
+        {"synthetic conductor", "acceptance test", "not measured data"});
+    const RoughConductorLidarScattering model(1, source, .2f, .3f);
+    HitRecord hit{}; hit.geometricNormal = hit.normal = {0, 1, 0}; hit.dpdu = {1, 0, 0};
+    const Vector3f up(0, 1, 0), wi(.2f, 1, .1f), wo(-.3f, 1, -.2f);
+    const double pi = std::numbers::pi_v<double>;
+    Check("spectral conductor selects owned spectral mode", model.IsSpectral() && model.OpticalConstantsSpectrum() && model.OpticalConstantsSpectrum()->SampleCount() == 3);
+    Check("spectral conductor retains source metadata", model.OpticalConstantsSpectrum()->Metadata().name == "synthetic conductor" && model.OpticalConstantsSpectrum()->Metadata().sampleConditions == "not measured data");
+    source = SpectralOpticalConstants({{500, 2, 5}, {1600, 3, 6}});
+    Check("spectral conductor source changes do not mutate model", model.OpticalConstantsAtWavelength(905).n == .3 && model.OpticalConstantsAtWavelength(905).k == 3);
+    Check("spectral conductor has no implicit single n", Rejects<std::logic_error>([&] { (void)model.EtaConductor(); }));
+    Check("spectral conductor has no implicit single k", Rejects<std::logic_error>([&] { (void)model.KappaConductor(); }));
+    Check("spectral conductor has no implicit reference wavelength", Rejects<std::logic_error>([&] { (void)model.WavelengthNm(); }));
+    Check("spectral conductor retains incident index and roughness", model.EtaIncident() == 1 && model.AlphaX() == .2f && model.AlphaY() == .3f);
+    const auto spectralFactory = RoughConductorLidarScattering::FromRoughness(1, *model.OpticalConstantsSpectrum(), .04f, .09f);
+    Check("spectral conductor roughness factory keeps spectral mode", spectralFactory.IsSpectral() && Near(spectralFactory.AlphaX(), .2) && Near(spectralFactory.AlphaY(), .3));
+    Check("spectral conductor roughness factory agrees with alpha constructor", Near(spectralFactory.Evaluate(hit, wi, wo, 905), model.Evaluate(hit, wi, wo, 905)));
+    const RoughConductorLidarScattering fixed(1, .3, 3, .2f, .3f, 905);
+    Check("spectral conductor preserves legacy fixed mode", !fixed.IsSpectral() && !fixed.OpticalConstantsSpectrum() && fixed.EtaConductor() == .3 && fixed.KappaConductor() == 3 && fixed.WavelengthNm() == 905);
+    Check("spectral conductor fixed optical query keeps configured constants", fixed.OpticalConstantsAtWavelength(905).n == .3 && fixed.OpticalConstantsAtWavelength(905).k == 3);
+    Check("spectral conductor fixed optical query still rejects wrong wavelength", Rejects<std::out_of_range>([&] { (void)fixed.OpticalConstantsAtWavelength(1550); }));
+    for (float wavelength : {500.f, 532.f, 600.f, 905.f, 1000.f, 1550.f, 1600.f})
+    {
+        const auto nk = model.OpticalConstantsAtWavelength(wavelength);
+        const RoughConductorLidarScattering reference(1, nk.n, nk.k, .2f, .3f, wavelength);
+        const double analytic = NormalF(1, nk.n, nk.k) / (4 * pi * double(.2f) * double(.3f));
+        Check("spectral conductor normal incidence matches analytic F D G", Near(model.Evaluate(hit, up, up, wavelength), analytic));
+        Check("spectral conductor oblique directions match fixed model", Near(model.Evaluate(hit, wi, wo, wavelength), reference.Evaluate(hit, wi, wo, wavelength)));
+        Check("spectral conductor preserves reciprocity across wavelengths", Near(model.Evaluate(hit, wi, wo, wavelength), model.Evaluate(hit, wo, wi, wavelength)));
+        Check("spectral conductor preserves direction scaling across wavelengths", Near(model.Evaluate(hit, wi * 3, wo * 7, wavelength), model.Evaluate(hit, wi, wo, wavelength)));
+    }
+    const auto nir = model.OpticalConstantsAtWavelength(1550);
+    Check("spectral conductor queries independent linear n k at 1550 nm", Near(nir.n, .3 + .3 * 645 / 695, 1e-12) && Near(nir.k, 3 + 1.5 * 645 / 695, 1e-12));
+    Check("spectral conductor wavelength changes affect BRDF", !Near(model.Evaluate(hit, up, up, 905), model.Evaluate(hit, up, up, 1550)));
+    const RoughConductorLidarScattering immersed(1.33, *model.OpticalConstantsSpectrum(), .2f, .3f);
+    Check("spectral conductor respects explicit incident medium", Near(immersed.Evaluate(hit, up, up, 905), NormalF(1.33, .3, 3) / (4 * pi * double(.2f) * double(.3f))));
+    for (float wavelength : {499.f, 1601.f})
+        Check("spectral conductor rejects out of band BRDF query", Rejects<std::out_of_range>([&] { (void)model.Evaluate(hit, up, up, wavelength); }));
+    Check("spectral conductor range error precedes backside exit", Rejects<std::out_of_range>([&] { (void)model.Evaluate(hit, -up, up, 1601); }));
+    for (float wavelength : {0.f, -1.f, std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::infinity()})
+        Check("spectral conductor rejects invalid wavelength", Rejects<std::invalid_argument>([&] { (void)model.Evaluate(hit, up, up, wavelength); }));
+    for (double eta : {0., -1., std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity()})
+        Check("spectral conductor rejects invalid incident index", Rejects<std::invalid_argument>([&] { (void)RoughConductorLidarScattering(eta, *model.OpticalConstantsSpectrum(), .2f, .3f); }));
+    for (float alpha : {0.f, 1e-4f, std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::infinity()})
+        Check("spectral conductor rejects invalid alpha", Rejects<std::invalid_argument>([&] { (void)RoughConductorLidarScattering(1, *model.OpticalConstantsSpectrum(), alpha, .3f); }));
+    Check("spectral conductor roughness factory rejects zero", Rejects<std::invalid_argument>([&] { (void)RoughConductorLidarScattering::FromRoughness(1, *model.OpticalConstantsSpectrum(), 0, .09f); }));
+    Check("spectral conductor roughness factory rejects above one", Rejects<std::invalid_argument>([&] { (void)RoughConductorLidarScattering::FromRoughness(1, *model.OpticalConstantsSpectrum(), .04f, 1.1f); }));
+    Check("spectral conductor retains geometric hemisphere rejection", model.Evaluate(hit, -up, up, 905) == 0 && model.Evaluate(hit, up, -up, 1550) == 0);
+    auto missing = hit; missing.normal = {0, 0, 0};
+    Check("spectral conductor retains missing normal fallback", Near(model.Evaluate(missing, up, up, 1550), model.Evaluate(hit, up, up, 1550)));
+    const auto copied = model;
+    Check("spectral conductor copying owns an independent table", copied.OpticalConstantsSpectrum() != model.OpticalConstantsSpectrum() && Near(copied.Evaluate(hit, wi, wo, 1550), model.Evaluate(hit, wi, wo, 1550)));
+    auto movable = copied;
+    const RoughConductorLidarScattering moved(std::move(movable));
+    Check("spectral conductor moving preserves destination", moved.IsSpectral() && Near(moved.Evaluate(hit, wi, wo, 1550), model.Evaluate(hit, wi, wo, 1550)));
+    if (movable.OpticalConstantsSpectrum()->SampleCount() < 2)
+    {
+        Check("spectral conductor moved from table is guarded", Rejects<std::logic_error>([&] { (void)movable.Evaluate(hit, up, up, 905); }));
+        Check("spectral conductor rejects moved from input table", Rejects<std::invalid_argument>([&] { (void)RoughConductorLidarScattering(1, *movable.OpticalConstantsSpectrum(), .2f, .3f); }));
+    }
+    else
+    {
+        Check("spectral conductor moved from table remains valid", Near(movable.Evaluate(hit, up, up, 905), model.Evaluate(hit, up, up, 905)));
+        Check("spectral conductor accepts retained valid input table", RoughConductorLidarScattering(1, *movable.OpticalConstantsSpectrum(), .2f, .3f).IsSpectral());
+    }
+    const RoughConductorLidarScattering dielectric(1, SpectralOpticalConstants({{500, 1.5, 0}, {1600, 1.5, 0}}), .2f, .3f);
+    Check("spectral conductor supports nonabsorbing dielectric limit", Near(dielectric.Evaluate(hit, up, up, 905), NormalF(1, 1.5, 0) / (4 * pi * double(.2f) * double(.3f))));
+    const auto fixture = std::filesystem::path(__FILE__).parent_path() / "fixtures" / "obj_materials";
+    auto shared = std::make_shared<RoughConductorLidarScattering>(model);
+    ObjMaterialBindingOptions options; options.spectraDirectory = fixture;
+    options.overrides["low"] = std::make_shared<const SurfaceMaterial>(SurfaceMaterial{nullptr, shared});
+    const auto asset = ObjSceneAsset::Read(fixture / "materials.obj", {}, options);
+    SceneBuilder builder; asset.AddToScene(builder); const auto scene = builder.Build(); const SurfaceLidarScattering dispatch;
+    HitRecord bound{};
+    Check("spectral conductor OBJ override binds spectral model", scene->hit(Ray({-.5f, 15, .5f}, {0, -1, 0}), 1e-4f, 100, bound) && bound.lidarScattering == shared);
+    for (float wavelength : {905.f, 1550.f})
+    {
+        const auto pulse = Pulse(*scene, dispatch, 1, wavelength), many = Pulse(*scene, dispatch, 16, wavelength);
+        const auto nk = model.OpticalConstantsAtWavelength(wavelength);
+        const double brdf = NormalF(1, nk.n, nk.k) / (4 * pi * double(.2f) * double(.3f));
+        const double energy = double(1e-3f) * brdf * double(.01f) / 225 * double(.8f);
+        Check("spectral conductor full chain produces returns at each wavelength", pulse.returns.size() == 1 && many.returns.size() == 16);
+        Check("spectral conductor full chain matches analytic received energy", Near(pulse.TotalReceivedEnergyJ(), energy));
+        Check("spectral conductor full chain retains MC normalization", Near(many.TotalReceivedEnergyJ(), pulse.TotalReceivedEnergyJ()));
+        Check("spectral conductor full chain retains propagation time", Near(pulse.returns.at(0).arrivalTimeSeconds, 30.0 / 299792458.0));
+        Check("spectral conductor full chain retains emitted wavelength", pulse.returns.at(0).wavelengthNm == wavelength);
+        LidarWaveform waveform({0, 1e-9, 256});
+        Check("spectral conductor full chain conserves waveform energy", Near(waveform.AccumulatePulse(many), many.TotalReceivedEnergyJ()));
+    }
+    Check("spectral conductor bound out of band pulse fails explicitly", Rejects<std::out_of_range>([&] { (void)Pulse(*scene, dispatch, 1, 2000); }));
+}

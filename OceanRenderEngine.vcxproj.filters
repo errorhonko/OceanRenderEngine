@@ -2,6 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Resources"><UniqueIdentifier>{AA309BE8-C31D-6A0A-D8C3-4610689BEDE8}</UniqueIdentifier></Filter>
+    <Filter Include="data"><UniqueIdentifier>{F6358D32-367B-4952-9F13-65E8B2E3E01D}</UniqueIdentifier></Filter>
+    <Filter Include="data\materials"><UniqueIdentifier>{9A0272C4-D51B-4620-AB7A-F004D00D0878}</UniqueIdentifier></Filter>
+    <Filter Include="data\materials\optical_constants"><UniqueIdentifier>{380124D3-4E21-4B50-811C-39588B3617A3}</UniqueIdentifier></Filter>
+    <Filter Include="third_party\refractiveindex-info"><UniqueIdentifier>{E12243A9-5B4A-49D5-95D7-487F030E21BD}</UniqueIdentifier></Filter>
+    <Filter Include="third_party\refractiveindex-info\Al"><UniqueIdentifier>{A10D793C-7AB2-4E4E-9FA2-17D2FF853FA6}</UniqueIdentifier></Filter>
     <Filter Include="src"><UniqueIdentifier>{4263A625-C163-F6B1-FC46-97A04E2B9904}</UniqueIdentifier></Filter>
     <Filter Include="src\app"><UniqueIdentifier>{D3DB532B-AD95-4141-DC9E-3DCE793BDAB8}</UniqueIdentifier></Filter>
     <Filter Include="src\core"><UniqueIdentifier>{12F2A195-2A9D-4CE3-2810-6BCF6AB6A693}</UniqueIdentifier></Filter>
@@ -37,6 +42,7 @@
     <Filter Include="src\reflection\bxdfs"><UniqueIdentifier>{B7074CC1-BE6F-BCE8-AE14-FE4FFCEFA077}</UniqueIdentifier></Filter>
     <Filter Include="src\reflection\fresnel"><UniqueIdentifier>{913D5859-6FE8-4605-8FBE-984F37CD27D1}</UniqueIdentifier></Filter>
     <Filter Include="src\reflection\lidar"><UniqueIdentifier>{189AA77C-D854-8DAA-0F13-55CCD007AC79}</UniqueIdentifier></Filter>
+    <Filter Include="src\reflection\layered"><UniqueIdentifier>{3022E42F-181F-48CE-A325-2BB515AE2A29}</UniqueIdentifier></Filter>
     <Filter Include="src\reflection\materials"><UniqueIdentifier>{2C4F7BC1-8F34-813D-C81C-CC83F629EE43}</UniqueIdentifier></Filter>
     <Filter Include="src\reflection\microfacet"><UniqueIdentifier>{670EAD43-C619-DAF8-E0F0-6C8FDBB6AC94}</UniqueIdentifier></Filter>
     <Filter Include="src\reflection\textures"><UniqueIdentifier>{EDFA02AE-4599-463F-C7A8-7873DE896636}</UniqueIdentifier></Filter>
@@ -101,6 +107,9 @@
     <ClInclude Include="src\reflection\materials\Lambertian.h"><Filter>src\reflection\materials</Filter></ClInclude>
     <ClInclude Include="src\reflection\lidar\LambertianLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
     <ClInclude Include="src\reflection\lidar\SpectralLambertianLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\HeliosEmpiricalLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\LidarMaterialConfig.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\LidarScatteringFactory.h"><Filter>src\reflection\lidar</Filter></ClInclude>
     <ClInclude Include="src\reflection\materials\SurfaceMaterial.h"><Filter>src\reflection\materials</Filter></ClInclude>
     <ClInclude Include="src\reflection\lidar\SurfaceLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
     <ClInclude Include="src\lidar\emitter\LaserEmitter.h"><Filter>src\lidar\emitter</Filter></ClInclude>
@@ -150,6 +159,12 @@
     <ClInclude Include="src\ocean\field\OceanSurfaceMesh.h"><Filter>src\ocean\field</Filter></ClInclude>
     <ClInclude Include="src\reflection\lidar\RoughDielectricLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
     <ClInclude Include="src\reflection\lidar\RoughConductorLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
+    <ClInclude Include="src\reflection\layered\LayeredReflection.h"><Filter>src\reflection\layered</Filter></ClInclude>
+    <ClInclude Include="src\reflection\layered\LayeredReflectionSampling.h"><Filter>src\reflection\layered</Filter></ClInclude>
+    <ClInclude Include="src\reflection\bxdfs\CoatedDiffuseBxDF.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
+    <ClInclude Include="src\reflection\materials\CoatedDiffuseMaterial.h"><Filter>src\reflection\materials</Filter></ClInclude>
+    <ClInclude Include="src\reflection\layered\CoatedDiffuseReflection.h"><Filter>src\reflection\layered</Filter></ClInclude>
+    <ClInclude Include="src\reflection\lidar\CoatedDiffuseLidarScattering.h"><Filter>src\reflection\lidar</Filter></ClInclude>
     <ClInclude Include="src\geometry\mesh\TriangleMesh.h"><Filter>src\geometry\mesh</Filter></ClInclude>
     <ClInclude Include="src\render\integrators\PathIntegrator.h"><Filter>src\render\integrators</Filter></ClInclude>
     <ClInclude Include="src\core\math\Point2f.h"><Filter>src\core\math</Filter></ClInclude>
@@ -160,6 +175,9 @@
     <ClInclude Include="src\core\spectrum\RGBSpectrum.h"><Filter>src\core\spectrum</Filter></ClInclude>
     <ClInclude Include="src\core\spectrum\SampledSpectrum.h"><Filter>src\core\spectrum</Filter></ClInclude>
     <ClInclude Include="src\core\spectrum\SpectralReflectanceCurve.h"><Filter>src\core\spectrum</Filter></ClInclude>
+    <ClInclude Include="src\core\spectrum\SpectralOpticalConstants.h"><Filter>src\core\spectrum</Filter></ClInclude>
+    <ClInclude Include="src\core\spectrum\SpectrumInterpolation.h"><Filter>src\core\spectrum</Filter></ClInclude>
+    <ClInclude Include="src\core\spectrum\OpticalConstantsTableReader.h"><Filter>src\core\spectrum</Filter></ClInclude>
     <ClInclude Include="src\core\sampling\Sampler.h"><Filter>src\core\sampling</Filter></ClInclude>
     <ClInclude Include="src\render\integrators\SimplePathIntegrator.h"><Filter>src\render\integrators</Filter></ClInclude>
     <ClInclude Include="src\reflection\bxdfs\SpecularReflection.h"><Filter>src\reflection\bxdfs</Filter></ClInclude>
@@ -198,5 +216,9 @@
   <ItemGroup>
     <None Include="third_party\tinyobjloader\LICENSE"><Filter>third_party\tinyobjloader</Filter></None>
     <None Include="third_party\tinyobjloader\README.md"><Filter>third_party\tinyobjloader</Filter></None>
+    <None Include="third_party\refractiveindex-info\README.md"><Filter>third_party\refractiveindex-info</Filter></None>
+    <None Include="third_party\refractiveindex-info\Al\Rakic.yml"><Filter>third_party\refractiveindex-info\Al</Filter></None>
+    <None Include="data\materials\optical_constants\README.md"><Filter>data\materials\optical_constants</Filter></None>
+    <None Include="data\materials\optical_constants\Al_Rakic1995_um.txt"><Filter>data\materials\optical_constants</Filter></None>
   </ItemGroup>
 </Project>

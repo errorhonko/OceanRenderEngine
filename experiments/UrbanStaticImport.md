@@ -1,5 +1,43 @@
 # 城市静态场景导入：HELIOS++ urban_dyn
 
+## 2026-10-19：可选的真实 Terrain 接触放置
+
+RGB 预览发现源冻结车辆浮空，以及 onGround=1 停车车辆陷地。
+实测右侧 vivaro.obj 轮胎高于路面约 0.536 m；部件38 的 vivaro.000.obj 因贴到拟合平面而陷入约1.14--1.27 m。
+原资产校验值未改变。旧验收验证的是导入和参考放置规则，不是实际地形接触。
+
+现在增加显式模式，旧的两种 Load 调用继续保持原 SourcePlane 行为：
+
+```cpp
+auto materials = ObjMaterialBindingOptions::HeliosEmpiricalBaseline(spectraDirectory);
+materials.createDiffuseRenderMaterials = true; // RGB 与 LiDAR 可同时绑定
+HeliosUrbanPlacementOptions placement;
+placement.groundingMode = HeliosUrbanGroundingMode::TerrainContact;
+auto urban = HeliosUrbanStaticScene::Load(urbanDirectory, materials, placement);
+```
+
+TerrainContact 的范围和方法：
+
+- 只把原 `Terrain.obj` 建成只读地形 BVH，不对全场景求交，避免把建筑、车辆或自身当作地面。
+- 对源 onGround 树木，用变换后最低顶点作为树根基准，查询真实地形。
+- 对本数据集全部9辆 vivaro（包括2辆未设置 onGround 的冻结动态车），使用原始材质表中 `15-tire` 对应三角形引用的轮胎顶点作为支撑采样。
+- 这是 urban 专用配置，不是根据任意材质名称自动识别车辆的通用系统。
+- 所有旋转、缩放、平移先按原配方计算，再查询每个支撑点的 Terrain 高度。
+- 使用整体竖直平移 `deltaY = max_i(terrainHeight(x_i,z_i) - y_i)`。
+  保持 X/Z、车身姿态、法线、UV、材质、三角形拓扑不变；每个采样轮胎顶点均不低于地形，并至少有一个采样接触。
+- 只选地形射线上最高表面；多层道路和桥下接触选择尚未扩展。
+- 地形孔洞、越界、缺失轮胎材质明确报错，不悄悄退回全局平面。
+- `onGround` 诊断仍记录原 XML 标志；新增 `terrainGrounded`、`groundingUsesTires`、`terrainSupportPointCount` 区分实际放置行为。
+- `groundingReferenceBefore/After` 在新模式中表示约束最大的支撑点；在旧模式中仍是最低点。
+
+局限：这是仅平移的采样接触基线，不是刚体碰撞、悬架或车辆动力学。
+不保证所有轮胎同时贴合，不保证采样顶点之间的连续三角面不与复杂地形相交，坡面上其余轮胎仍可能存在间隙。
+如果需要更逼真，应在后续用显式轮轴/接触点约束求车身俯仰侧倾，而不是把本基线描述成完整接触求解。
+
+新增验收覆盖升降方向、所有采样支撑点非穿透、至少一个接触点、非平面地形、失败边界、
+冻结动态车辆纳入、原平面模式不变、以及真实9辆车和材质绑定。
+后面的历史记录和参数均指 SourcePlane 模式，不能与新模式输出混用。
+
 2026-10-13。此阶段只导入静态几何和建立 BVH，不执行车辆动画，不生成新点云，
 不改变项目原有 `main.cpp`。后续扫描驱动可直接使用返回的 `StaticScene`。
 

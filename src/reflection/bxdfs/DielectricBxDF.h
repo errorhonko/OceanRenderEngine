@@ -1,240 +1,164 @@
 #pragma once
 #include "reflection/bxdfs/BxDF.h"
-#include "reflection/fresnel/FresnelUtils.h"
 #include "reflection/microfacet/TrowbridgeReitzDistribution.h"
-class DielectricBxDF :public BxDF
+
+class DielectricBxDF : public BxDF
 {
-public: 
-	DielectricBxDF(float eta,
-		const TrowbridgeReitzDistribution& distrib) 
-		:BxDF(static_cast<BxDFType>(
-			((eta==1)?0:BSDF_REFLECTION)|
-			BSDF_TRANSMISSION|
-			(distrib.EffectivelySmooth() ? BSDF_SPECULAR: BSDF_GLOSSY)
-			)),
-		eta(eta), mfDistrib(distrib){}
-	std::optional<BSDFSample> Sample_f(const Vector3f& wo,
-		const Point2f& u, TransportMode mode = TransportMode::Radiance,
-		BxDFReflectionType sampleFlags = BxDFReflectionType::All)const override
-	{
-		if (eta == 1 || mfDistrib.EffectivelySmooth())
-		{
-			float R = FrDielectric(CosTheta(wo), 1.0f, eta);
-			float T = 1.0f - R;
-			float pr = R, pt = T;
-			if (!(sampleFlags & BxDFReflectionType::Reflection)) pr = 0;
-			if (!(sampleFlags & BxDFReflectionType::Transmission))pt = 0;
-			if (pr == 0 && pt == 0)
-				return{};
-			if (u.x < pr / (pr + pt))
-			{
-				Vector3f wi(-wo.x, -wo.y, wo.z);
-				Spectrum fr(R / AbsCosTheta(wi));
-				return BSDFSample(fr, wi, pr / (pr + pt), BxDFType::SpecularReflection);
-			}
-			else
-			{
-				Vector3f wi;
-				float etap;
-				Vector3f n(0, 0, 1.0f);
-				bool valid = Refract(wo, n, eta, &etap, &wi);
-				if (!valid) return{};
-				Spectrum ft(T / AbsCosTheta(wi));
-				if (mode == TransportMode::Radiance)
-					ft = ft / Sqr(etap);
-				return BSDFSample(ft, wi, pt / (pr + pt),
-					BxDFType::SpecularTransmission, etap);
-			}
-		}
-			else
-			{
-				float R_est = FrDielectric(CosTheta(wo), 1.0f, eta);
-				float pr = R_est, pt = 1.0f - R_est;
-				if (!(sampleFlags & BxDFReflectionType::Reflection))
-					pr = 0.0f;
-				if (!(sampleFlags & BxDFReflectionType::Transmission))
-					pt = 0.0f;
-				if (pr == 0.0f && pt == 0.0f)return std::nullopt;
+    using Direction = DielectricDetail::Direction;
+    struct Evaluation { double f = 0, pdf = 0; };
+public:
+    DielectricBxDF(float eta, const TrowbridgeReitzDistribution& distrib)
+        : BxDF(static_cast<BxDFType>(((eta == 1) ? 0 : BSDF_REFLECTION) |
+            BSDF_TRANSMISSION | (distrib.EffectivelySmooth() ? BSDF_SPECULAR : BSDF_GLOSSY))),
+          eta(eta), mfDistrib(distrib) {}
 
-				float threshod = pr / (pr + pt);
-				bool doReflect = u.x < threshod;
-				float ucRemap = RemapSample(u.x, threshod);
-				Point2f uForWm(ucRemap, u.y);
-		
-				Vector3f wm = mfDistrib.Sample_Wm(wo, uForWm);
-				float R = FrDielectric(wo.dot(wm), 1.0f, eta);
-				float T = 1 - R;
-				 pr = R, pt = T;
-				if(!(sampleFlags&BxDFReflectionType::Reflection))
-				{
-					pr = 0;
-				}
-				if(!(sampleFlags&BxDFReflectionType::Transmission))
-				{
-					pt = 0;
-				}
-				if (pr == 0 && pt == 0)
-					return {};
+    std::optional<BSDFSample> Sample_f(const Vector3f& wo, const Point2f& u,
+        TransportMode mode = TransportMode::Radiance,
+        BxDFReflectionType sampleFlags = BxDFReflectionType::All) const override
+    {
+        // Two dimensions suffice for a forced event or a smooth interface.
+        // Never silently derive an allegedly independent event from the VNDF u.
+        if (sampleFlags == BxDFReflectionType::All && eta != 1 && !mfDistrib.EffectivelySmooth())
+            throw std::invalid_argument("Rough dielectric All requires Sample_f(wo, uc, u, mode, flags).");
+        return Sample_f(wo, u.x, u, mode, sampleFlags);
+    }
 
+    std::optional<BSDFSample> Sample_f(const Vector3f& wo, float uc, const Point2f& u,
+        TransportMode mode = TransportMode::Radiance,
+        BxDFReflectionType sampleFlags = BxDFReflectionType::All) const override
+    {
+        using namespace DielectricDetail;
+        const Direction o = Promote(wo);
+        if (o.z == 0) return {};
+        const auto macro = EvaluateInterface(o.z, 1.0, double(eta));
+        double pr = macro.R, pt = macro.T;
+        Mask(sampleFlags, pr, pt);
+        if (eta == 1 || mfDistrib.EffectivelySmooth())
+        {
+            if (pr + pt == 0) return {};
+            if (uc < pr / (pr + pt))
+            {
+                const Direction i{-o.x, -o.y, o.z};
+                return BSDFSample(Spectrum(float(macro.R / std::abs(i.z))), Store(i),
+                    float(pr / (pr + pt)), BxDFType::SpecularReflection);
+            }
+            Direction i;
+            if (!RefractUnit(o, {0, 0, 1}, macro, i) || i.z == 0) return {};
+            double value = macro.T / std::abs(i.z);
+            if (mode == TransportMode::Radiance) value /= macro.eta * macro.eta;
+            return BSDFSample(Spectrum(float(value)), Store(i), float(pt / (pr + pt)),
+                BxDFType::SpecularTransmission, float(macro.eta));
+        }
 
-				float pdf;
-				if (doReflect)
-				{
-					Vector3f wi = Reflect(wo, wm);
-					if (!SameHemisphere(wo, wi))return{};
-					pdf = mfDistrib.PDF(wo, wm) / (4 * AbsDot(wo, wm)) * pr / (pr + pt);
+        // First sample the visible normal; THEN select the actual facet event.
+        // A macro-normal TIR must not eliminate tilted transmitting facets.
+        const Direction m = Promote(mfDistrib.Sample_Wm(wo, u));
+        const auto optics = EvaluateInterface(Dot(o, m), 1.0, double(eta));
+        pr = optics.R; pt = optics.T;
+        Mask(sampleFlags, pr, pt);
+        if (pr + pt == 0) return {};
+        const bool reflect = uc < pr / (pr + pt);
+        Direction i;
+        if (reflect) i = Unit(Combine(o, -1, m, 2 * Dot(o, m)));
+        else if (!RefractUnit(o, m, optics, i)) return {};
+        if (i.z == 0 || (o.z * i.z > 0) != reflect) return {};
+        const auto value = Evaluate(o, i, m, reflect, mode, sampleFlags);
+        if (!(value.pdf > 0)) return {};
+        return BSDFSample(Spectrum(float(value.f)), Store(i), float(value.pdf),
+            reflect ? BxDFType::GlossyReflection : BxDFType::GlossyTransmission,
+            reflect ? 1.0f : float(optics.eta));
+    }
 
-					Spectrum f(mfDistrib.D(wm) * mfDistrib.G(wo, wi) * R
-						/ (4 * CosTheta(wi) * CosTheta(wo)));
-					return BSDFSample(f, wi, pdf, BxDFType::GlossyReflection);
-				}
-				else
-				{
-					float etap;
-					Vector3f wi;
-					bool tir = !Refract(wo, wm, eta, &etap, &wi);
-					if (SameHemisphere(wo, wi) || wi.z == 0 || tir)
-						return{};
-					float denom = Sqr(wi.dot(wm) + wo.dot(wm) / etap);
-					float dwm_dwi = AbsDot(wi, wm) / denom;
-					pdf = mfDistrib.PDF(wo, wm) * dwm_dwi * pt / (pr + pt);
-					Spectrum ft(T * mfDistrib.D(wm) * mfDistrib.G(wo, wi) *
-						std::abs(wi.dot(wm) * wo.dot(wm) / (CosTheta(wi) * CosTheta(wo) * denom)));
-					if (mode == TransportMode::Radiance)ft = ft / Sqr(etap);
-					return BSDFSample(ft, wi, pdf, BxDFType::GlossyTransmission, etap);
+    Spectrum f(const Vector3f& wo, const Vector3f& wi, TransportMode mode) const override
+    {
+        if (eta == 1 || mfDistrib.EffectivelySmooth()) return Spectrum(0.0f);
+        const auto o = DielectricDetail::Promote(wo), i = DielectricDetail::Promote(wi);
+        Direction m;
+        if (!Reconstruct(o, i, m)) return Spectrum(0.0f);
+        return Spectrum(float(Evaluate(o, i, m, o.z * i.z > 0, mode, BxDFReflectionType::All).f));
+    }
 
-				}
-		}
-	}
-	
-	Spectrum f(const Vector3f& wo, const Vector3f& wi ,
-		TransportMode mode)const override
-	{
-		if (eta == 1 || mfDistrib.EffectivelySmooth())
-		{
-			return Spectrum(0.0f);
-		}
-		float cosTheta_o = CosTheta(wo);
-		float cosTheta_i = CosTheta(wi);
-		bool reflect = SameHemisphere(wo, wi);
-		float etap = 1;
-		if(!reflect)
-			etap = (cosTheta_o > 0) ? eta : 1 / eta;
-		Vector3f wm = wi * etap + wo;
-		if(cosTheta_i==0||cosTheta_o==0||wm.near_zero())
-		{
-			return{};
-		}
-		wm = FaceForward(wm.normalize(), Vector3f(0, 0, 1));
+    float Pdf(const Vector3f& wo, const Vector3f& wi, TransportMode mode,
+        BxDFReflectionType sampleFlags = BxDFReflectionType::All) const override
+    {
+        if (eta == 1 || mfDistrib.EffectivelySmooth()) return 0;
+        const auto o = DielectricDetail::Promote(wo), i = DielectricDetail::Promote(wi);
+        Direction m;
+        if (!Reconstruct(o, i, m)) return 0;
+        return float(Evaluate(o, i, m, o.z * i.z > 0, mode, sampleFlags).pdf);
+    }
 
-		if (wm.dot(wi) * cosTheta_i < 0 || wm.dot(wo) * cosTheta_o < 0)
-		{
-			return{};
-		}
-		float F = FrDielectric(wo.dot(wm), 1.0f, eta);
-		if (reflect)
-		{
-			return Spectrum(mfDistrib.D(wm) * mfDistrib.G(wo, wi) * F
-				/std ::abs(4 * cosTheta_i * cosTheta_o));
-		}
-		else
-		{
-			float denom = Sqr(wi.dot(wm) + wo.dot(wm) / etap)*cosTheta_i*cosTheta_o;
-			float ft = mfDistrib.D(wm) * mfDistrib.G(wo, wi) * (1 - F)
-				*std::abs(wi.dot(wm) * wo.dot(wm)  / denom);
-			if (mode == TransportMode::Radiance)
-				ft /= Sqr(etap);
-			return Spectrum(ft);
-		}
-	}
-
-	float Pdf(const Vector3f& wo, const Vector3f& wi, TransportMode mode,
-		BxDFReflectionType sampleFlags = BxDFReflectionType::All)const override
-	{
-		if (eta == 1 || mfDistrib.EffectivelySmooth())
-		{
-			return (0.0f);
-		}
-		float cosTheta_o = CosTheta(wo);
-		float cosTheta_i = CosTheta(wi);
-		bool reflect = SameHemisphere(wo, wi);
-		float etap = 1;
-		if (!reflect)
-			etap = (cosTheta_o > 0) ? eta : 1 / eta;
-		Vector3f wm = wi * etap + wo;
-		if (cosTheta_i == 0 || cosTheta_o == 0 || wm.near_zero())
-		{
-			return(0.0f);
-		}
-		wm = FaceForward(wm.normalize(), Vector3f(0, 0, 1));
-
-		if (wm.dot(wi) * cosTheta_i < 0 || wm.dot(wo) * cosTheta_o < 0)
-		{
-			return(0.0f);
-		}
-
-		float R = FrDielectric(wo.dot(wm), 1.0f, eta);
-		float T = 1 - R;
-		float pr = R, pt = T;
-		if (!(sampleFlags & BxDFReflectionType::Reflection))
-		{
-			pr = 0.0f;
-		}
-		if (!(sampleFlags & BxDFReflectionType::Transmission))
-		{
-			pt = 0.0f;
-		}
-		if (pr == 0.0f && pt == 0.0f)
-		{
-			return(0.0f);
-		}
-		float pdf;
-		if (reflect)
-		{
-			pdf = mfDistrib.PDF(wo, wm) / (4 * AbsDot(wo, wm)) * pr / (pr + pt);
-		}
-		else
-		{
-			float denom = Sqr(wi.dot(wm) + wo.dot(wm) / etap);
-			float dwm_dwi = AbsDot(wi, wm) / denom;
-			pdf = mfDistrib.PDF(wo, wm) * dwm_dwi * pt / (pr + pt);
-		}
-		return pdf;
-	}
-	Spectrum rho(const Vector3f& wo, int nSamples, const Point2f* samples)const override
-	{
-		if (nSamples <= 0 || !samples)
-		{
-			return Spectrum(0.0f);
-		}
-		Spectrum result(0.0f);
-
-		for (int i = 0;i < nSamples;i++)
-		{
-			auto bs = Sample_f(
-				wo,
-				samples[i],
-				TransportMode::Radiance,
-				BxDFReflectionType::All
-			);
-
-			if (!bs ||
-				bs->pdf <= .0f ||
-				!std::isfinite(bs->pdf))
-			{
-				continue;
-			}
-			float absCosTheta = BRDFUtils::AbsCosTheta(bs->wi);
-
-			result = result + bs->f * (absCosTheta / bs->pdf);
-		}
-
-		return result / static_cast<float>(nSamples);
-	}
-	void Regularize() { mfDistrib.Regularize(); }
+    Spectrum rho(const Vector3f& wo, int nSamples, const Point2f* samples) const override
+    {
+        if (nSamples <= 0 || !samples) return Spectrum(0.0f);
+        Spectrum result(0.0f);
+        for (int j = 0; j < nSamples; ++j)
+        {
+            // This legacy rho API supplies only 2D samples. For rough media,
+            // estimate both conditional integrals instead of inventing a third RNG dimension.
+            if (eta != 1 && !mfDistrib.EffectivelySmooth())
+            {
+                for (auto event : {BxDFReflectionType::Reflection, BxDFReflectionType::Transmission})
+                {
+                    const auto bs = Sample_f(wo, 0.5f, samples[j], TransportMode::Radiance, event);
+                    if (bs && bs->pdf > 0 && std::isfinite(bs->pdf))
+                        result = result + bs->f * (BRDFUtils::AbsCosTheta(bs->wi) / bs->pdf);
+                }
+            }
+            else
+            {
+                const auto bs = Sample_f(wo, samples[j], TransportMode::Radiance, BxDFReflectionType::All);
+                if (bs && bs->pdf > 0 && std::isfinite(bs->pdf))
+                    result = result + bs->f * (BRDFUtils::AbsCosTheta(bs->wi) / bs->pdf);
+            }
+        }
+        return result / float(nSamples);
+    }
+    void Regularize() { mfDistrib.Regularize(); }
 
 private:
-	float eta;
-	TrowbridgeReitzDistribution mfDistrib;
+    static void Mask(BxDFReflectionType flags, double& pr, double& pt)
+    {
+        if (!(flags & BxDFReflectionType::Reflection)) pr = 0;
+        if (!(flags & BxDFReflectionType::Transmission)) pt = 0;
+    }
+    double EffectiveEta(Direction o) const { return o.z > 0 ? double(eta) : 1.0 / double(eta); }
+    bool Reconstruct(Direction o, Direction i, Direction& m) const
+    {
+        using namespace DielectricDetail;
+        if (i.z == 0 || o.z == 0) return false;
+        const double etap = o.z * i.z > 0 ? 1.0 : EffectiveEta(o);
+        m = Unit(Combine(i, etap, o, 1));
+        if (Dot(m, m) == 0) return false;
+        if (m.z < 0) m = {-m.x, -m.y, -m.z};
+        return Dot(m, i) * i.z >= 0 && Dot(m, o) * o.z >= 0;
+    }
+    Evaluation Evaluate(Direction o, Direction i, Direction m, bool reflect,
+        TransportMode mode, BxDFReflectionType flags) const
+    {
+        using namespace DielectricDetail;
+        const double a = Dot(i, m), b = Dot(o, m);
+        const auto optics = EvaluateInterface(b, 1.0, double(eta));
+        double pr = optics.R, pt = optics.T;
+        Mask(flags, pr, pt);
+        // Converting at the NDF boundary does not round Snell, dot products,
+        // the reciprocal index, half-vector reconstruction or Jacobian.
+        const Vector3f of = Store(o), inf = Store(i), mf = Store(m);
+        const double D = mfDistrib.D(mf), G = mfDistrib.G(of, inf);
+        const double pm = mfDistrib.PDF(of, mf);
+        const double probability = pr + pt > 0 ? (reflect ? pr : pt) / (pr + pt) : 0;
+        if (reflect)
+        {
+            if (b == 0) return {};
+            return {D * G * optics.R / std::abs(4 * i.z * o.z), pm / (4 * std::abs(b)) * probability};
+        }
+        const double etap = EffectiveEta(o);
+        const double h = std::fma(b, 1 / etap, a), denom = h * h;
+        if (denom == 0 || optics.tir) return {};
+        double value = optics.T * D * G * std::abs(a * b / (i.z * o.z * denom));
+        if (mode == TransportMode::Radiance) value /= etap * etap;
+        return {value, pm * std::abs(a) / denom * probability};
+    }
+    float eta;
+    TrowbridgeReitzDistribution mfDistrib;
 };
-

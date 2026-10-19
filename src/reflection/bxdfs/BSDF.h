@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "core/math/Vector3f.h"
 #include "reflection/bxdfs/BxDF.h"
 #include "reflection/microfacet/BRDFUtils.h"
@@ -43,6 +44,22 @@ public:
 		bs->wi = LocalToRender(bs->wi);
 		return *bs;
     };
+    // A reflection-only layered material can still have hidden internal R/T.
+    bool NeedsComponentSample() const
+    {
+        return bxdf && bxdf->NeedsComponentSample();
+    }
+    std::optional<BSDFSample> Sample_f(const Vector3f& woRender, float uc,
+        const Point2f& sample, TransportMode mode = TransportMode::Radiance,
+        BxDFReflectionType sampledType = BxDFReflectionType::All) const
+    {
+        const auto woLocal = RenderToLocal(woRender);
+        if (woLocal.z == 0) return std::nullopt;
+        auto bs = bxdf->Sample_f(woLocal, uc, sample, mode, sampledType);
+        if (!bs || !bs->f || bs->pdf <= 0 || bs->wi.z == 0) return std::nullopt;
+        bs->wi = LocalToRender(bs->wi);
+        return bs;
+    }
     float Pdf(const Vector3f& woRender, const Vector3f& wiRender,
         TransportMode mode = TransportMode::Radiance,
         BxDFReflectionType sampleFlags = BxDFReflectionType::All) const

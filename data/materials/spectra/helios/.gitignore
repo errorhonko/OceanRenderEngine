@@ -1,0 +1,6 @@
+# Keep third-party measurement downloads local until data redistribution terms
+# have been checked. The reproducible fetcher and project documentation are tracked.
+*
+!.gitignore
+!FetchHeliosSpectra.ps1
+!README.md

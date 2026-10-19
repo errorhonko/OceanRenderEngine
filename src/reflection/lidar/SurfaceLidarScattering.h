@@ -31,6 +31,17 @@ public:
         return model->Evaluate(hit, wi, wo, wavelengthNm);
     }
 
+    double EvaluateProjectedResponse(const HitRecord& hit, const Vector3f& wi,
+        const Vector3f& wo, float wavelengthNm) const override
+    {
+        const auto& model = hit.lidarScattering ? hit.lidarScattering : fallback;
+        if (!model)
+            throw std::logic_error("Hit surface has no LiDAR scattering model and no explicit fallback.");
+        if (dynamic_cast<const SurfaceLidarScattering*>(model.get()))
+            throw std::logic_error("Bind concrete LiDAR models to surfaces, not a surface dispatcher.");
+        return model->EvaluateProjectedResponse(hit, wi, wo, wavelengthNm);
+    }
+
 private:
     std::shared_ptr<const LidarScatteringModel> fallback;
 };

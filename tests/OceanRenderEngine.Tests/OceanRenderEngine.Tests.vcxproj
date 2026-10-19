@@ -148,6 +148,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BVHAccelAcceptance.cpp" />
+    <ClCompile Include="SpectralOpticalConstantsAcceptance.cpp" />
+    <ClCompile Include="LayeredInterfacePdfAcceptance.cpp" />
+    <ClCompile Include="MixedSamplingAndMisAcceptance.cpp" />
+    <ClCompile Include="LayeredRandomWalkAcceptance.cpp" />
+    <ClCompile Include="HeliosEmpiricalAcceptance.cpp" />
+    <ClCompile Include="LidarMaterialConfigAcceptance.cpp" />
+    <ClCompile Include="CoatedDiffuseLidarAcceptance.cpp">
+      <AdditionalOptions>/FC %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="SpectrumInterpolationAcceptance.cpp" />
+    <ClCompile Include="SpectrumInterpolationLinkAcceptance.cpp" />
+    <ClCompile Include="OpticalConstantsTableReaderAcceptance.cpp">
+      <AdditionalOptions>/FC %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="ObjMeshLoaderAcceptance.cpp">
       <AdditionalOptions>/FC %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>

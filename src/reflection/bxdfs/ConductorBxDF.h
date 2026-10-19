@@ -5,6 +5,7 @@
 class ConductorBxDF :public BxDF
 {
 public:
+    using BxDF::Sample_f;
 ConductorBxDF(const TrowbridgeReitzDistribution& distrib,
 		const Spectrum& eta, const Spectrum& k)
 		: BxDF(BxDFType::GlossyReflection)

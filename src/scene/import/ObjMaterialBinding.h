@@ -5,12 +5,17 @@
 #include "reflection/materials/DiffuseMaterial.h"
 #include "reflection/lidar/LambertianLidarScattering.h"
 #include "reflection/lidar/SpectralLambertianLidarScattering.h"
+#include "reflection/lidar/HeliosEmpiricalLidarScattering.h"
+#include "reflection/lidar/LidarScatteringFactory.h"
 #include <charconv>
 #include <filesystem>
 #include <map>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <system_error>
+
+enum class ObjLidarAngularModel { Lambert, HeliosEmpirical };
 
 struct ObjMaterialBindingOptions
 {
@@ -22,15 +27,28 @@ struct ObjMaterialBindingOptions
     std::shared_ptr<const SurfaceMaterial> unassignedMaterial; // ID == -1 only.
     bool createDiffuseRenderMaterials = true; // RGB Kd -> diffuse BSDF, NEVER NIR rho.
     bool allowOpaqueApproximation = false; // Explicit opt-in for d/map_d/transmissive illum.
+    ObjLidarAngularModel lidarAngularModel = ObjLidarAngularModel::Lambert;
+
+    static ObjMaterialBindingOptions HeliosEmpiricalBaseline(std::filesystem::path spectraDirectory)
+    {
+        ObjMaterialBindingOptions options;
+        options.spectraDirectory = std::move(spectraDirectory);
+        options.lidarAngularModel = ObjLidarAngularModel::HeliosEmpirical;
+        options.unassignedMaterial = std::make_shared<const SurfaceMaterial>(SurfaceMaterial{
+            nullptr, std::make_shared<HeliosEmpiricalLidarScattering>(0.5,
+                HeliosEmpiricalAngularResponse(std::array<double,3>{}, std::array<double,3>{}))});
+        return options;
+    }
 };
 
-enum class ObjLidarBindingSource { Override, ReflectancePercent, Spectrum, ExplicitFallback };
+enum class ObjLidarBindingSource { Override, ReflectancePercent, Spectrum, ExplicitFallback, HeliosDefault };
 struct ObjMaterialBindingInfo
 {
     std::string name;
     ObjLidarBindingSource source = ObjLidarBindingSource::ExplicitFallback;
     std::filesystem::path spectrumPath;
     std::vector<std::string> warnings;
+    ObjLidarAngularModel angularModel = ObjLidarAngularModel::Lambert;
 };
 struct ObjMaterialBindingResult
 {
@@ -39,8 +57,8 @@ struct ObjMaterialBindingResult
 };
 
 // Adapter after tinyobj parsing. Not a general PBR/Phong material converter.
-// HELIOS percent reflectance overrides spectra; all LiDAR automatic models are
-// Lambert baselines. Parser/material metadata remain available in ObjSceneAsset.
+// HELIOS percent reflectance overrides spectra. Lambert is the unchanged default;
+// empirical angular response/default rho require an explicit mode selection.
 class ObjMaterialBinding
 {
 public:
@@ -48,7 +66,13 @@ public:
         const ObjMaterialBindingOptions& options = {})
     {
         ObjMaterialBindingResult result;
-        std::map<std::filesystem::path, std::shared_ptr<const LidarScatteringModel>> spectra;
+        if (options.lidarAngularModel != ObjLidarAngularModel::Lambert &&
+            options.lidarAngularModel != ObjLidarAngularModel::HeliosEmpirical)
+            throw std::invalid_argument("Unknown OBJ LiDAR angular model.");
+        // Source data and resolved models have different cache keys: HELIOS
+        // response depends on each MTL entry's Kd/Ks/Ns, not just the spectrum.
+        std::map<std::filesystem::path, SpectralReflectanceCurve> spectra;
+        std::map<std::filesystem::path, std::shared_ptr<const LidarScatteringModel>> lambertSpectra;
         for (const auto& material : source)
         {
             ObjMaterialBindingInfo info; info.name = material.name;
@@ -84,17 +108,19 @@ public:
                     !material.emissive_texname.empty())
                     info.warnings.push_back("MTL emission is not converted to an area light.");
             }
-            if (material.specular[0] != 0 || material.specular[1] != 0 || material.specular[2] != 0 ||
-                material.metallic != 0 || material.roughness != 0)
+            if (options.lidarAngularModel == ObjLidarAngularModel::Lambert &&
+                (material.specular[0] != 0 || material.specular[1] != 0 || material.specular[2] != 0 ||
+                material.metallic != 0 || material.roughness != 0))
                 info.warnings.push_back("Ks/Ns/PBR parameters are not converted; automatic scattering is a diffuse baseline.");
             std::shared_ptr<const LidarScatteringModel> lidar;
+            std::optional<LidarReflectionData> reflectionData;
             const auto reflectance = material.unknown_parameter.find("helios_reflectance");
             const auto spectrum = material.unknown_parameter.find("helios_spectra");
             if (reflectance != material.unknown_parameter.end())
             {
                 const double percent = Number(reflectance->second, material.name);
                 if (percent < 0 || percent > 100) Fail(material.name, "helios_reflectance must be in [0,100] percent");
-                lidar = std::make_shared<LambertianLidarScattering>(percent * .01);
+                reflectionData = ConstantLidarReflectance{percent * .01};
                 info.source = ObjLidarBindingSource::ReflectancePercent;
                 if (percent > 0 && percent < 1)
                     info.warnings.push_back("helios_reflectance uses percent: this value is below 1%, not fractional albedo.");
@@ -114,9 +140,8 @@ public:
                     info.spectrumPath = file;
                     auto found = spectra.find(file);
                     if (found == spectra.end())
-                        found = spectra.emplace(file, std::make_shared<SpectralLambertianLidarScattering>(
-                            SpectralReflectanceCurve::FromAsterFile(file))).first;
-                    lidar = found->second;
+                        found = spectra.emplace(file, SpectralReflectanceCurve::FromAsterFile(file)).first;
+                    reflectionData = found->second;
                 }
                 catch (const std::exception& error)
                 {
@@ -127,11 +152,43 @@ public:
             }
             else
             {
-                if (!options.missingLidarFallback)
-                    Fail(material.name, "no helios_reflectance/helios_spectra and no explicit LiDAR fallback");
-                lidar = options.missingLidarFallback;
-                info.source = ObjLidarBindingSource::ExplicitFallback;
-                info.warnings.push_back("Missing LiDAR reflectance; using caller-supplied fallback, not RGB Kd.");
+                if (!options.missingLidarFallback && options.lidarAngularModel == ObjLidarAngularModel::HeliosEmpirical) {
+                    reflectionData = ConstantLidarReflectance{0.5};
+                    info.source = ObjLidarBindingSource::HeliosDefault;
+                    info.warnings.push_back("HELIOS empirical mode: missing reflectance uses assumed rho=0.5, not measured data.");
+                } else {
+                    if (!options.missingLidarFallback)
+                        Fail(material.name, "no helios_reflectance/helios_spectra and no explicit LiDAR fallback");
+                    lidar = options.missingLidarFallback;
+                    info.source = ObjLidarBindingSource::ExplicitFallback;
+                    info.warnings.push_back("Missing LiDAR reflectance; using caller-supplied fallback, not RGB Kd.");
+                }
+            }
+            if (reflectionData)
+            {
+                LidarResponseModel response = LambertLidarResponse{};
+                if (options.lidarAngularModel == ObjLidarAngularModel::HeliosEmpirical)
+                {
+                    response = HeliosEmpiricalAngularResponse(
+                        {material.diffuse[0], material.diffuse[1], material.diffuse[2]},
+                        {material.specular[0], material.specular[1], material.specular[2]}, material.shininess);
+                    info.angularModel = ObjLidarAngularModel::HeliosEmpirical;
+                    info.warnings.push_back("Monostatic empirical angular shape, normalized energy scale; NOT a physical BRDF or raw HELIOS intensity reproduction.");
+                    if (material.metallic != 0 || material.roughness != 0)
+                        info.warnings.push_back("PBR metallic/roughness ignored by HELIOS empirical mode.");
+                }
+                const bool cacheLambert = info.source == ObjLidarBindingSource::Spectrum &&
+                    options.lidarAngularModel == ObjLidarAngularModel::Lambert;
+                if (cacheLambert)
+                {
+                    const auto cached = lambertSpectra.find(info.spectrumPath);
+                    if (cached != lambertSpectra.end()) lidar = cached->second;
+                }
+                if (!lidar)
+                {
+                    lidar = LidarScatteringFactory::Create({std::move(*reflectionData), std::move(response)});
+                    if (cacheLambert) lambertSpectra.emplace(info.spectrumPath, lidar);
+                }
             }
             result.materials.push_back(std::make_shared<const SurfaceMaterial>(SurfaceMaterial{render, lidar}));
             result.info.push_back(std::move(info));

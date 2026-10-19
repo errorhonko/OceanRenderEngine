@@ -5,6 +5,7 @@ using namespace BRDFUtils;
 class DiffuseBxDF :public BxDF
 {
 public:
+    using BxDF::Sample_f;
 	DiffuseBxDF(Spectrum R) :BxDF(BxDFType::DiffuseReflection), R(R) {}
 	Spectrum f(const Vector3f& wo, const Vector3f& wi ,TransportMode mode) const override
 	{

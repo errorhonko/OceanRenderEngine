@@ -1,17 +1,16 @@
 #pragma once
 #include "core/spectrum/CoefficientSpectrum.h"
+#include "core/spectrum/SpectrumInterpolation.h"
 static const int nSpectralSamples = 60;
 static const int sampledLambdaStart = 400;
 static const int sampledLambdaEnd = 700;
 inline float Interpolate(float x, float x0, float x1, float y0, float y1) {
-    if (x <= x0) return y0;
-    if (x >= x1) return y1;
-    float t = (x - x0) / (x1 - x0);
-    return (1.0f - t) * y0 + t * y1;
+    // Compatibility entry point; keep endpoint extension for valid legacy data.
+    return SpectrumInterpolation::InterpolateClamped(x, x0, x1, y0, y1);
 }
 
 // 根据波长 lambda (单位 nm)，分析计算出对应的 CIE X, Y, Z 匹配值
-void CIE_XYZ(float lambda, float& x, float& y, float& z) {
+inline void CIE_XYZ(float lambda, float& x, float& y, float& z) {
     // 拟合 X 曲线
     x = 1.056f * std::exp(-0.5f * std::pow((lambda - 599.8f) / 37.9f, 2))
         + 0.362f * std::exp(-0.5f * std::pow((lambda - 442.0f) / 16.0f, 2))

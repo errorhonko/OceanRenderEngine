@@ -31,6 +31,104 @@ std::vector<ImportedMesh> PlaneMesh()
         vertices.push_back({{xz[0],2+0.2f*xz[0]-0.1f*xz[1],xz[1]},{0,1,0},{0.3f,0.7f,0}});
     return {ImportedMesh{"plane",std::make_shared<TriangleMesh>(std::move(vertices),std::vector<TriangleIndices>{{0,2,1},{0,3,2}}),{-1,-1}}};
 }
+void TerrainContactTests()
+{
+    using namespace HeliosUrbanStaticDetail;
+    SceneBuilder builder;builder.AddMeshes(PlaneMesh());const auto terrain=builder.Build();
+    const auto bounds=terrain->Bounds();
+    Check("terrain grounding queries actual sloped surface",std::abs(TerrainHeight(*terrain,bounds,{3,100,4})-2.2)<1e-5);
+    Check("terrain height does not depend on object altitude",std::abs(TerrainHeight(*terrain,bounds,{3,-100,4})-2.2)<1e-5);
+    Check("terrain grounding rejects out of footprint samples",Rejects([&]{TerrainHeight(*terrain,bounds,{100,2,0});}));
+    Check("terrain grounding rejects nonfinite samples",Rejects([&]{TerrainHeight(*terrain,bounds,{0,std::numeric_limits<float>::quiet_NaN(),0});}));
+    SceneBuilder emptyBuilder;const auto empty=emptyBuilder.Build();
+    Check("terrain grounding does not silently fall back across a hole",Rejects([&]{TerrainHeight(*empty,bounds,{0,0,0});}));
+    Check("terrain grounding rejects empty support set",Rejects([&]{ContactShift({},*terrain,bounds);}));
+    const auto lower=ContactShift({{0,3,0}},*terrain,bounds);
+    const auto raise=ContactShift({{0,0,0}},*terrain,bounds);
+    Check("terrain contact lowers a floating support",std::abs(lower.meters+1)<1e-6);
+    Check("terrain contact raises an embedded support",std::abs(raise.meters-2)<1e-6);
+    const std::vector<Vector3f> supports{{0,2,0},{5,2.5f,0}};
+    const auto shift=ContactShift(supports,*terrain,bounds);
+    Check("terrain support constraint need not be the globally lowest vertex",shift.reference==1 && std::abs(shift.meters-.5)<1e-5);
+    bool nonpenetrating=true;double minGap=1e10;
+    for(auto p:supports){p.y+=float(shift.meters);const double gap=p.y-TerrainHeight(*terrain,bounds,p);nonpenetrating &= gap>=-1e-5;minGap=std::min(minGap,gap);}
+    Check("terrain max clearance shift keeps all sampled supports above ground",nonpenetrating);
+    Check("terrain max clearance shift has a sampled contact",std::abs(minGap)<1e-5);
+
+    ImportedMesh object{"support",std::make_shared<TriangleMesh>(std::vector<MeshVertex>{
+        {{0,10,0},{0,1,0},{.3f,.7f,0}},{{.1f,10,0},{0,1,0},{}},{{0,10,.1f},{0,1,0},{}}},std::vector<TriangleIndices>{{0,2,1}}),{3}};
+    const auto tire=TireSupportPoints({object},3,Identity(),2,{1,2,3});
+    Check("tire support extraction applies original rotation scale and offset",tire.size()==3&&Near(tire[0],{1,22,3}));
+    Check("tire support extraction rejects missing tire declaration",Rejects([&]{TireSupportPoints({object},-1,Identity(),1,{0,0,0});}));
+    Check("tire support extraction rejects unmatched tire faces",Rejects([&]{TireSupportPoints({object},4,Identity(),1,{0,0,0});}));
+    auto invalid=object;invalid.materialIds.clear();
+    Check("tire support extraction rejects invalid per face mappings",Rejects([&]{TireSupportPoints({invalid},3,Identity(),1,{0,0,0});}));
+    HeliosUrbanPlacementOptions contact{HeliosUrbanGroundingMode::TerrainContact};
+    HeliosUrbanPartSpec spec{"vivaro.test",1,{0,0,0},{},0,false,true};
+    const auto plane=FitGroundPlane(PlaneMesh());HeliosUrbanPartInfo info;
+    auto placed=Place({object},spec,0,plane,info,contact,terrain.get(),&bounds,3);
+    Check("terrain mode also grounds frozen vehicles without source onGround",info.terrainGrounded&&info.groundingUsesTires&&!info.onGround&&info.terrainSupportPointCount==3);
+    Check("terrain mode translates vertically only",Near(placed[0].mesh->Vertices()[0].position,{0,2.02f,0},1e-4f));
+    Check("terrain mode preserves normals UV and source vertices",Near(placed[0].mesh->Vertices()[0].normal,{0,1,0})&&Near(placed[0].mesh->Vertices()[0].uv,{.3f,.7f,0})&&object.mesh->Vertices()[0].position.y==10);
+    HeliosUrbanPartInfo legacy;
+    const auto unchanged=Place({object},spec,0,plane,legacy);
+    Check("default plane mode preserves source ungrounded vehicles",!legacy.terrainGrounded&&legacy.groundShiftMeters==0&&unchanged[0].mesh->Vertices()[0].position.y==10);
+    Check("terrain mode requires explicit terrain geometry",Rejects([&]{Place({object},spec,0,plane,info,contact);}));
+    Check("terrain mode never guesses missing vehicle tire material",Rejects([&]{Place({object},spec,0,plane,info,contact,terrain.get(),&bounds);}));
+    auto unknown=contact;unknown.groundingMode=static_cast<HeliosUrbanGroundingMode>(100);
+    Check("urban placement rejects unknown grounding mode",Rejects([&]{Place({object},spec,0,plane,info,unknown);}));
+
+    const ImportedMesh bump{"bump",std::make_shared<TriangleMesh>(std::vector<MeshVertex>{
+        {{-10,0,-10},{},{}},{{10,0,-10},{},{}},{{10,0,10},{},{}},{{-10,0,10},{},{}},{{0,5,0},{},{}}},
+        std::vector<TriangleIndices>{{0,4,1},{1,4,2},{2,4,3},{3,4,0}}),{-1,-1,-1,-1}};
+    SceneBuilder bumpBuilder;bumpBuilder.AddMesh(bump);const auto bumpTerrain=bumpBuilder.Build();
+    const auto bumpBounds=bumpTerrain->Bounds();const auto bumpPlane=FitGroundPlane({bump});
+    Check("nonplanar contact queries the bump not its best fitting plane",std::abs(TerrainHeight(*bumpTerrain,bumpBounds,{0,0,0})-5)<1e-5&&std::abs(bumpPlane.Height(0,0)-5)>1);
+    spec.file="tree.test";spec.onGround=true;spec.originallyDynamic=false;
+    placed=Place({object},spec,0,bumpPlane,info,contact,bumpTerrain.get(),&bumpBounds);
+    Check("nonvehicle source onGround uses actual terrain at its base",info.terrainGrounded&&!info.groundingUsesTires&&std::abs(info.groundingReferenceAfter.y-5)<1e-5);
+    Check("nonvehicle terrain contact uses an explicit single base support",info.terrainSupportPointCount==1);
+}
+
+void RealTerrainContactTests()
+{
+    const auto diffuse=std::make_shared<LambertianLidarScattering>(.5);
+    const auto material=std::make_shared<const SurfaceMaterial>(SurfaceMaterial{nullptr,diffuse});
+    ObjMaterialBindingOptions materials;materials.createDiffuseRenderMaterials=false;
+    materials.missingLidarFallback=diffuse;materials.unassignedMaterial=material;materials.overrides["terrain"]=material;
+    const auto corrected=HeliosUrbanStaticScene::Load(Assets(),materials,{HeliosUrbanGroundingMode::TerrainContact});
+    Check("real terrain placement retains original scene scale and triangle count",corrected.triangleCount==2445341&&corrected.parts.size()==42&&corrected.scene->ObjectCount()==53);
+    ObjImportOptions options;options.sourceAxesInEngine={ObjAxisDirection::PositiveX,ObjAxisDirection::NegativeZ,ObjAxisDirection::PositiveY};options.skipDegenerateTriangles=true;
+    const auto groundMeshes=ObjMeshLoader::Convert(ObjMeshLoader::Read((Assets()/"Terrain.obj").string()),options);
+    SceneBuilder builder;builder.AddMeshes(groundMeshes);const auto terrain=builder.Build();const auto bounds=terrain->Bounds();
+    std::size_t vehicles=0,trees=0;
+    bool allSamples=true,oneContact=true,noHorizontalChange=true,materialRetained=true;
+    for(const auto& part:corrected.parts) {
+        const auto& spec=HeliosUrbanStaticParts[part.sourcePartIndex];
+        if(!part.terrainGrounded)continue;
+        if(!part.groundingUsesTires){++trees;continue;}
+        ++vehicles;
+        const auto reader=ObjMeshLoader::Read((Assets()/part.file).string());
+        const auto meshes=ObjMeshLoader::Convert(reader,options);
+        int tire=-1;for(std::size_t i=0;i<reader.GetMaterials().size();++i)if(reader.GetMaterials()[i].name=="15-tire")tire=int(i);
+        const auto supports=HeliosUrbanStaticDetail::TireSupportPoints(meshes,tire,HeliosUrbanStaticDetail::Rotation(spec),spec.scale,{spec.sourceOffset[0],spec.sourceOffset[2],-spec.sourceOffset[1]});
+        double minimum=1e10;
+        for(auto p:supports){p.y=float(double(p.y)+part.groundShiftMeters);const double gap=p.y-HeliosUrbanStaticDetail::TerrainHeight(*terrain,bounds,p);minimum=std::min(minimum,gap);allSamples &= gap>=-2e-5;}
+        oneContact &= std::abs(minimum)<2e-5;
+        noHorizontalChange &= part.groundingReferenceBefore.x==part.groundingReferenceAfter.x&&part.groundingReferenceBefore.z==part.groundingReferenceAfter.z;
+        const auto p=part.groundingReferenceAfter;HitRecord hit;
+        materialRetained &= corrected.scene->hit(Ray({p.x,p.y+100,p.z},{0,-1,0}),1e-4f,200,hit)&&bool(hit.lidarScattering);
+    }
+    Check("real terrain mode grounds all nine vehicles including frozen dynamic cars",vehicles==9&&corrected.parts[0].terrainGrounded&&corrected.parts[1].terrainGrounded);
+    Check("real terrain mode also grounds eleven source flagged trees",trees==11);
+    Check("real tire vertices do not penetrate sampled terrain",allSamples);
+    Check("each real vehicle has at least one sampled terrain contact",oneContact);
+    Check("real terrain contact preserves horizontal position",noHorizontalChange);
+    Check("real terrain placement retains per surface LiDAR material binding",materialRetained);
+    Check("previous floating right vehicle moves down by about half a metre",corrected.parts[0].groundShiftMeters<-.53&&corrected.parts[0].groundShiftMeters>-.54);
+    Check("previous buried left vehicle no longer targets global plane",corrected.parts[38].terrainGrounded&&corrected.parts[38].groundShiftMeters>-.2);
+}
+
 void MathTests()
 {
     const auto mesh=PlaneMesh();const auto plane=HeliosUrbanStaticDetail::FitGroundPlane(mesh);
@@ -135,8 +233,10 @@ void BoundsJson(std::ostream& output,const Bounds3f& bounds)
 void RunHeliosUrbanStaticSceneAcceptanceTests()
 {
     MathTests();
+    TerrainContactTests();
     if(!HeliosUrbanStaticScene::AssetsPresent(Assets())){std::cout<<"[SKIP] urban external assets absent; run models/helios_urban_static/FetchUrbanStatic.ps1.\n";return;}
     (void)VerifyRealScene();
+    RealTerrainContactTests();
 }
 void ExportHeliosUrbanStaticImport(const std::filesystem::path& directory)
 {

@@ -1,7 +1,8 @@
 # PBRT 主导的粗糙导体雷达反射：第一步
 
 2026-10-14。[总方案](ReflectionMaterialRoadmap.md) 阶段 1。
-VS `头文件/ReflectionMaterials` 下集中普通反射材质和雷达反射模型；不移动源文件。
+本文记录固定波长基线及公共层合并。当前文件已按模块整理到 `src/`；
+后续新增的同类光谱模式、查询接口及验收见 [SpectralConductorLidar.md](SpectralConductorLidar.md)。
 
 ## 实现与公式
 

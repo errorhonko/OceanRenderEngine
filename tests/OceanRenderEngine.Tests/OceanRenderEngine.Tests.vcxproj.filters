@@ -16,6 +16,16 @@
     <ClCompile Include="ToyblocksImportAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
     <ClCompile Include="HeliosUrbanStaticSceneAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
     <ClCompile Include="SpectralReflectanceCurveAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="SpectralOpticalConstantsAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LayeredInterfacePdfAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="MixedSamplingAndMisAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LayeredRandomWalkAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="HeliosEmpiricalAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="LidarMaterialConfigAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="CoatedDiffuseLidarAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="SpectrumInterpolationAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="SpectrumInterpolationLinkAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
+    <ClCompile Include="OpticalConstantsTableReaderAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
     <ClCompile Include="SpectralLambertianLidarAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
     <ClCompile Include="SurfaceMaterialAcceptance.cpp"><Filter>Tests</Filter></ClCompile>
     <ClCompile Include="ObjMaterialBindingAcceptance.cpp"><Filter>Tests</Filter></ClCompile>

@@ -5,13 +5,32 @@
 
 ## 当前进度
 
-阶段 0 已完成：31 个既有头文件迁入独立筛选器，加上新模型共 32 个；
-清理 6 个无文件引用的旧 ReflectionModel 展示节点，未移动实体文件或修改包含路径。
+新增独立可选的 [HELIOS++ 经验材质基线](HeliosEmpiricalBaseline.md)，用于与物理模型
+对照。复用 OBJ/光谱/逐面绑定和接收链路，修正逐材质镜面比例初始化；不是新增物理 BRDF，
+也不替代以下物理材质阶段。默认自动绑定仍为 Lambert。
+经验基线新增81项检查，最新 CPU x64 Debug / Release 各3002项通过、零失败与零跳过。
+
+阶段 0 已完成：最初整理独立筛选器，随后实体文件迁入 `src/` 模块目录；
+以 [ProjectStructure.md](ProjectStructure.md) 的目录映射为当前结构。
 阶段 1 已完成：[粗糙导体及公共层合并](RoughConductorLidar.md)。导体共 72 项检查通过，
 CPU Release/Debug 各 2300 项通过，零失败、零跳过；未验证 GPU 分支。
-下一小步为阶段 2 的光学常数光谱容器，尚未下载或引入 RGL/Mitsuba 等新外部库。
+阶段 2 的[光学常数容器](SpectralOpticalConstants.md)及[光谱金属接入](SpectralConductorLidar.md)
+已实现；随后加入[独立读取器及文献铝数据](OpticalConstantsTableReader.md)，新增 62 项
+检查，CPU Debug/Release 各 2550 项通过。阶段 2 基线完成。
+阶段 3 的默认 MC 涂层漫反射求值基线也已完成：新增 112 项检查，
+CPU Debug/Release 各 2662 项通过，零失败、零跳过；下一步讨论解析近似后端。
+随后先细化 MC：[条件 PDF 及一致性检查](LayeredConditionalPdf.md)已完成，
+新增 107 项，CPU Debug/Release 各 2769 项通过。随后已完成局部混合精度、
+[All 混合采样修复与可选出口 MIS](LayeredMISAndMixedSampling.md)。
+MIS 两策略同测度且均值对照通过；当前粗糙涂层案例方差反增，故默认保留单出口策略。
+现在也已加入[完整涂层随机游走采样与外部 MIS 密度近似](LayeredRandomWalkSampling.md)，
+提供显式无色 CoatedDiffuseBxDF / Material；原 LiDAR 光谱求值入口保持不变。
+新增随机游走专项 74 项，最新 CPU Debug / Release 各 2921 项通过、零失败与零跳过。
+粗糙度仍为独立假设参数，未完成真实表面标定；未引入 RGL/Mitsuba 等外部代码库。
 导体公共层已合并：RGB ConductorBxDF 与雷达类共用 BRDF 内核，FrComplex 适配公共
 FrConductor；旧采样/PDF/Delta 分支保留，不维护第二份复数 Fresnel 或导体 BRDF 公式。
+两个光谱容器与旧 SampledSpectrum 已共用 [SpectrumInterpolation](SpectrumInterpolation.md)
+数值层；反射率、n/k 的校验和各自边界规则仍保持独立。
 
 ## 参考分工
 
@@ -81,6 +100,11 @@ alpha 至少 1e-3；不提供 GGX 的“精确 RMS 坡度工厂”。FromRoughne
 参照 PBRT CoatedDiffuse 与 Mitsuba roughplastic，先做明确简化的无体散射薄涂层，
 考虑界面 Fresnel、透射衰减、底层漫反射和内部反射，避免直接无约束相加。
 参数需区分底层 rho 与整体反射率。复杂车漆/珠光/多层金属涂层不在首版范围内。
+
+2026-10-15：按当前实现顺序，先接入[默认蒙特卡洛双界面求值](CoatedDiffuseMonteCarlo.md)，
+保留 MonteCarlo / AnalyticApproximation 后端开关；解析后端尚未实现，选择会明确报错。
+复用现有介质与 Lambert 采样，区分层内 MC 样本与光束射线数；无体散射、有限反射阶，
+不宣称完整 PBRT LayeredBxDF 或无限深度无偏。下一步讨论解析近似与 MC 对照。
 
 ### 阶段 4：实测 BRDF 接入与验证
 

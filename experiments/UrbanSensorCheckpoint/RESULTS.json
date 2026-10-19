@@ -1,0 +1,76 @@
+{
+  "checkpoint": "2026-10-19",
+  "grounding": "TerrainContact; translation-only sampled support constraints",
+  "geometry": {
+    "assets": 27,
+    "parts": 42,
+    "triangles": 2445341
+  },
+  "scan": {
+    "channels": 16,
+    "azimuth_columns": 720,
+    "pulses": 11520,
+    "rays_per_pulse": 16,
+    "emitted_rays": 184320,
+    "measured_points": 9613,
+    "detection_fraction": 0.8344618055555556,
+    "no_mc_hit": 1373,
+    "hit_without_positive_return": 356,
+    "positive_return_without_detection": 178,
+    "adc_clipped_pulses": 0,
+    "minimum_range_m": 4.255708876990827,
+    "maximum_range_m": 113.42117526137285,
+    "points_without_center_ray_hit": 6,
+    "center_reference_abs_difference_median_m": 0.0058682737373985105,
+    "center_reference_abs_difference_p95_m": 0.033923839329626955,
+    "center_reference_abs_difference_max_m": 23.201429037530193,
+    "center_reference_warning": "Not pure range errors: finite footprints can measure different surfaces."
+  },
+  "materials": {
+    "spectral_entries": 1,
+    "assumed_half_reflectance_entries": 76,
+    "unassigned_faces": "explicit empirical fallback"
+  },
+  "camera": {
+    "width": 640,
+    "height": 360,
+    "fx": 320.00000000000006,
+    "fy": 320.00000000000006,
+    "cx": 320,
+    "cy": 180,
+    "horizontal_fov_degrees": 90,
+    "rig_origin_world_m": [
+      0,
+      8.800000190734863,
+      -70
+    ],
+    "rig_orientation_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "camera_to_lidar_translation_m": [
+      0,
+      0,
+      0
+    ],
+    "camera_to_lidar_orientation_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ]
+  },
+  "projection": {
+    "in_view": 2198,
+    "overlay_points": 2188,
+    "warning": "The geometry-consistency filter affects only the overlay, never measured PCD points."
+  },
+  "sha256": {
+    "urban_world.pcd": "55d7f2b12e1269bc705d62d2797abc3580273e416a438b000384f9f02e814803",
+    "urban_sensor.pcd": "529c4978068c3c2fd99c3014144b6f512f6717701552a7b24d137a19e3fda1a0",
+    "pulses.csv": "2b2107ac0592696115a1202446714a43bf9acc2c4f7e7c8fa2d511a00c961ecf"
+  },
+  "scope": "Static, noise-free receiver; empirical NIR materials; diffuse RGB preview; not calibrated hardware or SLAM."
+}

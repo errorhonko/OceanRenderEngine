@@ -19,6 +19,19 @@ public:
         const Vector3f& incidentDirection,
         const Vector3f& outgoingDirection,
         float wavelengthNm) const = 0;
+
+    // Projected response per steradian used by the return estimator. Physical
+    // models retain f_r * cos(theta_return). Empirical backscatter adapters may
+    // override this entry point WITHOUT pretending their angular gain is a BRDF.
+    virtual double EvaluateProjectedResponse(
+        const HitRecord& hit, const Vector3f& wi, const Vector3f& wo,
+        float wavelengthNm) const
+    {
+        const double f = Evaluate(hit, wi, wo, wavelengthNm);
+        if (!std::isfinite(f) || f < 0)
+            throw std::domain_error("LiDAR scattering model returned an invalid BRDF.");
+        return f * hit.geometricNormal.normalize().dot(wo);
+    }
 };
 
 class ConstantLidarScattering final

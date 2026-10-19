@@ -29,10 +29,20 @@ void RunSceneBuilderAcceptanceTests();
 void RunToyblocksImportAcceptanceTests();
 void RunHeliosUrbanStaticSceneAcceptanceTests();
 void RunSpectralReflectanceCurveAcceptanceTests();
+void RunSpectralOpticalConstantsAcceptanceTests();
+void RunCoatedDiffuseLidarAcceptanceTests();
+void RunLayeredInterfacePdfAcceptanceTests();
+void RunMixedSamplingAndMisAcceptanceTests();
+void RunLayeredRandomWalkAcceptanceTests();
+void RunHeliosEmpiricalAcceptanceTests();
+void RunLidarMaterialConfigAcceptanceTests();
+void RunSpectrumInterpolationAcceptanceTests();
+void RunOpticalConstantsTableReaderAcceptanceTests();
 void RunSpectralLambertianLidarAcceptanceTests();
 void RunSurfaceMaterialAcceptanceTests();
 void RunObjMaterialBindingAcceptanceTests();
 void RunRoughConductorLidarAcceptanceTests();
+void RunSpectralConductorLidarAcceptanceTests();
 void RunFresnelUtilsAcceptanceTests();
 void RunLaserEmitterAcceptanceTests();
 void RunLidarBeamProfileAcceptanceTests();
@@ -1926,6 +1936,9 @@ void ExpectAreaLightSurfaceEmission()
 
 int main()
 {
+    RunLayeredRandomWalkAcceptanceTests();
+    RunMixedSamplingAndMisAcceptanceTests();
+    RunLayeredInterfacePdfAcceptanceTests();
     RunObjMeshLoaderAcceptanceTests();
     RunObjMeshConversionAcceptanceTests();
     RunObjUnitAxisAcceptanceTests();
@@ -1933,10 +1946,17 @@ int main()
     RunToyblocksImportAcceptanceTests();
     RunHeliosUrbanStaticSceneAcceptanceTests();
     RunSpectralReflectanceCurveAcceptanceTests();
+    RunSpectralOpticalConstantsAcceptanceTests();
+    RunCoatedDiffuseLidarAcceptanceTests();
+    RunSpectrumInterpolationAcceptanceTests();
+    RunOpticalConstantsTableReaderAcceptanceTests();
     RunSpectralLambertianLidarAcceptanceTests();
     RunSurfaceMaterialAcceptanceTests();
     RunObjMaterialBindingAcceptanceTests();
+    RunHeliosEmpiricalAcceptanceTests();
+    RunLidarMaterialConfigAcceptanceTests();
     RunRoughConductorLidarAcceptanceTests();
+    RunSpectralConductorLidarAcceptanceTests();
     RunBounds3fAcceptanceTests();
     RunBVHAccelAcceptanceTests();
     RunFresnelUtilsAcceptanceTests();

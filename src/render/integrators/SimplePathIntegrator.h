@@ -81,8 +81,10 @@ public:
             {
                 break;
             }
+			const float componentSample = bsdf.NeedsComponentSample() ? sampler.Get1D() : 0.5f;
+            const Point2f directionSample = sampler.Get2D();
 			auto bs = bsdf.Sample_f(
-                wo, sampler.Get2D(),
+                wo, componentSample, directionSample,
                 TransportMode::Radiance
             );
             if (!bs)
